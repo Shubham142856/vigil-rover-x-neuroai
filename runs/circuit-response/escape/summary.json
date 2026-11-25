@@ -1,0 +1,11 @@
+{
+  "source": "LPLC2",
+  "target": "DNp01",
+  "normalized_peak": {
+    "biological": 0.22996212084528,
+    "rewired-19": 0.34216282958531563,
+    "rewired-41": 0.33883415538475053,
+    "rewired-7": 0.3415078891933271
+  },
+  "model": "Unsigned row-normalized count matrix; dimensionless rate update, leak 0.2, recurrent gain 0.8, tanh. Common 10-step unit pulse. Numerical wiring assay only; signs, physical time constants and sensory encoding unvalidated."
+}

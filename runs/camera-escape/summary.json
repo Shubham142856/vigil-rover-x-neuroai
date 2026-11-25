@@ -1,0 +1,53 @@
+{
+  "calibration_seeds": [
+    0,
+    7
+  ],
+  "test_seeds": [
+    10000,
+    10007
+  ],
+  "metrics": {
+    "biological": {
+      "threshold": 0.19136053802727393,
+      "collision_courses": 4,
+      "near_misses": 4,
+      "early_warnings": 4,
+      "median_lead_s": 0.050000000000000044,
+      "false_warnings": 0,
+      "closed_collisions": 4,
+      "near_misses_passed": 4
+    },
+    "rewired-19": {
+      "threshold": 0.18104161263653507,
+      "collision_courses": 4,
+      "near_misses": 4,
+      "early_warnings": 4,
+      "median_lead_s": 0.07500000000000007,
+      "false_warnings": 0,
+      "closed_collisions": 4,
+      "near_misses_passed": 4
+    },
+    "rewired-41": {
+      "threshold": 0.18220044518618037,
+      "collision_courses": 4,
+      "near_misses": 4,
+      "early_warnings": 4,
+      "median_lead_s": 0.07500000000000007,
+      "false_warnings": 0,
+      "closed_collisions": 4,
+      "near_misses_passed": 4
+    },
+    "rewired-7": {
+      "threshold": 0.1827574991081524,
+      "collision_courses": 4,
+      "near_misses": 4,
+      "early_warnings": 4,
+      "median_lead_s": 0.07500000000000007,
+      "false_warnings": 0,
+      "closed_collisions": 4,
+      "near_misses_passed": 4
+    }
+  },
+  "scope": "One visible red post, fixed camera and shape family. Engineered angular-size and expansion drives, unsigned rates, per-topology calibrated threshold, latched brake. No active recovery."
+}

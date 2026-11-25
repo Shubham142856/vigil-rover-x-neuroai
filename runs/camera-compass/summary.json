@@ -1,0 +1,18 @@
+{
+  "seeds": 8,
+  "freeze_seconds": [
+    1,
+    4
+  ],
+  "mean_absolute_errors": {
+    "3.95": {
+      "compass_error_deg": 17.441965373670115,
+      "odometry_error_deg": 19.883555697383127
+    },
+    "5.0": {
+      "compass_error_deg": 3.752574772876647,
+      "odometry_error_deg": 24.90308199278565
+    }
+  },
+  "scope": "Relative heading for in-place turns with one red post. Initialized from the first camera frame. Seed varies sensor brightness and odometry noise."
+}

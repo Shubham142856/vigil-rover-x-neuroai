@@ -1,0 +1,11 @@
+{
+  "source": "PEG",
+  "target": "EPG",
+  "normalized_peak": {
+    "biological": 0.019466870455136866,
+    "rewired-19": 0.026085669459478017,
+    "rewired-41": 0.029044364221591495,
+    "rewired-7": 0.024765515912187678
+  },
+  "model": "Unsigned row-normalized count matrix; dimensionless rate update, leak 0.2, recurrent gain 0.8, tanh. Common 10-step unit pulse. Numerical wiring assay only; signs, physical time constants and sensory encoding unvalidated."
+}

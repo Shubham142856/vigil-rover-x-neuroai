@@ -1,0 +1,14 @@
+{
+  "total_records": 80,
+  "pairs": 8,
+  "splits": {
+    "train": 4,
+    "val": 2,
+    "test": 2
+  },
+  "max_pre_branch_pixel_diff": 0,
+  "indistinguishable_histories_verified": true,
+  "oracle_keys_in_inputs": 0,
+  "pair_split_leakage": 0,
+  "records_sha256": "b662bbfd8c4f9f17a1c797b8565f99335d25e98c3bd6f2a333ecd8269407d595"
+}

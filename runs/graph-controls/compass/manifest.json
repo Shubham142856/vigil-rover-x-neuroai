@@ -1,0 +1,13 @@
+{
+  "nodes": 151,
+  "edges": 4364,
+  "orientation": "row=postsynaptic, column=presynaptic",
+  "weights": "Anatomical counts. Transmitter signs and physiological gains remain unspecified.",
+  "control": "10 accepted switches per non-self edge; existing self edges fixed. Incoming and outgoing degree and each source's outgoing weight distribution preserved. Incoming strength and cell-type mixing may change.",
+  "upstream_edges_sha256": "9b731bf12604f86fe2b2d0e5232495846371321a1cb0c8a300fc79262bac40ac",
+  "fraction_original_edges_retained": {
+    "7": 0.24725022914757103,
+    "19": 0.24312557286892758,
+    "41": 0.2504582951420715
+  }
+}

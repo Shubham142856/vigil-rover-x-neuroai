@@ -1,0 +1,56 @@
+{
+  "sensor_geometry": {
+    "resolution_hw": [
+      96,
+      128
+    ],
+    "vertical_fov_deg": 66.0,
+    "sampling_hz": 10.0,
+    "receptive_field_side_px": 80,
+    "arm_strip_width_px": 32,
+    "arm_threshold": 2.0
+  },
+  "regimes": {
+    "approach": {
+      "additive_raw_peak": 842919.8115950266,
+      "multiplicative_raw_peak": 5.018350590995866e+20,
+      "additive_norm_peak": 1.0,
+      "multiplicative_norm_peak": 1.0
+    },
+    "recede": {
+      "additive_raw_peak": 0.0,
+      "multiplicative_raw_peak": 0.0,
+      "additive_norm_peak": 0.0,
+      "multiplicative_norm_peak": 0.0
+    },
+    "translate": {
+      "additive_raw_peak": 254287.40943012136,
+      "multiplicative_raw_peak": 0.0,
+      "additive_norm_peak": 0.30167449611718405,
+      "multiplicative_norm_peak": 0.0
+    },
+    "yaw": {
+      "additive_raw_peak": 138244.95847939572,
+      "multiplicative_raw_peak": 0.0,
+      "additive_norm_peak": 0.16400724787545304,
+      "multiplicative_norm_peak": 0.0
+    },
+    "near_miss": {
+      "additive_raw_peak": 332974.2819953393,
+      "multiplicative_raw_peak": 0.0,
+      "additive_norm_peak": 0.39502486169504564,
+      "multiplicative_norm_peak": 0.0
+    },
+    "empty": {
+      "additive_raw_peak": 0.0,
+      "multiplicative_raw_peak": 0.0,
+      "additive_norm_peak": 0.0,
+      "multiplicative_norm_peak": 0.0
+    }
+  },
+  "acceptance_checks": {
+    "approach_is_peak_multiplicative": true,
+    "max_control_multiplicative_norm": 0.0,
+    "zero_false_positive_multiplicative_controls": true
+  }
+}

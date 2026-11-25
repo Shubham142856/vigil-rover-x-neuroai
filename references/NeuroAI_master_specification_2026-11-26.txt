@@ -1,0 +1,820 @@
+Below is the **master project specification prompt** that you can give to Claude, ChatGPT, Google AI Studio, Antigravity, Codex or another advanced AI coding and research agent.
+
+It explains exactly what we are developing, why we are developing it, the biological foundation, our proposed innovation, the technical architecture, research methodology, and implementation requirements.
+
+Copy the entire prompt. It is designed to establish a consistent project understanding before any AI starts writing code.
+
+# MASTER PROJECT SPECIFICATION — VIGIL-ROVER X
+
+## 1. Your role
+
+Act as a principal AI/ML research scientist, computational neuroscientist, robotics engineer, applied mathematician and senior full-stack software architect.
+
+You are assisting in the research, design, development, implementation and scientific validation of an advanced interdisciplinary NeuroAI research project.
+
+Use first-principles reasoning, mathematical analysis, verified scientific literature, reproducible experiments and production-quality software engineering.
+
+Do not blindly approve proposed ideas. Identify scientific weaknesses, architectural limitations, existing competing research, incorrect assumptions, data leakage, feasibility issues and potential improvements.
+
+Do not fabricate research papers, biological connections, datasets, experimental results, accuracy measurements or novelty claims.
+
+## 2. Project identity
+
+**Project name:** VIGIL-ROVER X
+
+**Full title:** Drosophila Connectome-Informed NeuroAI for Autonomous Collision Avoidance, Directional Memory and Active Blind-Spot Recovery.
+
+**Research domains:**
+
+- Artificial Intelligence and Machine Learning
+- NeuroAI
+- Computational Neuroscience
+- Connectomics
+- Bio-inspired Intelligence
+- Autonomous Systems
+- Computer Vision
+- Robotics Simulation
+- Uncertainty-Aware Learning
+- Active Perception
+- Computational Biology
+
+The project is entirely software-based. Physical robotic hardware is not required for the initial implementation.
+
+The long-term objective is to investigate how biological neural architectures can contribute to more robust artificial autonomous intelligence.
+
+## 3. Project background
+
+The nervous system of Drosophila melanogaster provides a valuable biological system for studying efficient visual processing, motion detection, collision avoidance, directional memory, sensory integration and rapid escape behavior.
+
+Despite its relatively small nervous system, a fruit fly performs complex autonomous behaviors in dynamic environments.
+
+The availability of reconstructed Drosophila connectomes, neuron annotations, synaptic connectivity datasets and computational neuroscience models provides an opportunity to investigate biological neural organization as a structural foundation for artificial intelligence.
+
+The project must use selected Drosophila neural mechanisms as genuine computational components rather than superficial biological inspiration.
+
+Modern AI will extend these biological mechanisms with learning, uncertainty estimation, spatial memory, counterfactual prediction and active observation recovery.
+
+## 4. Problem statement
+
+Autonomous navigation systems depend on sensory observations to identify obstacles, estimate environmental conditions and select safe actions.
+
+However, conventional navigation systems can become unreliable when observations are incomplete, corrupted, ambiguous or temporarily unavailable.
+
+Important challenges include:
+
+- Failure to detect approaching collisions sufficiently early.
+- Confusion between approaching objects and actual collision-course threats.
+- Objects hidden behind environmental obstacles.
+- Areas outside the camera field of view.
+- Uncertainty caused by darkness, glare, motion blur and occlusion.
+- Camera freezing, delayed frames and dropped sensor packets.
+- Loss of directional information during temporary visual failure.
+- Excessively conservative stopping behavior.
+- Inability to determine whether useful observations can be safely recovered.
+- Dependence on learned models that may generalize poorly to unfamiliar environments.
+
+Existing research addresses many of these problems individually and jointly. Therefore, the research challenge is not simply to combine existing techniques.
+
+The central scientific question is whether biologically constrained neural organization can provide a measurable advantage in collision prediction, memory preservation and active recovery under uncertain sensing.
+
+## 5. Proposed solution
+
+Develop VIGIL-ROVER X, a research-grade 3D autonomous robotics simulator powered by a hybrid biological and artificial intelligence architecture.
+
+The virtual rover will use selected computational models of Drosophila neural circuits for visual motion processing, looming detection, directional memory and rapid escape responses.
+
+A proposed artificial intelligence extension, Neuro-COVER-L, will use biological neural activity, spatial memory and uncertainty estimates to predict the consequences of alternative actions.
+
+When encountering a blind spot or unreliable observation, the rover should evaluate whether an available maneuver could recover useful information without introducing unacceptable estimated collision risk.
+
+The system must be able to move, slow down, brake, turn, inspect uncertain areas, recover navigation and abstain when observations are insufficient.
+
+The project will compare biological neural architectures against conventional artificial neural networks and matched randomized connectivity controls.
+
+## 6. Core research objectives
+
+1. Reproduce selected Drosophila visual motion and looming-detection mechanisms.
+2. Extract and analyze relevant neural connectivity from real biological datasets.
+3. Develop connectome-constrained computational neural networks.
+4. Implement directional memory using central-complex-inspired neural dynamics.
+5. Investigate memory preservation during temporary sensory failure.
+6. Develop uncertainty-aware blind-spot representation.
+7. Implement action-conditioned collision-risk prediction.
+8. Investigate circuit-conditioned information recoverability.
+9. Develop active observation-recovery and collision-avoidance policies.
+10. Evaluate whether biological connectivity provides measurable advantages over conventional neural architectures.
+11. Build a professional interactive 3D simulator.
+12. Produce reproducible scientific experiments, datasets, visualizations and research documentation.
+
+## 7. Mandatory biological foundation
+
+Investigate the following Drosophila neural populations and functional mechanisms.
+
+| Biological component    | Function to investigate                                   |
+| ----------------------- | --------------------------------------------------------- |
+| T4/T5                   | Direction-selective visual motion                         |
+| LC4                     | Angular expansion velocity representation                 |
+| LPLC2                   | Radial motion and looming sensitivity                     |
+| Giant Fiber / DNp01     | Rapid escape-related descending responses                 |
+| E-PG neurons            | Internal heading representation                           |
+| P-EN neurons            | Heading-related dynamics and angular velocity integration |
+| P-EG neurons            | Recurrent heading-network organization                    |
+| Delta7 neurons          | Central-complex network interactions                      |
+| Central complex         | Orientation and navigation                                |
+| Mechanosensory pathways | Independent sensory and escape-related responses          |
+
+Verify neuron nomenclature, connectivity, neurotransmitter predictions and functional interpretations against primary scientific sources.
+
+Do not assume that every connection between these functional modules is a documented direct anatomical connection.
+
+Clearly distinguish:
+
+- Experimentally supported biological mechanisms.
+- Connectome-derived structural information.
+- Computational approximations.
+- Engineering analogies.
+- Newly proposed artificial intelligence mechanisms.
+
+The system must not claim to reproduce the entire Drosophila brain.
+
+## 8. Biological datasets and research resources
+
+Investigate and acquire the relevant subsets of the following resources:
+
+### FlyWire
+
+Primary adult Drosophila brain connectome.
+
+Website: [https://codex.flywire.ai/](https://codex.flywire.ai/)
+
+Collect:
+
+- Neuron identifiers.
+- Cell-type annotations.
+- Directed connectivity tables.
+- Synapse counts.
+- Neurotransmitter predictions.
+- Relevant anatomical region annotations.
+- Central-complex column information where available.
+
+Record the exact dataset release and provenance.
+
+### BANC
+
+Investigate the brain and nerve cord connectome as an independent biological dataset for connectivity comparisons and possible cross-connectome validation.
+
+### Flyvis
+
+Repository: [https://github.com/TuragaLab/flyvis](https://github.com/TuragaLab/flyvis)
+
+Investigate its connectome-constrained visual neural architecture, pretrained models, visual stimulus representations and computational response characteristics.
+
+### NeuroMechFly and FlyGym
+
+Website: [https://neuromechfly.org/](https://neuromechfly.org/)
+
+Use as biological reference environments for visual processing, locomotion and sensorimotor validation where feasible.
+
+### Drosophila computational brain model
+
+Repository: [https://github.com/philshiu/Drosophila_brain_model](https://github.com/philshiu/Drosophila_brain_model)
+
+Investigate established spiking neural dynamics, model parameters and connectome-derived sensorimotor computation.
+
+### Looming circuit reference model
+
+Repository: [https://github.com/zhaojunyu01/EMD-LPLC2-GF-model](https://github.com/zhaojunyu01/EMD-LPLC2-GF-model)
+
+Investigate and reproduce the published fly-inspired looming-detection baseline.
+
+Also investigate central-complex connectome studies, biological heading networks, ring-attractor dynamics, active perception, occlusion-aware navigation and safe active fault diagnosis.
+
+Verify every resource, publication date, repository availability, license and dataset version before use.
+
+Do not download enormous raw electron microscopy datasets when processed connectivity tables are sufficient.
+
+## 9. Connectome processing pipeline
+
+Develop a reproducible biological data-processing system.
+
+Required stages:
+
+1. Acquire versioned biological datasets.
+2. Validate schemas and file integrity.
+3. Normalize neuron identifiers and annotations.
+4. Identify relevant neuron populations.
+5. Extract directed functional subnetworks.
+6. Analyze synaptic connectivity and graph properties.
+7. Construct sparse adjacency matrices.
+8. Represent supported neurotransmitter-derived constraints.
+9. Preserve unknown or ambiguous biological information explicitly.
+10. Export graph data for neural-network implementation.
+11. Generate matched randomized and degree-preserving rewired networks.
+12. Document every processing decision.
+
+Use biological synapse counts as structural evidence, not as automatically verified physiological connection weights.
+
+## 10. Connectome-constrained neural architecture
+
+Implement differentiable neural dynamics whose connectivity is constrained by selected biological graphs.
+
+A starting representation is:
+
+W_effective = M_bio ⊙ S ⊙ softplus(Θ)
+
+Where:
+
+- M_bio represents verified biological connectivity.
+- S represents supported connection-sign constraints.
+- Θ contains trainable parameters.
+- W_effective represents the effective computational connectivity.
+
+Unknown biological signs must be handled explicitly.
+
+Begin with differentiable rate-based neural networks.
+
+Investigate leaky integrate-and-fire spiking neural networks as a comparison after the initial neural behavior has been validated.
+
+Compare the biological architecture against:
+
+- Conventional recurrent neural networks.
+- GRU-based networks.
+- Unconstrained neural networks.
+- Randomly rewired networks.
+- Degree-preserving graph controls.
+- Parameter-matched networks.
+
+Control for parameter counts, computational budgets, training data and sensory inputs.
+
+## 11. Biological visual intelligence
+
+Develop a computational visual pathway inspired by Drosophila motion-processing and looming-sensitive mechanisms.
+
+Required functionality:
+
+- Virtual compound-eye representation.
+- Direction-selective motion processing.
+- Radial expansion detection.
+- Angular expansion velocity estimation.
+- Temporal visual integration.
+- Object bearing estimation.
+- Self-motion compensation.
+- Collision-course discrimination.
+- Near-miss discrimination.
+- Looming-triggered emergency responses.
+
+The primary visual observations must come from actual simulated camera frames.
+
+The deployed controller must not receive privileged simulator information such as hidden obstacle coordinates or perfect segmentation unless the experiment explicitly identifies this as an oracle baseline.
+
+Looming must remain a central component of the project.
+
+An expanding image is not sufficient proof of collision. The system must distinguish dangerous approach from harmless lateral motion and near misses.
+
+## 12. Biological directional memory
+
+Implement a central-complex-inspired heading representation.
+
+Investigate E-PG, P-EN, P-EG and Delta7 connectivity and relevant published computational models.
+
+Use recurrent population dynamics to represent heading through a circular activity distribution.
+
+Evaluate:
+
+- Heading estimation accuracy.
+- Neural activity-bump stability.
+- Angular velocity integration.
+- Memory during visual blackout.
+- Drift under noisy motion estimates.
+- Recovery after visual landmarks return.
+- Robustness to neural perturbations.
+- Cross-connectome generalization where appropriate.
+
+Directional memory should influence the artificial spatial-memory system.
+
+Do not confuse knowledge of heading with knowledge of an unseen obstacle.
+
+## 13. Blind-spot intelligence
+
+Develop an explicit artificial visibility and spatial-memory system.
+
+Represent environmental regions as:
+
+- Observed free space.
+- Observed occupied space.
+- Occluded space.
+- Space outside the field of view.
+- Previously observed but stale space.
+- Unknown space.
+
+The rover must never automatically classify unknown space as safe.
+
+Distinguish geometric occlusion from sensor corruption and ordinary absence of visible targets.
+
+The system should investigate active observation through candidate maneuvers such as stationary rotation, cautious repositioning and changes in viewing direction.
+
+If uncertainty cannot be safely resolved using available sensors and maneuvers, the rover should abstain or enter an appropriate conservative state.
+
+A camera cannot see through opaque obstacles. Contact sensors cannot provide genuine pre-contact information unless an additional proximity sensor is explicitly modeled.
+
+## 14. Proposed AI innovation — Neuro-COVER-L
+
+Neuro-COVER-L is the candidate research algorithm.
+
+It stands for Connectome-Constrained Observability and Risk-Gated Recovery for Looming Navigation.
+
+Its primary innovation target is circuit-conditioned recoverability.
+
+Rather than relying solely on generic model-confidence values, the proposed controller will investigate whether internal biological circuit activity provides useful information about:
+
+- Loss of reliable visual evidence.
+- Degradation of directional memory.
+- Uncertainty about approaching threats.
+- Expected usefulness of additional observations.
+- Collision risk associated with alternative recovery maneuvers.
+
+The controller should maintain a belief state incorporating:
+
+- Biological visual neural activity.
+- Biological heading-network activity.
+- Sensor-health estimates.
+- Spatial visibility memory.
+- Temporal observations.
+- Previous actions.
+- Independent tactile events.
+- Predictive uncertainty.
+
+For each candidate action, estimate:
+
+1. Future collision probability.
+2. Expected navigation progress.
+3. Expected recovery of useful observations.
+4. Expected restoration of directional information.
+5. Predictive uncertainty.
+6. Physical feasibility.
+
+Select an action that balances information recovery and useful navigation subject to conservative risk and motion constraints.
+
+The controller must support abstention when no sufficiently safe and informative action is available.
+
+This is a research hypothesis, not an established novel method.
+
+Compare against existing active perception, active fault diagnosis, occlusion-aware MPC and uncertainty-aware control methods.
+
+## 15. Counterfactual learning methodology
+
+Generate training examples through controlled simulator rollouts.
+
+At selected simulation states:
+
+1. Save the complete physical world state, controller history and relevant random-generator state.
+2. Restore the same starting conditions for each alternative action.
+3. Execute a candidate maneuver.
+4. Record actual simulated collisions, clearance, progress and observation recovery.
+5. Repeat under matched environmental disturbances.
+6. Generate supervised action-conditioned outcome labels.
+
+Train the AI to predict these outcomes from observations available to the real controller.
+
+Privileged ground truth may be used for supervision and evaluation, but must remain inaccessible during deployed inference.
+
+Prevent future-information leakage, scenario-label leakage and overlap between training and held-out evaluation environments.
+
+## 16. Independent tactile reflex system
+
+Retain an engineering abstraction of biological mechanosensory escape behavior.
+
+Implement independent left and right virtual whisker-contact sensors.
+
+The tactile response must not depend on successful camera processing.
+
+Confirmed contact should trigger a high-priority protected response.
+
+Possible behaviors include braking, controlled reversal and turning when permitted by the available evidence and motion constraints.
+
+Simultaneous contact and hazards during reversal must be handled explicitly.
+
+A contact reflex is a last-resort response, not proof that a collision has been prevented.
+
+## 17. 3D robotics simulation
+
+Develop one authoritative physics environment using PyBullet.
+
+The simulator must contain:
+
+- Differential-drive rover.
+- Physical chassis and wheel geometry.
+- Camera and virtual compound-eye representation.
+- Independent tactile whiskers.
+- Motor speed and acceleration limits.
+- Braking and turning dynamics.
+- Rigid-body collision handling.
+- Static and dynamic obstacles.
+- Walls, shelves and corridors.
+- Configurable environmental lighting.
+- Ground friction and movement disturbances.
+- Reproducible simulation seeds.
+
+Create a Gymnasium-compatible environment for training and evaluation.
+
+Use a separate biological reference environment based on FlyGym where relevant.
+
+Do not use multiple inconsistent physics engines to report the same experiment.
+
+Three.js should visualize the authoritative simulation state rather than independently determine experimental outcomes.
+
+## 18. Fault injection system
+
+Develop systematic and reproducible sensor-failure experiments.
+
+Include:
+
+- Low light.
+- Low contrast.
+- Glare.
+- Motion blur.
+- Camera noise.
+- Partial occlusion.
+- Frozen frames.
+- Dropped frames.
+- Delayed frames.
+- Complete camera blackout.
+- Camera rotation and vibration.
+- Heading-estimation disturbances.
+- Tactile sensor noise.
+- Stuck tactile signals.
+- Neural connectivity perturbations.
+- Multiple simultaneous faults.
+
+Include healthy empty scenes as negative controls.
+
+Distinguish sensor health, detection confidence and actual environmental hazard risk.
+
+Do not use one arbitrary reliability score to represent all three.
+
+## 19. AI/ML technology selection
+
+Prioritize:
+
+- Connectome-constrained neural networks.
+- Differentiable neural dynamics.
+- Biological motion-processing models.
+- Ring-attractor networks.
+- GRU and temporal convolutional networks.
+- Bayesian filtering.
+- Probabilistic spatial memory.
+- Counterfactual supervised learning.
+- Action-conditioned risk prediction.
+- Model uncertainty and calibration.
+- Active perception.
+- Risk-aware predictive control.
+
+Use logistic regression and XGBoost as strong conventional baselines.
+
+Investigate graph neural networks, spiking neural networks and recurrent PPO only where they address a measurable research need.
+
+Do not add LLMs, RAG, agent orchestration or reinforcement learning merely to increase apparent complexity.
+
+## 20. Complete technology stack
+
+**Biological data:** FlyWire, Codex, Flyvis, CAVEclient where required.
+
+**Data processing:** Python, pandas, NumPy, SciPy, NetworkX, PyArrow, Parquet.
+
+**Computational neuroscience:** PyTorch, published neural models, optional Brian2.
+
+**Machine learning:** PyTorch, scikit-learn, XGBoost.
+
+**Computer vision:** OpenCV.
+
+**Physics:** PyBullet.
+
+**Biological reference:** FlyGym and MuJoCo.
+
+**Training environment:** Gymnasium.
+
+**Cloud computation:** Kaggle GPU notebooks.
+
+**Backend:** FastAPI, Pydantic, WebSocket.
+
+**Frontend:** React, TypeScript, Three.js or React Three Fiber.
+
+**Analytics:** Plotly, Matplotlib.
+
+**Storage:** SQLite and versioned local datasets.
+
+**Testing:** pytest, frontend unit tests and browser integration tests.
+
+**Development:** Git, GitHub, Antigravity IDE, VS Code and authorized AI coding assistants.
+
+**Recording:** FFmpeg.
+
+Begin with a free and locally runnable development configuration.
+
+Verify library compatibility, dataset licenses and current cloud quotas before committing to specific versions.
+
+## 21. Computational constraints
+
+Local development hardware has limited CPU and graphics resources.
+
+Use a CPU-first architecture for local development, simulation debugging, unit tests and reduced-resolution demonstrations.
+
+Use available Kaggle GPUs for neural-network training and batched inference.
+
+Do not assume that GPU availability automatically accelerates physics simulation.
+
+Initially prioritize compact models, sparse neural graphs and efficient temporal representations.
+
+Avoid unnecessary full-brain simulations and excessively large image datasets.
+
+Profile runtime, memory, storage and training costs before scaling.
+
+## 22. Professional simulation interface
+
+Build a high-quality interactive research studio containing:
+
+- Real-time 3D rover visualization.
+- First-person virtual camera.
+- Biological compound-eye representation.
+- Looming detection overlays.
+- Live biological neural activity.
+- Heading-network visualization.
+- Blind-spot and uncertainty maps.
+- Sensor-health indicators.
+- Alternative action-risk predictions.
+- Active recovery decisions.
+- Tactile contact indicators.
+- Controller selection.
+- Scenario configuration.
+- Fault injection controls.
+- Simulation pause, step, reset and replay.
+- Experiment management.
+- Comparative performance dashboard.
+- Actual simulation-video export.
+- CSV and Parquet experimental data export.
+
+The interface should look professional while remaining scientifically connected to actual simulator execution.
+
+Do not substitute scripted animations for working simulation behavior.
+
+## 23. Experimental methodology
+
+Compare the following systems:
+
+M1: Classical computer vision and rule-based collision avoidance.
+
+M2: Published fly-inspired looming controller.
+
+M3: Conventional temporal artificial neural network.
+
+M4: Connectome-constrained biological neural network.
+
+M5: Matched randomly rewired neural network.
+
+M6: Biological neural architecture with conventional risk prediction.
+
+M7: Biological neural architecture with conventional active perception.
+
+M8: Proposed Neuro-COVER-L.
+
+Also include relevant published active diagnosis and occlusion-aware planning baselines where reproducible.
+
+Use equivalent sensor observations, candidate action sets and training budgets.
+
+Perform separate open-loop replay and closed-loop simulation experiments.
+
+Split datasets by independent environment geometry, obstacle trajectories, biological graph sources and sensor-fault families where applicable.
+
+Do not rely exclusively on random frame-level train-test splits.
+
+Use held-out combinations of faults to evaluate generalization.
+
+## 24. Evaluation metrics
+
+Measure:
+
+- Collision-free goal completion.
+- Unique physical collision events.
+- Minimum obstacle clearance.
+- Collision-warning lead time.
+- Near-miss classification performance.
+- False emergency stops.
+- Navigation progress.
+- Time to goal.
+- Heading estimation error.
+- Heading drift during blackout.
+- Directional-memory recovery time.
+- Blind-spot observation recovery.
+- Sensor-fault detection accuracy.
+- Sensor-fault detection delay.
+- Collision-risk calibration.
+- Appropriate abstention.
+- Computational efficiency.
+- Training data efficiency.
+- Robustness to neural connectivity perturbations.
+
+A permanently stationary robot must not be considered successful merely because it avoids collisions.
+
+Use statistical uncertainty intervals and independent simulation episodes.
+
+Report negative results and failure cases.
+
+## 25. Ablation studies
+
+Independently investigate the effect of removing or replacing:
+
+- Biological connectivity.
+- Looming circuitry.
+- Biological directional memory.
+- Spatial visibility memory.
+- Neural-state-conditioned recoverability.
+- Predictive uncertainty.
+- Active observation recovery.
+- Independent tactile reflex.
+- Conservative action protection.
+
+The key scientific objective is to identify whether biological neural architecture contributes measurable benefits beyond conventional AI.
+
+If biological and matched randomized networks perform equally well, report that finding honestly.
+
+## 26. Novelty and publication requirements
+
+The target is a research contribution with novelty above a subjective 7.5/10 design threshold.
+
+However, no novelty score should be artificially guaranteed.
+
+Conduct a thorough literature review covering:
+
+- Connectome-constrained artificial intelligence.
+- Drosophila visual processing.
+- Biological looming collision avoidance.
+- Central-complex neural navigation.
+- Ring-attractor networks.
+- NeuroAI embodied control.
+- Active perception.
+- Occlusion-aware planning.
+- Safe active diagnosis.
+- Sensor-fault recovery.
+- Uncertainty-aware predictive control.
+- Counterfactual learning.
+
+Identify the closest existing methods and create a method-level comparison.
+
+The research contribution must be a distinct and experimentally supported algorithmic improvement or scientific finding.
+
+Simply combining PyBullet, PyTorch, Drosophila, PPO and a visualization dashboard does not establish scientific novelty.
+
+Publication ambitions are conditional on actual results, methodological quality and independent validation.
+
+## 27. Development phases
+
+### Phase 1 — Research and feasibility
+
+Complete literature verification, novelty audit, resource acquisition planning and mathematical specification.
+
+### Phase 2 — Biological data engineering
+
+Acquire actual connectome data and construct verified functional subnetworks.
+
+### Phase 3 — Biological circuit validation
+
+Reproduce visual looming responses, heading dynamics and relevant reference behaviors.
+
+### Phase 4 — Simulation foundation
+
+Build the authoritative 3D physics environment and validate movement, cameras, contacts and faults.
+
+### Phase 5 — Neural integration
+
+Connect biological visual and heading networks to the rover.
+
+### Phase 6 — Data generation
+
+Generate controlled, reproducible navigation and counterfactual training datasets.
+
+### Phase 7 — AI training
+
+Train matched baselines and Neuro-COVER-L prediction models using Kaggle GPUs.
+
+### Phase 8 — Autonomous recovery
+
+Integrate active observation recovery, risk-aware control and independent tactile protection.
+
+### Phase 9 — Scientific validation
+
+Conduct held-out evaluations, ablations, biological-connectivity comparisons and statistical analysis.
+
+### Phase 10 — Product development
+
+Complete the professional interactive 3D research interface, documentation, demonstrations and reproducibility package.
+
+Do not proceed to the next phase until essential acceptance tests for the current phase pass.
+
+## 28. Expected final deliverables
+
+1. Curated Drosophila neural connectivity datasets.
+2. Biological graph extraction and analysis pipeline.
+3. Validated computational neural circuit models.
+4. Connectome-constrained visual intelligence system.
+5. Biological directional-memory system.
+6. Working 3D autonomous rover simulator.
+7. Neuro-COVER-L research implementation.
+8. Reproducible synthetic training and evaluation datasets.
+9. Kaggle training notebooks and model checkpoints.
+10. Comparative controller benchmark.
+11. Professional interactive research dashboard.
+12. Actual recorded simulation demonstrations.
+13. Complete technical documentation.
+14. Comprehensive research report.
+15. Research manuscript if scientific findings justify publication.
+
+## 29. Current project status
+
+An earlier simplified 2D VIGIL-ROVER prototype and research blueprint exist.
+
+Previously identified issues include:
+
+- Incorrect scenario-based hazard labels.
+- Healthy empty camera views being classified as degraded.
+- Simplified collision-overlap handling.
+- Insufficient environmental diversity.
+- Limited biological neural implementation.
+- Inadequate generalization testing.
+
+An initial graph-extraction utility has been tested on synthetic data.
+
+The complete biological datasets, validated neural subnetworks, advanced 3D simulator and trained Neuro-COVER-L system are not yet implemented.
+
+Do not represent planned functionality as completed functionality.
+
+## 30. Mandatory instructions for the AI development agent
+
+Before implementing the complete project, produce:
+
+1. A critical scientific feasibility assessment.
+2. A verified literature and novelty comparison.
+3. A complete biological data-acquisition manifest.
+4. A validated biological circuit-selection strategy.
+5. A mathematical architecture specification.
+6. A software system architecture.
+7. A dependency and environment specification.
+8. A detailed repository structure.
+9. A staged implementation roadmap.
+10. A Kaggle training strategy.
+11. A reproducible experimental protocol.
+12. Acceptance tests for every major component.
+13. An assessment of computational requirements.
+14. A risk and failure-mode analysis.
+
+Challenge any technically weak assumptions in this specification.
+
+Recommend better methods when supported by evidence, but preserve the central Drosophila biological foundation, looming detection, collision avoidance, directional memory and blind-spot recovery objectives.
+
+Do not replace the project with a generic robotics simulator or a conventional AI controller that uses Drosophila only as branding.
+
+Build the system incrementally.
+
+Run actual tests. Inspect outputs. Report limitations. Preserve reproducibility.
+
+The objective is to develop a scientifically meaningful, technically advanced, biologically grounded NeuroAI system—not merely an impressive demonstration.
+
+Begin by critically analyzing this entire specification and producing the authoritative research and implementation plan. Do not immediately generate the entire codebase without establishing the scientific and engineering foundations.
+
+## **What we are ultimately building**
+
+[6 переломных моментов в науке 2024 года, которые определят будущее | Йорик](https://images.openai.com/static-rsc-4/wUCr02MZD75IhDIKFErw17w6elJR8qAWhihA9Re817yQ66BZA1dRb6xa_gkCdc5prhx-vMSWtk_WtZbH8IRT9S8qnnAeemmy7Mb8k12Bi22AfSe1i62Co4ISRDzrUmjCpLnNPqrUbuLkT55CazMdpx9X67q2M29YGg_ZlmwByAw?purpose=inline)
+
+**Real biological brain data**
+
+Drosophila connectivity and functional neural circuits
+
+**Biological computational intelligence**
+
+Motion processing · Looming · Escape · Heading memory
+
+**Neuro-COVER-L**
+
+AI learning · Risk prediction · Blind-spot reasoning · Active recovery
+
+[IA physique et robotique : quand l'intelligence artificielle entre dans le monde réel](https://images.openai.com/static-rsc-4/PjcMfIFRzqNfjhbQy2tCGMxegh4smBSRB1E_VSFNQfVubtPQ61T0cLOqIqJJoFKkN5-F00DavCIssE2GLXi5W2mXW4Mv7KylEfVmr45SQp_mAzLnZo26NebCqnMPj6wZxlmP1T6fOvP7w7E5az9jL7GtSHSowDZlOdARtYW6GHs?purpose=inline)
+
+[iana-data.org](https://iana-data.org/articles/ia-physique-robotique/?utm_source=chatgpt.com)
+
+Working autonomous 3D research simulator
+
+Illustrative target appearance, not the completed system.
+
+## **How to use this specification**
+
+| AI tool          | Give it responsibility for                                                             |
+| ---------------- | -------------------------------------------------------------------------------------- |
+| ChatGPT          | Deep research, mathematical methodology, innovation and scientific validation          |
+| Claude           | Independent architecture criticism, research review and identifying logical weaknesses |
+| Antigravity      | Repository development, implementation, debugging and integration                      |
+| Codex            | Software implementation, automated testing and code review                             |
+| Kaggle           | Neural-network training and experimental computation                                   |
+| Google AI Studio | Interactive frontend and simulator interface development                               |
+
+**Use this as the common project context for every AI.** That way, different AI models will work toward the same biological and technical objectives instead of repeatedly redesigning the project.
+
+This is our consolidated development specification. It preserves every major decision we have made, but still requires source verification, real biological data acquisition and experimental validation before it can become a finalized scientific study.

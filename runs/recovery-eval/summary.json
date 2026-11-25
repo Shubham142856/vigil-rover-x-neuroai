@@ -1,0 +1,35 @@
+{
+  "bilateral_wall": {
+    "final": {
+      "x_m": 0.40232482932490354,
+      "y_m": 0.0,
+      "yaw_rad": 0.0,
+      "speed_m_s": 0.0,
+      "body_contact": false,
+      "body_contact_events": 0
+    },
+    "last_reason": "bilateral tactile contact"
+  },
+  "onesided_blocked_outage": {
+    "final": {
+      "x_m": 0.34984845432437506,
+      "y_m": 0.0,
+      "yaw_rad": 0.0,
+      "speed_m_s": 0.0,
+      "body_contact": false,
+      "body_contact_events": 0
+    },
+    "abstained_safely": true
+  },
+  "onesided_verified_clear_outage": {
+    "final": {
+      "x_m": 0.34984845432437506,
+      "y_m": 0.0,
+      "yaw_rad": 0.0,
+      "speed_m_s": 0.0,
+      "body_contact": false,
+      "body_contact_events": 0
+    },
+    "escaped_clear": true
+  }
+}
