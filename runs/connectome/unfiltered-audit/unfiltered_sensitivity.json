@@ -1,0 +1,72 @@
+{
+  "version": "FAFB-v783",
+  "connection_file": "connections_princeton_no_threshold.csv.gz",
+  "connection_sha256": "62c2e562a7470bfd32cbb98e36af3daa607ba0822b37223b34f2aa45250a920e",
+  "circuits": {
+    "escape": {
+      "sign_coverage": {
+        "total_nodes": 316,
+        "known_nt_nodes": 311,
+        "unknown_nt_nodes": 5,
+        "known_fraction": 0.9842,
+        "by_nt": {
+          "ACH": 311,
+          "UNKNOWN": 5
+        }
+      },
+      "min_1": {
+        "version": "FAFB-v783",
+        "connection_sha256": "62c2e562a7470bfd32cbb98e36af3daa607ba0822b37223b34f2aa45250a920e",
+        "selected_nodes": 316,
+        "retained_edges": 17448,
+        "total_synapses": 40633,
+        "source_rows": 18726,
+        "min_synapses": 1,
+        "isolated_nodes": 0
+      },
+      "min_5": {
+        "version": "FAFB-v783",
+        "connection_sha256": "62c2e562a7470bfd32cbb98e36af3daa607ba0822b37223b34f2aa45250a920e",
+        "selected_nodes": 316,
+        "retained_edges": 1513,
+        "total_synapses": 12135,
+        "source_rows": 18726,
+        "min_synapses": 5,
+        "isolated_nodes": 5
+      }
+    },
+    "compass": {
+      "sign_coverage": {
+        "total_nodes": 151,
+        "known_nt_nodes": 147,
+        "unknown_nt_nodes": 4,
+        "known_fraction": 0.9735,
+        "by_nt": {
+          "ACH": 107,
+          "GLUT": 40,
+          "UNKNOWN": 4
+        }
+      },
+      "min_1": {
+        "version": "FAFB-v783",
+        "connection_sha256": "62c2e562a7470bfd32cbb98e36af3daa607ba0822b37223b34f2aa45250a920e",
+        "selected_nodes": 151,
+        "retained_edges": 8275,
+        "total_synapses": 81615,
+        "source_rows": 9482,
+        "min_synapses": 1,
+        "isolated_nodes": 0
+      },
+      "min_5": {
+        "version": "FAFB-v783",
+        "connection_sha256": "62c2e562a7470bfd32cbb98e36af3daa607ba0822b37223b34f2aa45250a920e",
+        "selected_nodes": 151,
+        "retained_edges": 4364,
+        "total_synapses": 73686,
+        "source_rows": 9482,
+        "min_synapses": 5,
+        "isolated_nodes": 0
+      }
+    }
+  }
+}

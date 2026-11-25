@@ -1,0 +1,37 @@
+{
+  "seeds": 8,
+  "connectome_nodes": 151,
+  "unknown_sign_nodes": 4,
+  "pen_a_left_shift_deg": 5.3239888393737695,
+  "pen_a_right_shift_deg": -4.779560650364972,
+  "gru_train_mse": 0.025830596987407688,
+  "bump_stability": {
+    "mean": 0.7587957235750924,
+    "std": 0.011663074531004675,
+    "min": 0.7321361448425361,
+    "missing_estimates": 0
+  },
+  "mean_abs_error_deg": {
+    "odometry": {
+      "blackout": 19.883555697383123,
+      "reacquired": 24.90308199278565,
+      "conflict": 4.0702892618122775
+    },
+    "bayesian": {
+      "blackout": 25.11896454222365,
+      "reacquired": 4.447375170035324,
+      "conflict": 11.420234543529702
+    },
+    "connectome_ring": {
+      "blackout": 16.27243164223412,
+      "reacquired": 4.498077357013874,
+      "conflict": 5.777833875851237
+    },
+    "gru": {
+      "blackout": 14.31476378111855,
+      "reacquired": 2.8341434445306644,
+      "conflict": 22.059432099146868
+    }
+  },
+  "scope": "FAFB v783 signed compass graph (47 EPG, 42 Delta7 GLUT-, 20 PEG, 20 PEN_a, 22 PEN_b) with connectome-derived spectral ring phases vs odometry, 72-bin Bayes filter, and BPTT-trained 12-unit GRU under 1-4s freeze + 1.4 rad conflicting distractor at t=0.8s."
+}

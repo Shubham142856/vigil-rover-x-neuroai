@@ -7,7 +7,7 @@ The project studies whether biological wiring changes a rover’s ability to ant
 ## Project files
 
 - [Research and implementation specification](NEURO_RESEARCH_PLAN.md) defines the circuit inputs, learning targets, engineering interfaces and comparison models. The [Word edition](VIGIL_ROVER_X_NeuroAI_Plan.docx) and [PDF edition](VIGIL_ROVER_X_NeuroAI_Plan.pdf) contain the same specification and a linked source index.
-- [Milestone tracker](Implementation_Acceptance_Gates.csv) records the 20-week sequence, acceptance evidence and status (G03, G04, and G06 met; G05 in progress; remaining milestones planned).
+- [Milestone tracker](Implementation_Acceptance_Gates.csv) records the 20-week sequence, acceptance evidence and status (G02–G06 met; G01 and G07–G10 planned).
 - [Research resources](Research_Resources.csv) indexes the literature, source data, access guidance and software. A catalog entry identifies where to obtain a resource.
 - [Graph extractor](extract_graph.py) pools directed synapse counts across rows for reviewed neuron IDs. [Extractor tests](test_extract.py) use synthetic input.
 - [Classical stopping baseline](baseline_policy.py) provides a partial M1 comparator for delivered camera and tactile observations. Its [tests](test_policy.py) exercise decision priorities. It has no navigation benchmark result.
@@ -79,3 +79,18 @@ Observed results (`39` passing unit tests):
 - `runs/camera-escape-zero-fp/summary.json`: across `8` collision courses and `8` near misses (`seeds 20000..20015`), bearing-gated LPLC2/LC4 drive and zero-FP threshold calibration yield `0` false warnings, `0` closed-loop collisions, and `8/8` near misses passed (`1.025 s` biological median lead; `1.10 s` rewired median lead).
 - `runs/blindspot-dataset/manifest.json`: `80` counterfactual branch records across `8` paired indistinguishable worlds (`max_pre_branch_pixel_diff = 0`, `oracle_keys_in_inputs = 0`, `pair_split_leakage = 0`).
 - `runs/recovery-eval/summary.json`: `0` body collisions across bilateral wall stop, one-sided contact with blocked escape during camera freeze (safe abstention), and one-sided contact with verified-clear opposite sector during drop outage.
+
+## Unfiltered connectome audit, directional memory, and scaled G07 pipeline
+
+From D:\rover, run the `G02` unfiltered `min_synapses` `1 vs 5` sensitivity + NT sign audit, `G05` connectome-constrained compass benchmark, and `G07` scaled counterfactual dataset generator:
+
+```powershell
+.\rover-python.ps1 VIGIL_NEURO_FINAL/audit_unfiltered_connectome.py
+.\rover-python.ps1 VIGIL_NEURO_FINAL/compass_benchmark.py --out runs/compass-benchmark
+.\rover-python.ps1 VIGIL_NEURO_FINAL/scale_dataset.py --out runs/scaled-dataset
+```
+
+Observed results (`43` passing unit tests):
+- `runs/connectome/unfiltered-audit/unfiltered_sensitivity.json`: verified `connections_princeton_no_threshold.csv.gz` (`275,679,780` bytes); escape (`316` nodes, `98.42%` known ACH sign) shifts from `17,448` edges / `40,633` synapses / `0` isolates at `min=1` to `1,513` edges / `12,135` synapses / `5` isolates at `min=5`; compass (`151` nodes, `97.35%` known ACH+GLUT sign) shifts from `8,275` edges / `81,615` synapses at `min=1` to `4,364` edges / `73,686` synapses / `0` isolates at `min=5`.
+- `runs/compass-benchmark/summary.json`: FAFB `PEN_a` hemispheres induce opposite-signed `EPG` phase shifts (`+5.32°` left, `-4.78°` right); bump stability `0.7588 ± 0.0117` (`0` missing estimates); under `1–4 s` freeze + `1.4 rad` conflicting distractor at `t = 0.8 s`, `connectome_ring` achieved `16.27°` blackout error, `4.50°` reacquired error, and `5.78°` conflict error (vs. `24.90°` reacquired odometry, `11.42°` Bayesian conflict, and `22.06°` GRU conflict).
+- `runs/scaled-dataset/manifest.json` + `VIGIL_NEURO_FINAL/kaggle-training/train_neuro_cover.py`: exported `380` world-split counterfactual samples (`train: 220`, `val: 80`, `test: 80`; `oracle_keys_in_inputs = 0`, `world_split_leakage = 0`) ready for Kaggle GPU training (`M3_GRU`, `M4_BioMasked`, `M5_Rewired`, `M8_NeuroCOVER_L`).

@@ -1,0 +1,10 @@
+{
+  "version": "FAFB-v783",
+  "connection_sha256": "62c2e562a7470bfd32cbb98e36af3daa607ba0822b37223b34f2aa45250a920e",
+  "selected_nodes": 316,
+  "retained_edges": 17448,
+  "total_synapses": 40633,
+  "source_rows": 18726,
+  "min_synapses": 1,
+  "isolated_nodes": 0
+}
