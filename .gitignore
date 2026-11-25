@@ -1,0 +1,20 @@
+# Local environments, toolchains, and caches
+.venv/
+.tools/
+.cache/
+tmpl0xusv1f/
+
+# Raw connectome downloads (FAFB v783 / BANC v888, large archives & partial downloads)
+data/
+
+# Python bytecode & notebook checkpoints
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+
+# OS & editor junk
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak

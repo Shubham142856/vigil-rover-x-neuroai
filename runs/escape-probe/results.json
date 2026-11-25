@@ -1,0 +1,37 @@
+{
+  "method": "One-step anatomical projection. Activate each source class alone at unit amplitude and divide by combined retained LC4 and LPLC2 synapse count for that target.",
+  "limits": "Unsigned structural weighting. No measured conductance, temporal dynamics, retinal drive or other presynaptic classes included.",
+  "source_manifest": {
+    "version": "FAFB-v783",
+    "connection_sha256": "445f996bf6c4b1803b9ba186189138a3061ff8623aa94c0abcf38af30a5bd48b",
+    "ids_sha256": "bf181fdffbce6680c9eb056fd46baecc3af2a86b58fd053805b6f2971fa3d5bb",
+    "selected_nodes": 316,
+    "retained_edges": 1513,
+    "source_rows": 2016,
+    "min_synapses": 5,
+    "isolated_nodes": 5,
+    "scope": "induced directed graph; signs not inferred"
+  },
+  "targets": [
+    {
+      "target": "720575940622838154",
+      "side": "left",
+      "LC4_contacts": 1401,
+      "LC4_sources": 54,
+      "LC4_unit_drive": 0.7389240506329114,
+      "LPLC2_contacts": 495,
+      "LPLC2_sources": 58,
+      "LPLC2_unit_drive": 0.2610759493670886
+    },
+    {
+      "target": "720575940632499757",
+      "side": "right",
+      "LC4_contacts": 1679,
+      "LC4_sources": 50,
+      "LC4_unit_drive": 0.711139347734011,
+      "LPLC2_contacts": 682,
+      "LPLC2_sources": 69,
+      "LPLC2_unit_drive": 0.288860652265989
+    }
+  ]
+}

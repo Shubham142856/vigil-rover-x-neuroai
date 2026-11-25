@@ -1,0 +1,186 @@
+{
+  "source": "local_numpy_run",
+  "device": "CPU (numpy, no torch)",
+  "stimuli_count": 10,
+  "all_finite": true,
+  "sha256": {
+    "Looming_50ms": "bc93c23386b28e9bbe677f286ce5860aacd2b538d4d5828d8534dc38cfcc9a2b",
+    "Square_expanded-motion": "81811b471769301ee88695ef3c56deb9f839bc91c39d2f68ae0c85d83f7758cf",
+    "Bar_horizontal-motion": "67d5aeccbfc15d664bc6c7b4c29976fcc71c2b39761f5ae9115d37310e1f585d",
+    "Edge_horizontal-motion": "d176bf6d57ab98c2704ff973d350c5fd2e3c6940366ef66b8b31f3c3ca58a336",
+    "Bar_vertical-motion": "6fcf83f77c25dfc4f88aa27f01d92fb9c5420faf52115e5b057167be34ef7f1c",
+    "Edge_vertical-motion": "f018000c9975387f239a738cc4e01b1163a7002f2b55283988cc0e549450b37f",
+    "Grating_horizontal-motion": "f4f8fff79a53c22ffecaa449586ae2c3cbc9438631b2310e3837d7f5ea5e1736",
+    "Grating_vertical-motion": "7fee55764c514a1e8e4302f7ae308c7337071f1b5ad0bf150663d6dc089b64ae",
+    "Cross_centrifugal-motion": "bcbd80cc20386a1ab23891576b2059168918860e060d9d566f5bf1907ca09a46",
+    "Cross_concentric-motion": "3bb9235dbefddfee057d1d5acc6e19212bb22e9d42440aa409fc7fc1399c7bed"
+  },
+  "normalized_peak": {
+    "Looming_50ms": [
+      1.0,
+      1.0
+    ],
+    "Square_expanded-motion": [
+      0.9249670809637278,
+      0.7142425658726762
+    ],
+    "Bar_horizontal-motion": [
+      0.29680874873665936,
+      0.0
+    ],
+    "Edge_horizontal-motion": [
+      0.25677938623690455,
+      0.0
+    ],
+    "Bar_vertical-motion": [
+      0.2967461084123796,
+      0.0
+    ],
+    "Edge_vertical-motion": [
+      0.2567793862369046,
+      0.0
+    ],
+    "Grating_horizontal-motion": [
+      0.5219190061691708,
+      0.0
+    ],
+    "Grating_vertical-motion": [
+      0.6234419025180371,
+      0.0
+    ],
+    "Cross_centrifugal-motion": [
+      0.693724201782999,
+      0.22598934502989254
+    ],
+    "Cross_concentric-motion": [
+      9.396048641979114e-05,
+      0.0
+    ]
+  },
+  "looming_vs_controls": {
+    "Looming_50ms": {
+      "additive_norm_peak": 1.0,
+      "multiplicative_norm_peak": 1.0
+    },
+    "Bar_horizontal-motion": {
+      "additive_norm_peak": 0.29680874873665936,
+      "multiplicative_norm_peak": 0.0
+    },
+    "Edge_horizontal-motion": {
+      "additive_norm_peak": 0.25677938623690455,
+      "multiplicative_norm_peak": 0.0
+    },
+    "Grating_horizontal-motion": {
+      "additive_norm_peak": 0.5219190061691708,
+      "multiplicative_norm_peak": 0.0
+    },
+    "Bar_vertical-motion": {
+      "additive_norm_peak": 0.2967461084123796,
+      "multiplicative_norm_peak": 0.0
+    },
+    "Edge_vertical-motion": {
+      "additive_norm_peak": 0.2567793862369046,
+      "multiplicative_norm_peak": 0.0
+    },
+    "Grating_vertical-motion": {
+      "additive_norm_peak": 0.6234419025180371,
+      "multiplicative_norm_peak": 0.0
+    },
+    "Cross_centrifugal-motion": {
+      "additive_norm_peak": 0.693724201782999,
+      "multiplicative_norm_peak": 0.22598934502989254
+    },
+    "Cross_concentric-motion": {
+      "additive_norm_peak": 9.396048641979114e-05,
+      "multiplicative_norm_peak": 0.0
+    },
+    "Square_expanded-motion": {
+      "additive_norm_peak": 0.9249670809637278,
+      "multiplicative_norm_peak": 0.7142425658726762
+    }
+  },
+  "matlab_cross_check": {
+    "Looming_50ms": {
+      "frames_py": 499,
+      "frames_matlab": 499,
+      "max_abs_diff_normalised": 6.264032427986076e-06,
+      "mean_abs_diff_normalised": 2.433022578283182e-07,
+      "tolerance": 0.05,
+      "agrees": true
+    },
+    "Square_expanded-motion": {
+      "frames_py": 499,
+      "frames_matlab": 499,
+      "max_abs_diff_normalised": 6.772167958085112e-06,
+      "mean_abs_diff_normalised": 3.7212489704464335e-07,
+      "tolerance": 0.05,
+      "agrees": true
+    },
+    "Bar_horizontal-motion": {
+      "frames_py": 499,
+      "frames_matlab": 499,
+      "max_abs_diff_normalised": 1.0,
+      "mean_abs_diff_normalised": 0.20995973473929247,
+      "tolerance": 0.05,
+      "agrees": false
+    },
+    "Edge_horizontal-motion": {
+      "frames_py": 499,
+      "frames_matlab": 499,
+      "max_abs_diff_normalised": 1.0,
+      "mean_abs_diff_normalised": 0.22814671326943492,
+      "tolerance": 0.05,
+      "agrees": false
+    },
+    "Bar_vertical-motion": {
+      "frames_py": 499,
+      "frames_matlab": 499,
+      "max_abs_diff_normalised": 2.9370867446042864e-19,
+      "mean_abs_diff_normalised": 3.3843125021808842e-21,
+      "tolerance": 0.05,
+      "agrees": true
+    },
+    "Edge_vertical-motion": {
+      "frames_py": 499,
+      "frames_matlab": 499,
+      "max_abs_diff_normalised": 3.469446951953614e-18,
+      "mean_abs_diff_normalised": 1.8095781030469878e-20,
+      "tolerance": 0.05,
+      "agrees": true
+    },
+    "Grating_horizontal-motion": {
+      "frames_py": 499,
+      "frames_matlab": 499,
+      "max_abs_diff_normalised": 0.29851898678427685,
+      "mean_abs_diff_normalised": 0.01867100847631335,
+      "tolerance": 0.05,
+      "agrees": false
+    },
+    "Grating_vertical-motion": {
+      "frames_py": 499,
+      "frames_matlab": 499,
+      "max_abs_diff_normalised": 3.885780586188048e-16,
+      "mean_abs_diff_normalised": 1.7280581626813676e-17,
+      "tolerance": 0.05,
+      "agrees": true
+    },
+    "Cross_centrifugal-motion": {
+      "frames_py": 499,
+      "frames_matlab": 499,
+      "max_abs_diff_normalised": 1.6206923584700615e-05,
+      "mean_abs_diff_normalised": 4.0484246334847084e-07,
+      "tolerance": 0.05,
+      "agrees": true
+    },
+    "Cross_concentric-motion": {
+      "frames_py": 499,
+      "frames_matlab": 499,
+      "max_abs_diff_normalised": 1.0,
+      "mean_abs_diff_normalised": 0.14351942272397875,
+      "tolerance": 0.05,
+      "agrees": false
+    }
+  },
+  "method": "Central-pixel numpy port of PyTorch compare.py + MATLAB loom.m/emd.m/lplc2conv2.m additive central-pixel cross-check.",
+  "tolerance_note": "Normalised series compared at absolute tolerance 0.05. MATLAB cross-check uses reconstructed central-pixel additive sum; not equivalent to full conv2('same') but tests filter chain parity."
+}

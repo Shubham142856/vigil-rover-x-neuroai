@@ -1,0 +1,13 @@
+{
+  "seeds": 8,
+  "bias_rad_s": 0.09,
+  "model": "72-bin circular filter; synthetic landmark observations; commanded turns with biased noisy odometry.",
+  "last_blackout_sample": {
+    "compass_mean_abs_deg": 22.702329624971384,
+    "odometry_mean_abs_deg": 25.135438313813044
+  },
+  "one_second_after_return": {
+    "compass_mean_abs_deg": 4.977050302904687,
+    "odometry_mean_abs_deg": 30.27745303224362
+  }
+}

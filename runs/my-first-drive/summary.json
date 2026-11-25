@@ -1,0 +1,15 @@
+{
+  "scene": "open",
+  "seed": 7,
+  "fault": "freeze",
+  "steps": 80,
+  "delivered_frames": 41,
+  "final": {
+    "x_m": 1.2853159553214413,
+    "y_m": 0.0,
+    "yaw_rad": 0.0,
+    "speed_m_s": 0.34984250000352035,
+    "body_contact": false,
+    "body_contact_events": 0
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "revision": "50c7c8f3f74052b2562ccba967c9f1032f37405b",
+  "device": "Tesla T4",
+  "sha256": {
+    "Looming_50ms": "bc93c23386b28e9bbe677f286ce5860aacd2b538d4d5828d8534dc38cfcc9a2b",
+    "Square_expanded-motion": "81811b471769301ee88695ef3c56deb9f839bc91c39d2f68ae0c85d83f7758cf",
+    "Bar_horizontal-motion": "67d5aeccbfc15d664bc6c7b4c29976fcc71c2b39761f5ae9115d37310e1f585d",
+    "Edge_horizontal-motion": "d176bf6d57ab98c2704ff973d350c5fd2e3c6940366ef66b8b31f3c3ca58a336",
+    "Bar_vertical-motion": "6fcf83f77c25dfc4f88aa27f01d92fb9c5420faf52115e5b057167be34ef7f1c",
+    "Edge_vertical-motion": "f018000c9975387f239a738cc4e01b1163a7002f2b55283988cc0e549450b37f",
+    "Grating_horizontal-motion": "f4f8fff79a53c22ffecaa449586ae2c3cbc9438631b2310e3837d7f5ea5e1736",
+    "Grating_vertical-motion": "7fee55764c514a1e8e4302f7ae308c7337071f1b5ad0bf150663d6dc089b64ae",
+    "Cross_centrifugal-motion": "bcbd80cc20386a1ab23891576b2059168918860e060d9d566f5bf1907ca09a46",
+    "Cross_concentric-motion": "3bb9235dbefddfee057d1d5acc6e19212bb22e9d42440aa409fc7fc1399c7bed"
+  },
+  "normalized_peak": {
+    "Looming_50ms": [
+      1.0,
+      1.0
+    ],
+    "Square_expanded-motion": [
+      0.9249670809637278,
+      0.714242565872676
+    ],
+    "Bar_horizontal-motion": [
+      0.29680874873665936,
+      0.0
+    ],
+    "Edge_horizontal-motion": [
+      0.25677938623690455,
+      0.0
+    ],
+    "Bar_vertical-motion": [
+      0.2967461084123795,
+      0.0
+    ],
+    "Edge_vertical-motion": [
+      0.25677938623690455,
+      0.0
+    ],
+    "Grating_horizontal-motion": [
+      0.5219190061691708,
+      0.0
+    ],
+    "Grating_vertical-motion": [
+      0.623441902518037,
+      0.0
+    ],
+    "Cross_centrifugal-motion": [
+      0.693724201782999,
+      0.22598934502989254
+    ],
+    "Cross_concentric-motion": [
+      9.396048641979114e-05,
+      0.0
+    ]
+  },
+  "method": "Central-pixel PyTorch implementation of the published additive and multiplicative EMD-LPLC2 model. No parameter fitting. Independent parity with MATLAB outputs remains untested."
+}

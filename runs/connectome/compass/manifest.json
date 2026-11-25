@@ -1,0 +1,11 @@
+{
+  "version": "FAFB-v783",
+  "connection_sha256": "445f996bf6c4b1803b9ba186189138a3061ff8623aa94c0abcf38af30a5bd48b",
+  "ids_sha256": "9e545dd281cdbb78231c393ba3078fcc3ecad647a46e512608592e5a323e5f24",
+  "selected_nodes": 151,
+  "retained_edges": 4364,
+  "source_rows": 5382,
+  "min_synapses": 5,
+  "isolated_nodes": 0,
+  "scope": "induced directed graph; signs not inferred"
+}

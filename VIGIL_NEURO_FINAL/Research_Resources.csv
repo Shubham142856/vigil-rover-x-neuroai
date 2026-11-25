@@ -1,0 +1,38 @@
+ID,Resource,URL,Role
+R1,Neural basis for looming size and velocity encoding,https://www.sciencedirect.com/science/article/pii/S0960982219301381,LC4 LPLC2 GF response validation
+R2,Fly inspired looming detection 2023,https://pmc.ncbi.nlm.nih.gov/articles/PMC10073940/,Published collision baseline
+R2a,EMD LPLC2 GF MATLAB code,https://github.com/zhaojunyu01/EMD-LPLC2-GF-model,Published MATLAB comparison code
+R3,Connectome-constrained visual networks Nature 2024,https://www.nature.com/articles/s41586-024-07939-3,Visual neural model
+R3a,Flyvis,https://github.com/TuragaLab/flyvis,PyTorch code and trained resources
+R4,Shiu computational brain model,https://www.nature.com/articles/s41586-024-07763-9,LIF reference
+R4a,Shiu model code,https://github.com/philshiu/Drosophila_brain_model,Connectivity and reference implementation
+R5,Central complex connectome,https://elifesciences.org/articles/66039,Compass motifs
+R6,Exact ring attractor dynamics preprint,https://www.biorxiv.org/content/10.1101/2024.11.01.621596v2.full,Cross-connectome heading baseline
+R7,Visual features for navigation,https://pmc.ncbi.nlm.nih.gov/articles/PMC11446847/,Landmark pathway
+R8,Johnston organ inputs to GF,https://pmc.ncbi.nlm.nih.gov/articles/PMC6097648/,Mechanosensory boundary
+R9,FlyWire adult brain,https://www.nature.com/articles/s41586-024-07558-y,Primary connectome paper
+R9a,FAFB v783 downloads,https://codex.flywire.ai/api/download?dataset=fafb,Primary graph acquisition
+R10,BANC v888,https://codex.flywire.ai/banc,Independent graph
+R10a,Brain and cord control circuits,https://www.nature.com/articles/s41586-026-10735-w,BANC paper
+R11,FlyWire annotations,https://github.com/flyconnectome/flywire_annotations,Type mapping
+R11a,Static connectivity archive,https://doi.org/10.5281/zenodo.10676866,Publication snapshot
+R12,Codex FAQ,https://codex.flywire.ai/faq,Data products and token access
+R12a,FlyWire guidelines,https://join.flywire.ai/guidelines,License and attribution
+R13,OA-MPC,https://ieeexplore.ieee.org/document/10819000/,Occlusion control comparator
+R14,Safe active fault diagnosis,https://arxiv.org/abs/2606.19590,Active diagnosis comparator
+R14a,Active diagnosis code,https://github.com/gtfactsLab/Ni_RAL2026,Reproduction candidate
+R15,ConnectomePilot,https://github.com/pgq18/ConnectomePilot,Adjacent public project not independently validated
+R16,FLY-lab,https://github.com/Recluse/FLY-lab,Adjacent shuffled network comparison not independently validated
+R17,NeuroMechFly v2,https://www.nature.com/articles/s41592-024-02497-y,Biological embodied reference
+R17a,FlyGym docs,https://neuromechfly.org/,Fly simulator
+R18,Multimodal heading integration,https://pmc.ncbi.nlm.nih.gov/articles/PMC12321575/,Heading plasticity
+R19,Connectomes as structural priors,https://www.mdpi.com/2313-7673/11/11/835,Recent review
+R20,Split attractor goal memory,https://www.nature.com/articles/s41586-026-11144-9,Optional later navigation mechanism
+T1,PyBullet,https://github.com/bulletphysics/bullet3,Rover physics
+T2,PyTorch,https://pytorch.org/,Learning
+T3,Gymnasium,https://gymnasium.farama.org/,Environment API
+T4,Kaggle,https://www.kaggle.com/code,GPU training
+T5,TartanGround,https://tartanair.org/tartanground/,Optional perception dataset
+R1a,Ultra-selective looming detection from radial motion opponency,https://doi.org/10.1038/nature24626,Spatial organization of directional motion input to LPLC2
+R21,Estimating orientation in natural scenes,https://doi.org/10.1371/journal.pcbi.1011913,Visual landmark anchoring and heading-memory comparator
+T6,Kaggle CLI kernel commands,https://github.com/Kaggle/kaggle-cli/blob/main/docs/kernels.md,"Private GPU submission, status and artifact retrieval"

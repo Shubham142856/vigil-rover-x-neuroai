@@ -1,0 +1,293 @@
+{
+  "global_max_py": [
+    6523814.345661533,
+    7.075650887973764e+24
+  ],
+  "global_max_matlab": [
+    6523814.345661534,
+    7.075650887973767e+24
+  ],
+  "tolerance_norm_abs": 1e-12,
+  "parity": {
+    "Looming_50ms": {
+      "frames": 499,
+      "all_finite_py": true,
+      "all_finite_matlab": true,
+      "py_normalized_peak": [
+        1.0,
+        1.0
+      ],
+      "matlab_normalized_peak": [
+        1.0,
+        1.0
+      ],
+      "raw_max_abs_diff": [
+        1.862645149230957e-09,
+        7516192768.0
+      ],
+      "raw_max_rel_diff": [
+        1.8708700620826572e-14,
+        5.561815136723357e-14
+      ],
+      "norm_max_abs_diff": [
+        2.220446049250313e-16,
+        7.771561172376096e-16
+      ],
+      "tolerance_norm_abs": 1e-12,
+      "agrees_additive": true,
+      "agrees_multiplicative": true
+    },
+    "Square_expanded-motion": {
+      "frames": 499,
+      "all_finite_py": true,
+      "all_finite_matlab": true,
+      "py_normalized_peak": [
+        0.9249670809637278,
+        0.7142425658726762
+      ],
+      "matlab_normalized_peak": [
+        0.9249670809637277,
+        0.714242565872676
+      ],
+      "raw_max_abs_diff": [
+        1.862645149230957e-09,
+        5368709120.0
+      ],
+      "raw_max_rel_diff": [
+        5.784709654942268e-14,
+        1.0128501426422865e-13
+      ],
+      "norm_max_abs_diff": [
+        3.3306690738754696e-16,
+        5.551115123125783e-16
+      ],
+      "tolerance_norm_abs": 1e-12,
+      "agrees_additive": true,
+      "agrees_multiplicative": true
+    },
+    "Bar_horizontal-motion": {
+      "frames": 499,
+      "all_finite_py": true,
+      "all_finite_matlab": true,
+      "py_normalized_peak": [
+        0.29680874873665936,
+        0.0
+      ],
+      "matlab_normalized_peak": [
+        0.29680874873665936,
+        0.0
+      ],
+      "raw_max_abs_diff": [
+        6.984919309616089e-10,
+        0.0
+      ],
+      "raw_max_rel_diff": [
+        7.270618764940481e-16,
+        0.0
+      ],
+      "norm_max_abs_diff": [
+        1.1102230246251565e-16,
+        0.0
+      ],
+      "tolerance_norm_abs": 1e-12,
+      "agrees_additive": true,
+      "agrees_multiplicative": true
+    },
+    "Edge_horizontal-motion": {
+      "frames": 499,
+      "all_finite_py": true,
+      "all_finite_matlab": true,
+      "py_normalized_peak": [
+        0.25677938623690455,
+        0.0
+      ],
+      "matlab_normalized_peak": [
+        0.2567793862369044,
+        0.0
+      ],
+      "raw_max_abs_diff": [
+        6.984919309616089e-10,
+        0.0
+      ],
+      "raw_max_rel_diff": [
+        6.749363982468331e-14,
+        0.0
+      ],
+      "norm_max_abs_diff": [
+        1.6653345369377348e-16,
+        0.0
+      ],
+      "tolerance_norm_abs": 1e-12,
+      "agrees_additive": true,
+      "agrees_multiplicative": true
+    },
+    "Bar_vertical-motion": {
+      "frames": 499,
+      "all_finite_py": true,
+      "all_finite_matlab": true,
+      "py_normalized_peak": [
+        0.2967461084123796,
+        0.0
+      ],
+      "matlab_normalized_peak": [
+        0.2967461084123797,
+        0.0
+      ],
+      "raw_max_abs_diff": [
+        1.6298145055770874e-09,
+        0.0
+      ],
+      "raw_max_rel_diff": [
+        2.069426726627957e-13,
+        0.0
+      ],
+      "norm_max_abs_diff": [
+        3.0531133177191805e-16,
+        0.0
+      ],
+      "tolerance_norm_abs": 1e-12,
+      "agrees_additive": true,
+      "agrees_multiplicative": true
+    },
+    "Edge_vertical-motion": {
+      "frames": 499,
+      "all_finite_py": true,
+      "all_finite_matlab": true,
+      "py_normalized_peak": [
+        0.2567793862369046,
+        0.0
+      ],
+      "matlab_normalized_peak": [
+        0.25677938623690433,
+        0.0
+      ],
+      "raw_max_abs_diff": [
+        1.862645149230957e-09,
+        0.0
+      ],
+      "raw_max_rel_diff": [
+        6.812639269803975e-14,
+        0.0
+      ],
+      "norm_max_abs_diff": [
+        3.3306690738754696e-16,
+        0.0
+      ],
+      "tolerance_norm_abs": 1e-12,
+      "agrees_additive": true,
+      "agrees_multiplicative": true
+    },
+    "Grating_horizontal-motion": {
+      "frames": 499,
+      "all_finite_py": true,
+      "all_finite_matlab": true,
+      "py_normalized_peak": [
+        0.5219190061691708,
+        0.0
+      ],
+      "matlab_normalized_peak": [
+        0.5219190061691706,
+        0.0
+      ],
+      "raw_max_abs_diff": [
+        1.862645149230957e-09,
+        0.0
+      ],
+      "raw_max_rel_diff": [
+        5.012597322587271e-12,
+        0.0
+      ],
+      "norm_max_abs_diff": [
+        2.7755575615628914e-16,
+        0.0
+      ],
+      "tolerance_norm_abs": 1e-12,
+      "agrees_additive": true,
+      "agrees_multiplicative": true
+    },
+    "Grating_vertical-motion": {
+      "frames": 499,
+      "all_finite_py": true,
+      "all_finite_matlab": true,
+      "py_normalized_peak": [
+        0.6234419025180371,
+        0.0
+      ],
+      "matlab_normalized_peak": [
+        0.6234419025180368,
+        0.0
+      ],
+      "raw_max_abs_diff": [
+        4.190951585769653e-09,
+        0.0
+      ],
+      "raw_max_rel_diff": [
+        3.40415105466522e-12,
+        0.0
+      ],
+      "norm_max_abs_diff": [
+        6.106226635438361e-16,
+        0.0
+      ],
+      "tolerance_norm_abs": 1e-12,
+      "agrees_additive": true,
+      "agrees_multiplicative": true
+    },
+    "Cross_centrifugal-motion": {
+      "frames": 499,
+      "all_finite_py": true,
+      "all_finite_matlab": true,
+      "py_normalized_peak": [
+        0.693724201782999,
+        0.22598934502989254
+      ],
+      "matlab_normalized_peak": [
+        0.6937242017829988,
+        0.2259893450298924
+      ],
+      "raw_max_abs_diff": [
+        2.7939677238464355e-09,
+        3489660928.0
+      ],
+      "raw_max_rel_diff": [
+        6.130095656934855e-14,
+        1.0938709011836076e-13
+      ],
+      "norm_max_abs_diff": [
+        3.3306690738754696e-16,
+        4.440892098500626e-16
+      ],
+      "tolerance_norm_abs": 1e-12,
+      "agrees_additive": true,
+      "agrees_multiplicative": true
+    },
+    "Cross_concentric-motion": {
+      "frames": 499,
+      "all_finite_py": true,
+      "all_finite_matlab": true,
+      "py_normalized_peak": [
+        9.396048641979114e-05,
+        0.0
+      ],
+      "matlab_normalized_peak": [
+        9.396048641979113e-05,
+        0.0
+      ],
+      "raw_max_abs_diff": [
+        3.410605131648481e-13,
+        0.0
+      ],
+      "raw_max_rel_diff": [
+        6.999830190495257e-16,
+        0.0
+      ],
+      "norm_max_abs_diff": [
+        5.421010862427522e-20,
+        0.0
+      ],
+      "tolerance_norm_abs": 1e-12,
+      "agrees_additive": true,
+      "agrees_multiplicative": true
+    }
+  }
+}

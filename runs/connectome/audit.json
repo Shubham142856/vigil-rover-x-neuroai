@@ -1,0 +1,66 @@
+{
+  "escape": {
+    "cell_types": {
+      "LC4": 104,
+      "LPLC2": 210,
+      "DNp01": 2
+    },
+    "version": "FAFB-v783",
+    "connection_sha256": "445f996bf6c4b1803b9ba186189138a3061ff8623aa94c0abcf38af30a5bd48b",
+    "ids_sha256": "bf181fdffbce6680c9eb056fd46baecc3af2a86b58fd053805b6f2971fa3d5bb",
+    "selected_nodes": 316,
+    "retained_edges": 1513,
+    "source_rows": 2016,
+    "min_synapses": 5,
+    "isolated_nodes": 5,
+    "scope": "induced directed graph; signs not inferred"
+  },
+  "compass": {
+    "cell_types": {
+      "PEN_a/PEN1": 20,
+      "PEG": 20,
+      "Delta7": 42,
+      "EPG": 47,
+      "PEN_b/PEN2": 22
+    },
+    "version": "FAFB-v783",
+    "connection_sha256": "445f996bf6c4b1803b9ba186189138a3061ff8623aa94c0abcf38af30a5bd48b",
+    "ids_sha256": "9e545dd281cdbb78231c393ba3078fcc3ecad647a46e512608592e5a323e5f24",
+    "selected_nodes": 151,
+    "retained_edges": 4364,
+    "source_rows": 5382,
+    "min_synapses": 5,
+    "isolated_nodes": 0,
+    "scope": "induced directed graph; signs not inferred"
+  },
+  "products": {
+    "consolidated_cell_types": {
+      "url": "https://storage.googleapis.com/flywire-data/codex/data/fafb/783/consolidated_cell_types.csv.gz",
+      "sha256": "8aba246d71dc40361677493629972ce3883048c3d02010adc42bda22962a1a2d",
+      "generation": "1771945190208855",
+      "bytes": 901707
+    },
+    "classification": {
+      "url": "https://storage.googleapis.com/flywire-data/codex/data/fafb/783/classification.csv.gz",
+      "sha256": "e946b552f4056dfc977707be0674609832c3f64332a22d69dc0d9615e7aae663",
+      "generation": "1771945205700934",
+      "bytes": 934402
+    },
+    "neurons": {
+      "url": "https://storage.googleapis.com/flywire-data/codex/data/fafb/783/neurons.csv.gz",
+      "sha256": "6a6b3759e635f0f35a677d169052362131ec61d95f55919298b55c43fce4e719",
+      "generation": "1733428446832038",
+      "bytes": 1679884
+    },
+    "connections_princeton": {
+      "url": "https://storage.googleapis.com/flywire-data/codex/data/fafb/783/connections_princeton.csv.gz",
+      "sha256": "445f996bf6c4b1803b9ba186189138a3061ff8623aa94c0abcf38af30a5bd48b",
+      "generation": "1751983868445475",
+      "bytes": 68456801
+    }
+  },
+  "attribution": "FlyWire Consortium, FAFB v783; Princeton synapse predictions",
+  "terms": "https://join.flywire.ai/guidelines",
+  "upstream": "Thresholded connection product, pooled threshold >=5. Weak-edge sensitivity requires the unfiltered table.",
+  "scope": "Exact primary-type selection. Predicted transmitters are metadata. Physiological signs, compass columns and circuit responses require validation."
+}

@@ -1,0 +1,3 @@
+[submodule "references/EMD-LPLC2-GF-model"]
+	path = references/EMD-LPLC2-GF-model
+	url = https://github.com/zhaojunyu01/EMD-LPLC2-GF-model.git
