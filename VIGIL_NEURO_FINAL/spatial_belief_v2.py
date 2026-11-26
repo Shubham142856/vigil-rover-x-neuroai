@@ -1,13 +1,12 @@
-"""L4 Factorized Probabilistic Spatial Belief & Decision-Relevant Task Uncertainty U_task.
+"""L4 Factorized World-Referenced Probabilistic Spatial Belief & Task Uncertainty U_task.
 
-Replaces red-only single-flag sector memory with strictly separated probabilistic
-representations over a 180-deg forward hemisphere (15 angular sectors, 12 deg each):
-  - p_occ(s):      Bayesian log-odds occupancy probability in (0, 1), updated by
+Maintains a 360-deg world-referenced angular map (30 bins, 12 deg each) relative to the
+episode start/goal axis (phi = 0 rad), with separated representations:
+  - p_occ(phi):    Bayesian log-odds occupancy probability in (0, 1) updated by
                    color-agnostic vertical protrusion cues + red chroma + T4/T5 motion.
-  - visible(s):    bool mask indicating whether sector s falls inside current healthy FOV
-                   without being occluded.
-  - ages_s(s):     seconds since sector s was last cleanly observed.
-  - u_dyn(s):      dynamic obstacle uncertainty driven by IMU-compensated residual flow.
+  - visible(phi):  bool mask indicating whether world sector lies inside current healthy FOV.
+  - ages_s(phi):   seconds since world sector was last observed cleanly.
+  - u_dyn(phi):    dynamic obstacle uncertainty driven by IMU-compensated residual flow.
   - cam_healthy:   boolean sensor freshness state (frame_valid & age <= 0.051s).
   - compass_conc:  external circular concentration C_t in [0, 1] (kept decoupled).
 """
@@ -22,6 +21,10 @@ import numpy as np
 from t4_t5_vision import DEFAULT_CX, DEFAULT_FX
 
 
+def _wrap_angle(angle: np.ndarray | float) -> np.ndarray | float:
+    return (angle + math.pi) % (2.0 * math.pi) - math.pi
+
+
 def _binary_entropy_bits(p: np.ndarray) -> np.ndarray:
     """Binary Shannon entropy H_bin(p) in [0, 1] bits."""
     pc = np.clip(p, 1e-6, 1.0 - 1e-6)
@@ -29,12 +32,12 @@ def _binary_entropy_bits(p: np.ndarray) -> np.ndarray:
 
 
 class FactorizedSpatialBelief:
-    """Factorized 15-sector probabilistic belief spanning [-90 deg, +90 deg] ego bearing."""
+    """360-deg world-referenced factorized probabilistic belief (12 deg angular resolution)."""
 
     def __init__(
         self,
-        n_sectors: int = 15,
-        span_rad: float = math.pi,
+        n_sectors: int = 30,
+        span_rad: float = 2.0 * math.pi,
         cam_hfov_rad: Optional[float] = None,
         max_age_s: float = 0.6,
         fx: float = DEFAULT_FX,
@@ -42,9 +45,9 @@ class FactorizedSpatialBelief:
     ):
         self.n_sectors = n_sectors
         self.span_rad = span_rad
-        self.edges = np.linspace(-span_rad / 2.0, span_rad / 2.0, n_sectors + 1)
-        self.centers = 0.5 * (self.edges[:-1] + self.edges[1:])
         self.sector_width = span_rad / n_sectors
+        self.centers = np.linspace(-math.pi, math.pi, n_sectors, endpoint=False) + 0.5 * self.sector_width
+        self.centers = _wrap_angle(self.centers)
         if cam_hfov_rad is None:
             cam_hfov_rad = 2.0 * math.atan(64.0 / fx)  # ≈ 81.78 deg matching 128px @ 73.914px focal
         self.cam_hfov_rad = cam_hfov_rad
@@ -52,11 +55,13 @@ class FactorizedSpatialBelief:
         self.fx = fx
         self.cx = cx
 
-        # Explicitly separated state vectors (never collapsed prematurely)
-        self.log_odds = np.zeros(n_sectors, dtype=np.float64)  # 0.0 -> prior p_occ = 0.5
+        # Explicitly separated world-referenced state vectors
+        self.log_odds = np.zeros(n_sectors, dtype=np.float64)
         self.visible = np.zeros(n_sectors, dtype=bool)
         self.last_obs_s = np.full(n_sectors, -np.inf, dtype=np.float64)
         self.u_dyn = np.zeros(n_sectors, dtype=np.float64)
+        self.yaw_est_rad = 0.0
+        self.heading_uncertainty_rad = 0.02
         self.compass_conc = 1.0
         self.camera_healthy = False
         self._last_time_s: Optional[float] = None
@@ -65,18 +70,8 @@ class FactorizedSpatialBelief:
         return deepcopy(self)
 
     def advance_ego_yaw(self, delta_yaw_rad: float) -> None:
-        """Rotate stored spatial belief vectors opposite to rover delta_yaw (+left shifts world right)."""
-        if abs(delta_yaw_rad) < 1e-7:
-            return
-        # Rover yaw +delta_yaw shifts world landmarks by -delta_yaw in ego angle coordinates.
-        # Query old grid at theta_old = theta_new + delta_yaw; boundary reverts to unknown prior.
-        query = self.centers + float(delta_yaw_rad)
-        self.log_odds = np.interp(query, self.centers, self.log_odds, left=0.0, right=0.0)
-        self.u_dyn = np.interp(query, self.centers, self.u_dyn, left=0.0, right=0.0)
-        # Interpolate observation timestamps carefully (finite check)
-        prev_t = np.where(np.isfinite(self.last_obs_s), self.last_obs_s, -1e9)
-        interp_t = np.interp(query, self.centers, prev_t, left=-1e9, right=-1e9)
-        self.last_obs_s = np.where(interp_t > -1e8, interp_t, -np.inf)
+        """Update internal world heading estimate without discarding unseen world sectors."""
+        self.yaw_est_rad = float(_wrap_angle(self.yaw_est_rad + float(delta_yaw_rad)))
 
     @property
     def occupancy_probs(self) -> np.ndarray:
@@ -85,23 +80,51 @@ class FactorizedSpatialBelief:
     def ages(self, now: float) -> np.ndarray:
         return np.where(np.isfinite(self.last_obs_s), np.maximum(0.0, now - self.last_obs_s), np.inf)
 
+    def _ego_index(self, ego_angle_rad: float) -> int:
+        world_ang = _wrap_angle(self.yaw_est_rad + ego_angle_rad)
+        diffs = np.abs(_wrap_angle(self.centers - world_ang))
+        return int(np.argmin(diffs))
+
+    def ego_window(self, n_ego: int = 9, fov_rad: float = math.radians(78.0)) -> tuple[np.ndarray, np.ndarray]:
+        """Sample egocentric (occupancy_probs, last_obs_s) centered around current yaw_est_rad."""
+        ego_angles = np.linspace(-0.5 * fov_rad, 0.5 * fov_rad, n_ego)
+        p_occ = self.occupancy_probs
+        occ_ego = np.empty(n_ego, dtype=np.float64)
+        obs_ego = np.empty(n_ego, dtype=np.float64)
+        for i, ang in enumerate(ego_angles):
+            idx = self._ego_index(float(ang))
+            occ_ego[i] = p_occ[idx]
+            obs_ego[i] = self.last_obs_s[idx]
+        return occ_ego, obs_ego
+
     def update(
         self,
         obs: dict,
-        gyro_z_rad_s: Optional[float] = None,
+        delta_yaw_rad: Optional[float] = None,
+        heading_unc_delta_rad: float = 0.0,
         res_motion_cols: Optional[np.ndarray] = None,
         compass_conc: Optional[float] = None,
+        world_yaw_rad: Optional[float] = None,
     ) -> dict:
         now = float(obs["time_s"])
         dt = 0.05 if self._last_time_s is None else max(0.0, now - self._last_time_s)
         self._last_time_s = now
 
-        if gyro_z_rad_s is None:
-            gyro_z_rad_s = float(obs.get("imu_gyro_z", 0.0))
-        self.advance_ego_yaw(float(gyro_z_rad_s) * dt)
+        if world_yaw_rad is not None:
+            self.yaw_est_rad = float(_wrap_angle(world_yaw_rad))
+        elif delta_yaw_rad is not None:
+            self.advance_ego_yaw(delta_yaw_rad)
+        else:
+            gyro_z = obs.get("imu_gyro_z")
+            if gyro_z is not None and np.isfinite(gyro_z):
+                self.advance_ego_yaw(float(gyro_z) * dt)
+            else:
+                self.heading_uncertainty_rad = min(math.pi, self.heading_uncertainty_rad + 0.08 * dt)
 
-        # Gentle uncertainty regression toward prior over unseen time
-        self.log_odds *= math.exp(-dt / 3.0)
+        self.heading_uncertainty_rad = float(np.clip(self.heading_uncertainty_rad + heading_unc_delta_rad, 0.01, math.pi))
+
+        # World-referenced belief uncertainty grows back toward prior as observations age
+        self.log_odds *= math.exp(-dt / 4.0)
         self.u_dyn *= math.exp(-dt / 0.6)
         if compass_conc is not None:
             self.compass_conc = float(np.clip(compass_conc, 0.0, 1.0))
@@ -121,47 +144,48 @@ class FactorizedSpatialBelief:
         r, g, b = rgb.astype(np.float64).transpose(2, 0, 1)
         gray = 0.299 * r + 0.587 * g + 0.114 * b
 
-        # 1. Color-agnostic upper-horizon vertical obstacle protrusion cue
         sky_ref = float(np.percentile(gray[:14, :], 75))
         dark_protrusion = (gray[18:40, :] < 0.72 * max(sky_ref, 40.0)).mean(axis=0)
-        # 2. Classic red obstacle chroma cue (preserves distant red post detection)
         red_hit = ((r > 60.0) & (r > 1.7 * g) & (r > 1.7 * b)).mean(axis=0)
         col_occ_cue = (dark_protrusion > 0.22) | (red_hit > 0.08)
 
-        col_angles = np.arctan((np.arange(rgb.shape[1]) - self.cx) / self.fx)
+        # Camera column offset: col 0 is LEFT (+alpha_c), col 127 is RIGHT (-alpha_c)
+        col_ego_angles = -np.arctan((np.arange(rgb.shape[1]) - self.cx) / self.fx)
         fov_half = 0.5 * self.cam_hfov_rad
+        half_w = 0.5 * self.sector_width
 
         self.visible.fill(False)
-        for s in range(self.n_sectors):
-            in_fov = abs(self.centers[s]) <= fov_half
-            in_sec = (col_angles >= self.edges[s]) & (col_angles <= self.edges[s + 1])
-            if in_fov and in_sec.any():
-                self.visible[s] = True
-                self.last_obs_s[s] = now
-                if col_occ_cue[in_sec].any():
-                    self.log_odds[s] = min(4.0, self.log_odds[s] + 2.2)
-                else:
-                    self.log_odds[s] = max(-3.0, self.log_odds[s] - 1.6)
-                if res_motion_cols is not None:
-                    sec_mot = float(res_motion_cols[in_sec].mean())
-                    self.u_dyn[s] = min(1.0, self.u_dyn[s] + 0.4 * sec_mot)
+        for k in range(self.n_sectors):
+            # Relative angle from current yaw_est_rad to fixed world sector centers[k]
+            rel_ang = float(_wrap_angle(self.centers[k] - self.yaw_est_rad))
+            if abs(rel_ang) <= fov_half:
+                in_sec = np.abs(_wrap_angle(col_ego_angles - rel_ang)) <= half_w
+                if in_sec.any():
+                    self.visible[k] = True
+                    self.last_obs_s[k] = now
+                    if col_occ_cue[in_sec].any():
+                        self.log_odds[k] = min(4.0, self.log_odds[k] + 2.2)
+                    else:
+                        self.log_odds[k] = max(-3.0, self.log_odds[k] - 1.6)
+                    if res_motion_cols is not None:
+                        sec_mot = float(res_motion_cols[in_sec].mean())
+                        self.u_dyn[k] = min(1.0, self.u_dyn[k] + 0.4 * sec_mot)
 
         return self.snapshot(now)
 
     def task_uncertainty(self, now: float, gamma_age: float = 0.4, gamma_dyn: float = 0.35) -> float:
-        """Compute decision-relevant uncertainty U_task(b_t) in bits + staleness + dynamic ambiguity.
+        """Compute world-referenced decision-relevant uncertainty U_task over fixed goal region.
 
-        Corridor attention weights:
-          - If center planning cone (|theta| <= 24 deg) is open/clear, weights focus on the
-            forward cone (which drops toward 0 in open space so turns yield zero info gain).
-          - If center planning cone is blocked or ambiguous (p_occ > 0.45), attention shifts
-            to bypass flank corridors (24 deg .. 80 deg) to measure recoverability of side detours.
+        World sectors in [-82 deg, +82 deg] around the fixed goal axis (+x, phi = 0) define
+        the stable comparison region across actions, ensuring turning away from an unknown
+        region never creates fake uncertainty reduction.
         """
         p_occ = self.occupancy_probs
         ages = self.ages(now)
         center_mask = np.abs(self.centers) <= math.radians(24.0)
         flank_mask = (np.abs(self.centers) > math.radians(24.0)) & (np.abs(self.centers) <= math.radians(82.0))
 
+        # If goal forward corridor in world coordinates is blocked/ambiguous, flank bypass uncertainty matters
         forward_blocked = bool(np.any(p_occ[center_mask] > 0.45))
         weights = np.zeros(self.n_sectors, dtype=np.float64)
         if forward_blocked:
@@ -173,7 +197,6 @@ class FactorizedSpatialBelief:
         weights /= max(float(weights.sum()), 1e-9)
 
         ent = _binary_entropy_bits(p_occ)
-        # Grace window of 0.10s (one 10Hz camera period) avoids inter-frame age sawtooth noise
         eff_age = np.maximum(0.0, ages - 0.10)
         denom = max(self.max_age_s - 0.10, 1e-3)
         age_norm = np.where(np.isfinite(ages), np.minimum(1.0, eff_age / denom), 1.0)
@@ -185,25 +208,29 @@ class FactorizedSpatialBelief:
             now = 0.0 if self._last_time_s is None else self._last_time_s
         p_occ = self.occupancy_probs
         ages = self.ages(now)
-        states = []
-        for s in range(self.n_sectors):
-            if p_occ[s] >= 0.60:
-                states.append("occupied")
-            elif not np.isfinite(ages[s]) or ages[s] > self.max_age_s or p_occ[s] > 0.30:
-                states.append("stale_or_unknown")
+
+        # Build egocentric 9-sector view around yaw_est_rad for compatibility with recovery/controller checks
+        occ_ego, obs_ego = self.ego_window(n_ego=9, fov_rad=math.radians(78.0))
+        ego_ages = np.where(np.isfinite(obs_ego), np.maximum(0.0, now - obs_ego), np.inf)
+        fov9_states = []
+        for s in range(len(occ_ego)):
+            if occ_ego[s] >= 0.60:
+                fov9_states.append("occupied")
+            elif not np.isfinite(ego_ages[s]) or ego_ages[s] > self.max_age_s or occ_ego[s] > 0.30:
+                fov9_states.append("stale_or_unknown")
             else:
-                states.append("observed_free")
-        # Legacy compatibility: also expose center-9 corridor states matching SectorBelief indices
-        mid_lo = (self.n_sectors - 9) // 2
-        fov9_states = states[mid_lo : mid_lo + 9] if self.n_sectors >= 9 else states
+                fov9_states.append("observed_free")
+
         return {
             "camera_healthy": bool(self.camera_healthy),
             "sector_states": fov9_states,
-            "full_sector_states": states,
-            "sector_ages_s": [None if not np.isfinite(a) else round(float(a), 4) for a in ages],
-            "occupancy_probs": [round(float(v), 4) for v in p_occ],
+            "sector_ages_s": [None if not np.isfinite(a) else round(float(a), 4) for a in ego_ages],
+            "occupancy_probs": [round(float(v), 4) for v in occ_ego],
+            "world_occupancy_probs": [round(float(v), 4) for v in p_occ],
             "visibility": [bool(v) for v in self.visible],
             "dynamic_uncertainty": [round(float(v), 4) for v in self.u_dyn],
+            "yaw_est_rad": float(self.yaw_est_rad),
+            "heading_uncertainty_rad": float(self.heading_uncertainty_rad),
             "compass_concentration": float(self.compass_conc),
             "task_uncertainty": self.task_uncertainty(now),
             "free_fraction": float(sum(st == "observed_free" for st in fov9_states) / len(fov9_states)),

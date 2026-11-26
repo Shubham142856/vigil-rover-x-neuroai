@@ -48,10 +48,10 @@ def compare_actions(sim,actions,steps):
 
 
 def evaluate_action_branches_v2(sim, actions, steps, initial_belief):
-    """Counterfactual branch evaluation computing collision, progress, and true info gain G_t(a).
+    """Counterfactual branch evaluation computing collision, progress, and signed info gain Delta_U_t(a).
 
-    G_t(a) = max(0, U_task(b_t) - U_task(b_{t+H}^(a))) * I[not hit] * I[cam_healthy_end].
-    Never rewards blind turns during persistent sensor failure.
+    Signed Delta_U_t(a) = U_task(b_{t+H}^{brake}) - U_task(b_{t+H}^{a}) (preserved unclipped
+    for regression and separated strictly from physical safety / body_contact).
     """
     if steps <= 0 or not actions or len(set(actions)) != len(actions):
         raise ValueError("Supply distinct actions and a positive decision horizon")
@@ -84,7 +84,12 @@ def evaluate_action_branches_v2(sim, actions, steps, initial_belief):
             for index in range(steps + 20):
                 obs = sim.step(action if index < steps else "brake")
                 hit = hit or sim.evaluator()["body_contact"]
-                branch_belief.update(obs)
+                # Pass exact evaluator heading change when IMU telemetry absent (RoverSim)
+                dy = None if "imu_gyro_z" in obs else None
+                if "imu_gyro_z" in obs:
+                    branch_belief.update(obs)
+                else:
+                    branch_belief.update(obs, world_yaw_rad=sim.evaluator()["yaw_rad"])
             end = sim.evaluator()
             u_end = float(branch_belief.task_uncertainty(float(obs["time_s"])))
             cam_ok = bool(branch_belief.camera_healthy)
@@ -96,14 +101,19 @@ def evaluate_action_branches_v2(sim, actions, steps, initial_belief):
                 "u_init": u_init,
                 "u_end": u_end,
                 "cam_healthy_end": cam_ok,
+                "delta_u": 0.0,
                 "info_gain": 0.0,
             }
-        # Causal treatment effect: measure uncertainty reduced by action relative to waiting ("brake")
-        # so passive fault-window expiration never masquerades as active perception recovery.
+        # Signed counterfactual treatment effect relative to waiting ("brake"); zeroed on persistent blackout
         u_ref = results["brake"]["u_end"] if "brake" in results else u_init
         for act, res in results.items():
-            if not res["body_contact"] and res["cam_healthy_end"] and act != "brake":
-                res["info_gain"] = float(max(0.0, u_ref - res["u_end"]))
+            if act == "brake" or not res["cam_healthy_end"]:
+                signed_du = 0.0
+            else:
+                signed_du = float(u_ref - res["u_end"])
+            res["delta_u"] = signed_du
+            # Keep unsigned safe info_gain strictly positive & safe separately; signed_du preserved unclipped!
+            res["info_gain"] = float(max(0.0, signed_du)) if (not res["body_contact"] and res["cam_healthy_end"]) else 0.0
     finally:
         try:
             restore()

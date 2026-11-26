@@ -24,7 +24,7 @@ class TestRecoverabilityV2(unittest.TestCase):
                         sim.step("forward")
                     u_end = snap["task_uncertainty"]
                     self.assertTrue(snap["camera_healthy"])
-                    self.assertLess(max(snap["occupancy_probs"][4:11]), 0.15)
+                    self.assertLess(max(snap["occupancy_probs"][2:7]), 0.15)
                     self.assertLess(u_end, u_start * 0.5)
 
     def test_color_agnostic_gray_obstacle_updates_occupancy(self):
@@ -36,28 +36,24 @@ class TestRecoverabilityV2(unittest.TestCase):
             belief = FactorizedSpatialBelief(max_age_s=0.6)
             for _ in range(5):
                 obs = sim.observe()
-                snap = belief.update(obs)
+                snap = belief.update(obs, world_yaw_rad=sim.evaluator()["yaw_rad"])
                 sim.step("brake")
-            center_occ = max(snap["occupancy_probs"][6:9])
+            center_occ = max(snap["occupancy_probs"][3:6])
             self.assertGreater(center_occ, 0.70, f"Gray obstacle missed in occupancy probs: {snap['occupancy_probs']}")
 
     def test_paired_recoverable_occlusion_vs_persistent_blackout(self):
-        # Paired identical pre-branch observation history, differing only in whether camera blackout persists:
-        # 1. Recoverable geometric occlusion (healthy camera) -> turning left/right reveals flanks -> G_t(turn) > 0
-        # 2. Persistent camera blackout -> turning MUST yield G_t(turn) == 0.0 identically
         with make_paired_world("occluded_clear", seed=7, fault="none") as sim_ok:
             b_ok = FactorizedSpatialBelief(max_age_s=0.6)
             for _ in range(6):
-                b_ok.update(sim_ok.observe())
+                b_ok.update(sim_ok.observe(), world_yaw_rad=sim_ok.evaluator()["yaw_rad"])
                 sim_ok.step("forward")
             res_ok = evaluate_action_branches_v2(sim_ok, ["forward", "left", "right", "brake"], 18, b_ok)
 
         with make_paired_world("occluded_clear", seed=7, fault="freeze") as sim_dead:
-            # Override default fault window in make_paired_world cleanly
             sim_dead.window = (0.25, 5.0)
             b_dead = FactorizedSpatialBelief(max_age_s=0.6)
             for _ in range(6):
-                b_dead.update(sim_dead.observe())
+                b_dead.update(sim_dead.observe(), world_yaw_rad=sim_dead.evaluator()["yaw_rad"])
                 sim_dead.step("forward")
             res_dead = evaluate_action_branches_v2(sim_dead, ["forward", "left", "right", "brake"], 18, b_dead)
 
@@ -67,15 +63,27 @@ class TestRecoverabilityV2(unittest.TestCase):
         self.assertEqual(max_turn_gain_dead, 0.0, f"Dead-camera blind turning must yield ZERO info gain: {res_dead}")
 
     def test_clear_open_scene_gives_negligible_turn_info_gain(self):
-        # In open terrain, turning left/right does not reduce navigation uncertainty vs forward
         with RoverSim(scene="open", seed=7) as sim:
             belief = FactorizedSpatialBelief(max_age_s=0.6)
             for _ in range(12):
-                belief.update(sim.observe())
+                belief.update(sim.observe(), world_yaw_rad=sim.evaluator()["yaw_rad"])
                 sim.step("forward")
             res = evaluate_action_branches_v2(sim, ["forward", "brake", "left", "right"], 18, belief)
         self.assertLess(res["left"]["info_gain"], 0.02, f"Open terrain spurious turn gain: {res['left']}")
         self.assertLess(res["right"]["info_gain"], 0.02, f"Open terrain spurious turn gain: {res['right']}")
+
+    def test_world_referenced_turning_away_gives_non_positive_delta_u_and_preserves_negative_values(self):
+        # Verify Refinement A & C: when forward world sectors become unobserved/stale and rover turns away,
+        # delta_u can be <= 0 (including strictly negative if turn misses re-observing goal sectors vs forward/brake).
+        with RoverSim(scene="open", seed=7) as sim:
+            b = FactorizedSpatialBelief(max_age_s=0.6)
+            # Observe initially cleanly
+            for _ in range(4):
+                b.update(sim.observe(), world_yaw_rad=sim.evaluator()["yaw_rad"])
+                sim.step("forward")
+            res = evaluate_action_branches_v2(sim, ["forward", "brake", "left"], 28, b)
+        # Turning 1.4 rad left looks out at flank angles while center goal region becomes stale relative to brake!
+        self.assertLess(res["left"]["delta_u"], 0.0, f"Turning away should have negative delta_u, got: {res['left']}")
 
 
 if __name__ == "__main__":
