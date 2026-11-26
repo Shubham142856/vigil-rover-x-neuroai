@@ -57,6 +57,7 @@ class FactorizedSpatialBelief:
 
         # Explicitly separated world-referenced state vectors
         self.log_odds = np.zeros(n_sectors, dtype=np.float64)
+        self.near_blocked = np.zeros(n_sectors, dtype=bool)
         self.visible = np.zeros(n_sectors, dtype=bool)
         self.last_obs_s = np.full(n_sectors, -np.inf, dtype=np.float64)
         self.u_dyn = np.zeros(n_sectors, dtype=np.float64)
@@ -85,17 +86,19 @@ class FactorizedSpatialBelief:
         diffs = np.abs(_wrap_angle(self.centers - world_ang))
         return int(np.argmin(diffs))
 
-    def ego_window(self, n_ego: int = 9, fov_rad: float = math.radians(78.0)) -> tuple[np.ndarray, np.ndarray]:
-        """Sample egocentric (occupancy_probs, last_obs_s) centered around current yaw_est_rad."""
+    def ego_window(self, n_ego: int = 9, fov_rad: float = math.radians(78.0)) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """Sample egocentric (occupancy_probs, last_obs_s, near_blocked) centered around current yaw_est_rad."""
         ego_angles = np.linspace(-0.5 * fov_rad, 0.5 * fov_rad, n_ego)
         p_occ = self.occupancy_probs
         occ_ego = np.empty(n_ego, dtype=np.float64)
         obs_ego = np.empty(n_ego, dtype=np.float64)
+        near_ego = np.zeros(n_ego, dtype=bool)
         for i, ang in enumerate(ego_angles):
             idx = self._ego_index(float(ang))
             occ_ego[i] = p_occ[idx]
             obs_ego[i] = self.last_obs_s[idx]
-        return occ_ego, obs_ego
+            near_ego[i] = bool(self.near_blocked[idx])
+        return occ_ego, obs_ego, near_ego
 
     def update(
         self,
@@ -144,10 +147,13 @@ class FactorizedSpatialBelief:
         r, g, b = rgb.astype(np.float64).transpose(2, 0, 1)
         gray = 0.299 * r + 0.587 * g + 0.114 * b
 
+        # 1. Strictly above-horizon obstacle protrusion cue (rows 18:40 avoid flat ground below row 40)
         sky_ref = float(np.percentile(gray[:14, :], 75))
-        dark_protrusion = (gray[18:40, :] < 0.72 * max(sky_ref, 40.0)).mean(axis=0)
+        dark_horizon = (gray[18:40, :] < 0.72 * max(sky_ref, 40.0)).mean(axis=0)
         red_hit = ((r > 60.0) & (r > 1.7 * g) & (r > 1.7 * b)).mean(axis=0)
-        col_occ_cue = (dark_protrusion > 0.22) | (red_hit > 0.08)
+        col_occ_cue = (dark_horizon > 0.22) | (red_hit > 0.08)
+        # Near-field range proxy (large subtended vertical angle <= ~0.42 m stopping horizon)
+        col_near_cue = (dark_horizon > 0.55) | (red_hit > 0.42)
 
         # Camera column offset: col 0 is LEFT (+alpha_c), col 127 is RIGHT (-alpha_c)
         col_ego_angles = -np.arctan((np.arange(rgb.shape[1]) - self.cx) / self.fx)
@@ -156,13 +162,13 @@ class FactorizedSpatialBelief:
 
         self.visible.fill(False)
         for k in range(self.n_sectors):
-            # Relative angle from current yaw_est_rad to fixed world sector centers[k]
             rel_ang = float(_wrap_angle(self.centers[k] - self.yaw_est_rad))
             if abs(rel_ang) <= fov_half:
                 in_sec = np.abs(_wrap_angle(col_ego_angles - rel_ang)) <= half_w
                 if in_sec.any():
                     self.visible[k] = True
                     self.last_obs_s[k] = now
+                    self.near_blocked[k] = bool(col_near_cue[in_sec].any())
                     if col_occ_cue[in_sec].any():
                         self.log_odds[k] = min(4.0, self.log_odds[k] + 2.2)
                     else:
@@ -210,7 +216,7 @@ class FactorizedSpatialBelief:
         ages = self.ages(now)
 
         # Build egocentric 9-sector view around yaw_est_rad for compatibility with recovery/controller checks
-        occ_ego, obs_ego = self.ego_window(n_ego=9, fov_rad=math.radians(78.0))
+        occ_ego, obs_ego, near_ego = self.ego_window(n_ego=9, fov_rad=math.radians(78.0))
         ego_ages = np.where(np.isfinite(obs_ego), np.maximum(0.0, now - obs_ego), np.inf)
         fov9_states = []
         for s in range(len(occ_ego)):
@@ -224,6 +230,7 @@ class FactorizedSpatialBelief:
         return {
             "camera_healthy": bool(self.camera_healthy),
             "sector_states": fov9_states,
+            "near_blocked_sectors": [bool(v) for v in near_ego],
             "sector_ages_s": [None if not np.isfinite(a) else round(float(a), 4) for a in ego_ages],
             "occupancy_probs": [round(float(v), 4) for v in occ_ego],
             "world_occupancy_probs": [round(float(v), 4) for v in p_occ],

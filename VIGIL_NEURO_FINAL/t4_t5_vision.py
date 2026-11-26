@@ -145,7 +145,12 @@ class _SinglePathT4T5:
         alpha_h = self.tau_h / (self.tau_h + dt)
         alpha_l = self.tau_l / (self.tau_l + dt)
 
-        self.high = alpha_h * (prev_h + lum - prev_l)
+        # Divisive retinal luminance adaptation (Weber contrast): keeps T4/T5 invariant across lux levels (e.g. night_mode)
+        adapt_gain = 0.5 / max(float(lum.mean()), 0.12)
+        lum_norm = np.clip(lum * adapt_gain, 0.0, 2.0)
+        prev_l_norm = np.clip(prev_l * adapt_gain, 0.0, 2.0)
+
+        self.high = alpha_h * (prev_h + lum_norm - prev_l_norm)
         on_ch = np.maximum(self.high - self.contrast_thresh, 0.0)
         off_ch = np.maximum(-self.high - self.contrast_thresh, 0.0)
 

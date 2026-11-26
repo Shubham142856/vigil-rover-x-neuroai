@@ -1,0 +1,483 @@
+{
+  "seeds_per_scenario": 4,
+  "g08": {
+    "A_V1_Frozen": {
+      "episodes": 24,
+      "collision_episodes": 0,
+      "total_body_collision_events": 0,
+      "total_whisker_contacts": 0,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0,
+        0.1173461561549487
+      ],
+      "goal_completion_rate": 0.5,
+      "collision_free_goal_completion_rate": 0.5,
+      "collision_free_timeout_rate": 0.041666666666666664,
+      "appropriate_abstention_count": 4,
+      "unnecessary_abstention_count": 0,
+      "permanent_stall_rate": 0.2916666666666667,
+      "mean_progress_m": 0.6758047897115537,
+      "world_clustered_progress_m": {
+        "mean": 0.6758047897115538,
+        "clusters": 6,
+        "se": 0.2505059975843786,
+        "ci95_low": 0.18481303444617175,
+        "ci95_high": 1.1667965449769357
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.5,
+        "clusters": 6,
+        "se": 0.22360679774997896,
+        "ci95_low": 0.06173067641004126,
+        "ci95_high": 0.9382693235899587
+      },
+      "mean_path_efficiency": 0.561497197420371,
+      "mean_action_switches": 4.125,
+      "mean_info_recovery_delta_u": 0.3825599100634934
+    },
+    "B_Compass_IMU_Only": {
+      "episodes": 24,
+      "collision_episodes": 0,
+      "total_body_collision_events": 0,
+      "total_whisker_contacts": 0,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0,
+        0.1173461561549487
+      ],
+      "goal_completion_rate": 0.5,
+      "collision_free_goal_completion_rate": 0.5,
+      "collision_free_timeout_rate": 0.041666666666666664,
+      "appropriate_abstention_count": 4,
+      "unnecessary_abstention_count": 0,
+      "permanent_stall_rate": 0.2916666666666667,
+      "mean_progress_m": 0.6758047897115537,
+      "world_clustered_progress_m": {
+        "mean": 0.6758047897115538,
+        "clusters": 6,
+        "se": 0.2505059975843786,
+        "ci95_low": 0.18481303444617175,
+        "ci95_high": 1.1667965449769357
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.5,
+        "clusters": 6,
+        "se": 0.22360679774997896,
+        "ci95_low": 0.06173067641004126,
+        "ci95_high": 0.9382693235899587
+      },
+      "mean_path_efficiency": 0.561497197420371,
+      "mean_action_switches": 4.125,
+      "mean_info_recovery_delta_u": 0.3825599100634934
+    },
+    "C_Visual_Fusion_Only": {
+      "episodes": 24,
+      "collision_episodes": 1,
+      "total_body_collision_events": 1,
+      "total_whisker_contacts": 5,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0010543524454697474,
+        0.2112016834569731
+      ],
+      "goal_completion_rate": 0.5,
+      "collision_free_goal_completion_rate": 0.5,
+      "collision_free_timeout_rate": 0.125,
+      "appropriate_abstention_count": 4,
+      "unnecessary_abstention_count": 0,
+      "permanent_stall_rate": 0.16666666666666666,
+      "mean_progress_m": 0.6744927359764019,
+      "world_clustered_progress_m": {
+        "mean": 0.6744927359764019,
+        "clusters": 6,
+        "se": 0.24462233118319446,
+        "ci95_low": 0.19503296685734078,
+        "ci95_high": 1.153952505095463
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.5,
+        "clusters": 6,
+        "se": 0.22360679774997896,
+        "ci95_low": 0.06173067641004126,
+        "ci95_high": 0.9382693235899587
+      },
+      "mean_path_efficiency": 0.5526359991838915,
+      "mean_action_switches": 3.375,
+      "mean_info_recovery_delta_u": 0.482734848482324
+    },
+    "D_Risk_Arbitration_Only": {
+      "episodes": 24,
+      "collision_episodes": 0,
+      "total_body_collision_events": 0,
+      "total_whisker_contacts": 0,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0,
+        0.1173461561549487
+      ],
+      "goal_completion_rate": 0.5,
+      "collision_free_goal_completion_rate": 0.5,
+      "collision_free_timeout_rate": 0.0,
+      "appropriate_abstention_count": 4,
+      "unnecessary_abstention_count": 0,
+      "permanent_stall_rate": 0.3333333333333333,
+      "mean_progress_m": 0.6421269276915361,
+      "world_clustered_progress_m": {
+        "mean": 0.642126927691536,
+        "clusters": 6,
+        "se": 0.2399073445622006,
+        "ci95_low": 0.1719085323496229,
+        "ci95_high": 1.1123453230334492
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.5,
+        "clusters": 6,
+        "se": 0.22360679774997896,
+        "ci95_low": 0.06173067641004126,
+        "ci95_high": 0.9382693235899587
+      },
+      "mean_path_efficiency": 0.5336224362191752,
+      "mean_action_switches": 4.75,
+      "mean_info_recovery_delta_u": 0.3825599100634934
+    },
+    "E_Action_Feasibility_Only": {
+      "episodes": 24,
+      "collision_episodes": 0,
+      "total_body_collision_events": 0,
+      "total_whisker_contacts": 0,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0,
+        0.1173461561549487
+      ],
+      "goal_completion_rate": 0.0,
+      "collision_free_goal_completion_rate": 0.0,
+      "collision_free_timeout_rate": 0.375,
+      "appropriate_abstention_count": 4,
+      "unnecessary_abstention_count": 19,
+      "permanent_stall_rate": 0.4583333333333333,
+      "mean_progress_m": 0.17135300829450442,
+      "world_clustered_progress_m": {
+        "mean": 0.17135300829450442,
+        "clusters": 6,
+        "se": 0.0707009479976471,
+        "ci95_low": 0.03277915021911609,
+        "ci95_high": 0.30992686636989275
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.0,
+        "clusters": 6,
+        "se": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "mean_path_efficiency": 0.13620968517834317,
+      "mean_action_switches": 4.0,
+      "mean_info_recovery_delta_u": 0.24787049721381268
+    },
+    "F_Revised_Utility_Only": {
+      "episodes": 24,
+      "collision_episodes": 0,
+      "total_body_collision_events": 0,
+      "total_whisker_contacts": 0,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0,
+        0.1173461561549487
+      ],
+      "goal_completion_rate": 0.5,
+      "collision_free_goal_completion_rate": 0.5,
+      "collision_free_timeout_rate": 0.125,
+      "appropriate_abstention_count": 4,
+      "unnecessary_abstention_count": 0,
+      "permanent_stall_rate": 0.20833333333333334,
+      "mean_progress_m": 0.663775863743867,
+      "world_clustered_progress_m": {
+        "mean": 0.663775863743867,
+        "clusters": 6,
+        "se": 0.2415675740440071,
+        "ci95_low": 0.19030341861761307,
+        "ci95_high": 1.1372483088701208
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.5,
+        "clusters": 6,
+        "se": 0.22360679774997896,
+        "ci95_low": 0.06173067641004126,
+        "ci95_high": 0.9382693235899587
+      },
+      "mean_path_efficiency": 0.5527840626583992,
+      "mean_action_switches": 2.7916666666666665,
+      "mean_info_recovery_delta_u": 0.3831749731071305
+    },
+    "G_Full_P5_Architecture": {
+      "episodes": 24,
+      "collision_episodes": 0,
+      "total_body_collision_events": 0,
+      "total_whisker_contacts": 0,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0,
+        0.1173461561549487
+      ],
+      "goal_completion_rate": 0.0,
+      "collision_free_goal_completion_rate": 0.0,
+      "collision_free_timeout_rate": 0.3333333333333333,
+      "appropriate_abstention_count": 0,
+      "unnecessary_abstention_count": 4,
+      "permanent_stall_rate": 0.6666666666666666,
+      "mean_progress_m": 0.22695167929727836,
+      "world_clustered_progress_m": {
+        "mean": 0.22695167929727836,
+        "clusters": 6,
+        "se": 0.12389696063837001,
+        "ci95_low": -0.015886363553926863,
+        "ci95_high": 0.4697897221484836
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.0,
+        "clusters": 6,
+        "se": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "mean_path_efficiency": 0.17254158404865275,
+      "mean_action_switches": 1.3333333333333333,
+      "mean_info_recovery_delta_u": 0.24568921930895318
+    }
+  },
+  "r05": {
+    "A_V1_Frozen": {
+      "episodes": 24,
+      "collision_episodes": 0,
+      "total_body_collision_events": 0,
+      "total_whisker_contacts": 4,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0,
+        0.1173461561549487
+      ],
+      "goal_completion_rate": 0.16666666666666666,
+      "collision_free_goal_completion_rate": 0.16666666666666666,
+      "collision_free_timeout_rate": 0.4583333333333333,
+      "appropriate_abstention_count": 0,
+      "unnecessary_abstention_count": 0,
+      "permanent_stall_rate": 0.375,
+      "mean_progress_m": 0.2398914007644589,
+      "world_clustered_progress_m": {
+        "mean": 0.2398914007644589,
+        "clusters": 6,
+        "se": 0.055281481616275434,
+        "ci95_low": 0.13153969679655902,
+        "ci95_high": 0.34824310473235875
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.16666666666666666,
+        "clusters": 6,
+        "se": 0.16666666666666669,
+        "ci95_low": -0.16000000000000006,
+        "ci95_high": 0.4933333333333334
+      },
+      "mean_path_efficiency": 0.31233691330567354,
+      "mean_action_switches": 21.166666666666668,
+      "mean_info_recovery_delta_u": 0.34680329108320623
+    },
+    "B_Compass_IMU_Only": {
+      "episodes": 24,
+      "collision_episodes": 0,
+      "total_body_collision_events": 0,
+      "total_whisker_contacts": 4,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0,
+        0.1173461561549487
+      ],
+      "goal_completion_rate": 0.16666666666666666,
+      "collision_free_goal_completion_rate": 0.16666666666666666,
+      "collision_free_timeout_rate": 0.4583333333333333,
+      "appropriate_abstention_count": 0,
+      "unnecessary_abstention_count": 0,
+      "permanent_stall_rate": 0.375,
+      "mean_progress_m": 0.2398914007644589,
+      "world_clustered_progress_m": {
+        "mean": 0.2398914007644589,
+        "clusters": 6,
+        "se": 0.055281481616275434,
+        "ci95_low": 0.13153969679655902,
+        "ci95_high": 0.34824310473235875
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.16666666666666666,
+        "clusters": 6,
+        "se": 0.16666666666666669,
+        "ci95_low": -0.16000000000000006,
+        "ci95_high": 0.4933333333333334
+      },
+      "mean_path_efficiency": 0.31233691330567354,
+      "mean_action_switches": 21.166666666666668,
+      "mean_info_recovery_delta_u": 0.34680329108320623
+    },
+    "C_Visual_Fusion_Only": {
+      "episodes": 24,
+      "collision_episodes": 6,
+      "total_body_collision_events": 6,
+      "total_whisker_contacts": 21,
+      "collision_rate_clopper_pearson_95ci": [
+        0.097730409474533,
+        0.46711280242266934
+      ],
+      "goal_completion_rate": 0.8333333333333334,
+      "collision_free_goal_completion_rate": 0.625,
+      "collision_free_timeout_rate": 0.125,
+      "appropriate_abstention_count": 0,
+      "unnecessary_abstention_count": 0,
+      "permanent_stall_rate": 0.0,
+      "mean_progress_m": 0.6545996208554968,
+      "world_clustered_progress_m": {
+        "mean": 0.6545996208554968,
+        "clusters": 6,
+        "se": 0.06465593647070668,
+        "ci95_low": 0.5278739853729117,
+        "ci95_high": 0.7813252563380819
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.625,
+        "clusters": 6,
+        "se": 0.17969882210706523,
+        "ci95_low": 0.27279030867015214,
+        "ci95_high": 0.9772096913298478
+      },
+      "mean_path_efficiency": 0.6868779860026506,
+      "mean_action_switches": 10.416666666666666,
+      "mean_info_recovery_delta_u": 0.4367846244551494
+    },
+    "D_Risk_Arbitration_Only": {
+      "episodes": 24,
+      "collision_episodes": 0,
+      "total_body_collision_events": 0,
+      "total_whisker_contacts": 4,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0,
+        0.1173461561549487
+      ],
+      "goal_completion_rate": 0.20833333333333334,
+      "collision_free_goal_completion_rate": 0.20833333333333334,
+      "collision_free_timeout_rate": 0.4166666666666667,
+      "appropriate_abstention_count": 0,
+      "unnecessary_abstention_count": 0,
+      "permanent_stall_rate": 0.375,
+      "mean_progress_m": 0.2518245464251509,
+      "world_clustered_progress_m": {
+        "mean": 0.2518245464251509,
+        "clusters": 6,
+        "se": 0.054028897934964126,
+        "ci95_low": 0.14592790647262122,
+        "ci95_high": 0.3577211863776806
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.20833333333333334,
+        "clusters": 6,
+        "se": 0.1635118072529049,
+        "ci95_low": -0.11214980888236023,
+        "ci95_high": 0.5288164755490269
+      },
+      "mean_path_efficiency": 0.32220463635838253,
+      "mean_action_switches": 20.541666666666668,
+      "mean_info_recovery_delta_u": 0.340293290612179
+    },
+    "E_Action_Feasibility_Only": {
+      "episodes": 24,
+      "collision_episodes": 0,
+      "total_body_collision_events": 0,
+      "total_whisker_contacts": 5,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0,
+        0.1173461561549487
+      ],
+      "goal_completion_rate": 0.16666666666666666,
+      "collision_free_goal_completion_rate": 0.16666666666666666,
+      "collision_free_timeout_rate": 0.125,
+      "appropriate_abstention_count": 0,
+      "unnecessary_abstention_count": 12,
+      "permanent_stall_rate": 0.7083333333333334,
+      "mean_progress_m": 0.15486203711473684,
+      "world_clustered_progress_m": {
+        "mean": 0.15486203711473684,
+        "clusters": 6,
+        "se": 0.06200312929664671,
+        "ci95_low": 0.033335903693309285,
+        "ci95_high": 0.2763881705361644
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.16666666666666666,
+        "clusters": 6,
+        "se": 0.16666666666666669,
+        "ci95_low": -0.16000000000000006,
+        "ci95_high": 0.4933333333333334
+      },
+      "mean_path_efficiency": 0.23774290118231478,
+      "mean_action_switches": 20.208333333333332,
+      "mean_info_recovery_delta_u": 0.3389038459136025
+    },
+    "F_Revised_Utility_Only": {
+      "episodes": 24,
+      "collision_episodes": 0,
+      "total_body_collision_events": 0,
+      "total_whisker_contacts": 5,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0,
+        0.1173461561549487
+      ],
+      "goal_completion_rate": 0.25,
+      "collision_free_goal_completion_rate": 0.25,
+      "collision_free_timeout_rate": 0.3333333333333333,
+      "appropriate_abstention_count": 0,
+      "unnecessary_abstention_count": 0,
+      "permanent_stall_rate": 0.4166666666666667,
+      "mean_progress_m": 0.27263323908868564,
+      "world_clustered_progress_m": {
+        "mean": 0.27263323908868564,
+        "clusters": 6,
+        "se": 0.06321266087220272,
+        "ci95_low": 0.14873642377916832,
+        "ci95_high": 0.396530054398203
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.25,
+        "clusters": 6,
+        "se": 0.17078251276599332,
+        "ci95_low": -0.0847337250213469,
+        "ci95_high": 0.5847337250213469
+      },
+      "mean_path_efficiency": 0.3429718618905982,
+      "mean_action_switches": 6.416666666666667,
+      "mean_info_recovery_delta_u": 0.3035170939477538
+    },
+    "G_Full_P5_Architecture": {
+      "episodes": 24,
+      "collision_episodes": 0,
+      "total_body_collision_events": 0,
+      "total_whisker_contacts": 6,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0,
+        0.1173461561549487
+      ],
+      "goal_completion_rate": 0.20833333333333334,
+      "collision_free_goal_completion_rate": 0.20833333333333334,
+      "collision_free_timeout_rate": 0.2916666666666667,
+      "appropriate_abstention_count": 0,
+      "unnecessary_abstention_count": 7,
+      "permanent_stall_rate": 0.5,
+      "mean_progress_m": 0.21770303494359697,
+      "world_clustered_progress_m": {
+        "mean": 0.2177030349435969,
+        "clusters": 6,
+        "se": 0.07750560460426176,
+        "ci95_low": 0.06579204991924387,
+        "ci95_high": 0.36961401996794996
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.20833333333333334,
+        "clusters": 6,
+        "se": 0.16351180725290487,
+        "ci95_low": -0.11214980888236017,
+        "ci95_high": 0.5288164755490269
+      },
+      "mean_path_efficiency": 0.2898540908068083,
+      "mean_action_switches": 2.5416666666666665,
+      "mean_info_recovery_delta_u": 0.22098228570584175
+    }
+  }
+}
