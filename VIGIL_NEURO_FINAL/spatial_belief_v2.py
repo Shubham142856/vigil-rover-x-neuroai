@@ -86,8 +86,8 @@ class FactorizedSpatialBelief:
         diffs = np.abs(_wrap_angle(self.centers - world_ang))
         return int(np.argmin(diffs))
 
-    def ego_window(self, n_ego: int = 9, fov_rad: float = math.radians(78.0)) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-        """Sample egocentric (occupancy_probs, last_obs_s, near_blocked) centered around current yaw_est_rad."""
+    def ego_window(self, n_ego: int = 9, fov_rad: float = math.radians(66.0)) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+        """Sample egocentric (occupancy_probs, last_obs_s, near_blocked) strictly inside camera H-FOV."""
         ego_angles = np.linspace(-0.5 * fov_rad, 0.5 * fov_rad, n_ego)
         p_occ = self.occupancy_probs
         occ_ego = np.empty(n_ego, dtype=np.float64)
@@ -215,8 +215,8 @@ class FactorizedSpatialBelief:
         p_occ = self.occupancy_probs
         ages = self.ages(now)
 
-        # Build egocentric 9-sector view around yaw_est_rad for compatibility with recovery/controller checks
-        occ_ego, obs_ego, near_ego = self.ego_window(n_ego=9, fov_rad=math.radians(78.0))
+        # Build egocentric 9-sector view within +-33 deg (maps strictly to +-30 deg world bins inside +-40.9 deg H-FOV)
+        occ_ego, obs_ego, near_ego = self.ego_window(n_ego=9, fov_rad=math.radians(66.0))
         ego_ages = np.where(np.isfinite(obs_ego), np.maximum(0.0, now - obs_ego), np.inf)
         fov9_states = []
         for s in range(len(occ_ego)):

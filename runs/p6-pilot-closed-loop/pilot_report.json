@@ -1,0 +1,1829 @@
+{
+  "seeds_per_scenario": 4,
+  "episodes_per_suite": 24,
+  "v3_weights_path": "runs\\pilot-v3-models\\pilot_weights_v3.npz",
+  "g08": {
+    "P5_A_V1_Frozen": {
+      "episodes": 24,
+      "collision_episodes": 0,
+      "total_body_collision_events": 0,
+      "total_whisker_contacts": 0,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0,
+        0.1173461561549487
+      ],
+      "goal_completion_rate": 0.5,
+      "collision_free_goal_completion_rate": 0.5,
+      "collision_free_timeout_rate": 0.041666666666666664,
+      "appropriate_abstention_count": 4,
+      "unnecessary_abstention_count": 0,
+      "permanent_stall_rate": 0.2916666666666667,
+      "mean_progress_m": 0.6758047897115537,
+      "world_clustered_progress_m": {
+        "mean": 0.6758047897115538,
+        "clusters": 6,
+        "se": 0.2505059975843786,
+        "ci95_low": 0.18481303444617175,
+        "ci95_high": 1.1667965449769357
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.5,
+        "clusters": 6,
+        "se": 0.22360679774997896,
+        "ci95_low": 0.06173067641004126,
+        "ci95_high": 0.9382693235899587
+      },
+      "mean_path_efficiency": 0.561497197420371,
+      "mean_action_switches": 4.125,
+      "mean_info_recovery_delta_u": 0.3825599100634934
+    },
+    "P5_C_Visual_Only": {
+      "episodes": 24,
+      "collision_episodes": 0,
+      "total_body_collision_events": 0,
+      "total_whisker_contacts": 4,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0,
+        0.1173461561549487
+      ],
+      "goal_completion_rate": 0.5,
+      "collision_free_goal_completion_rate": 0.5,
+      "collision_free_timeout_rate": 0.16666666666666666,
+      "appropriate_abstention_count": 4,
+      "unnecessary_abstention_count": 0,
+      "permanent_stall_rate": 0.16666666666666666,
+      "mean_progress_m": 0.7495763067632494,
+      "world_clustered_progress_m": {
+        "mean": 0.7495763067632496,
+        "clusters": 6,
+        "se": 0.22422214695902049,
+        "ci95_low": 0.31010089872356944,
+        "ci95_high": 1.1890517148029298
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.5,
+        "clusters": 6,
+        "se": 0.22360679774997896,
+        "ci95_low": 0.06173067641004126,
+        "ci95_high": 0.9382693235899587
+      },
+      "mean_path_efficiency": 0.6302854400508299,
+      "mean_action_switches": 4.166666666666667,
+      "mean_info_recovery_delta_u": 0.5205319695500669
+    },
+    "P5_G_OldWeights_UpdatedFeas": {
+      "episodes": 24,
+      "collision_episodes": 0,
+      "total_body_collision_events": 0,
+      "total_whisker_contacts": 0,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0,
+        0.1173461561549487
+      ],
+      "goal_completion_rate": 0.0,
+      "collision_free_goal_completion_rate": 0.0,
+      "collision_free_timeout_rate": 0.5,
+      "appropriate_abstention_count": 4,
+      "unnecessary_abstention_count": 4,
+      "permanent_stall_rate": 0.3333333333333333,
+      "mean_progress_m": 0.3302583877556688,
+      "world_clustered_progress_m": {
+        "mean": 0.3302583877556688,
+        "clusters": 6,
+        "se": 0.09170923600728981,
+        "ci95_low": 0.15050828518138076,
+        "ci95_high": 0.5100084903299569
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.0,
+        "clusters": 6,
+        "se": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "mean_path_efficiency": 0.27785387898450736,
+      "mean_action_switches": 3.0,
+      "mean_info_recovery_delta_u": 0.3747905412156662
+    },
+    "P6_C_Plus_IPMFeas": {
+      "episodes": 24,
+      "collision_episodes": 4,
+      "total_body_collision_events": 4,
+      "total_whisker_contacts": 6,
+      "collision_rate_clopper_pearson_95ci": [
+        0.04735362660725712,
+        0.37384171348868267
+      ],
+      "goal_completion_rate": 0.0,
+      "collision_free_goal_completion_rate": 0.0,
+      "collision_free_timeout_rate": 0.6666666666666666,
+      "appropriate_abstention_count": 4,
+      "unnecessary_abstention_count": 6,
+      "permanent_stall_rate": 0.0,
+      "mean_progress_m": 0.47013742465066827,
+      "world_clustered_progress_m": {
+        "mean": 0.47013742465066827,
+        "clusters": 6,
+        "se": 0.07440971574398761,
+        "ci95_low": 0.32429438179245257,
+        "ci95_high": 0.615980467508884
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.0,
+        "clusters": 6,
+        "se": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "mean_path_efficiency": 0.41194528061885594,
+      "mean_action_switches": 3.2916666666666665,
+      "mean_info_recovery_delta_u": 0.3845516840221719
+    },
+    "P6_Bio_Single24s": {
+      "episodes": 24,
+      "collision_episodes": 0,
+      "total_body_collision_events": 0,
+      "total_whisker_contacts": 0,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0,
+        0.1173461561549487
+      ],
+      "goal_completion_rate": 0.0,
+      "collision_free_goal_completion_rate": 0.0,
+      "collision_free_timeout_rate": 0.5,
+      "appropriate_abstention_count": 4,
+      "unnecessary_abstention_count": 4,
+      "permanent_stall_rate": 0.3333333333333333,
+      "mean_progress_m": 0.2302713889908381,
+      "world_clustered_progress_m": {
+        "mean": 0.2302713889908381,
+        "clusters": 6,
+        "se": 0.051392500887040775,
+        "ci95_low": 0.1295420872522382,
+        "ci95_high": 0.331000690729438
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.0,
+        "clusters": 6,
+        "se": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "mean_path_efficiency": 0.1974411189205135,
+      "mean_action_switches": 2.0416666666666665,
+      "mean_info_recovery_delta_u": 0.24850701981665654
+    },
+    "P6_Bio_MultiProt_NoRecov": {
+      "episodes": 24,
+      "collision_episodes": 0,
+      "total_body_collision_events": 0,
+      "total_whisker_contacts": 0,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0,
+        0.1173461561549487
+      ],
+      "goal_completion_rate": 0.0,
+      "collision_free_goal_completion_rate": 0.0,
+      "collision_free_timeout_rate": 0.8333333333333334,
+      "appropriate_abstention_count": 4,
+      "unnecessary_abstention_count": 4,
+      "permanent_stall_rate": 0.0,
+      "mean_progress_m": 0.36620890480708485,
+      "world_clustered_progress_m": {
+        "mean": 0.36620890480708485,
+        "clusters": 6,
+        "se": 0.10413412821564387,
+        "ci95_low": 0.16210601350442286,
+        "ci95_high": 0.5703117961097468
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.0,
+        "clusters": 6,
+        "se": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "mean_path_efficiency": 0.3050618714598326,
+      "mean_action_switches": 3.0416666666666665,
+      "mean_info_recovery_delta_u": 0.24850701981665654
+    },
+    "P6_Full_V3_Bio": {
+      "episodes": 24,
+      "collision_episodes": 4,
+      "total_body_collision_events": 4,
+      "total_whisker_contacts": 0,
+      "collision_rate_clopper_pearson_95ci": [
+        0.04735362660725712,
+        0.37384171348868267
+      ],
+      "goal_completion_rate": 0.0,
+      "collision_free_goal_completion_rate": 0.0,
+      "collision_free_timeout_rate": 0.6666666666666666,
+      "appropriate_abstention_count": 4,
+      "unnecessary_abstention_count": 0,
+      "permanent_stall_rate": 0.0,
+      "mean_progress_m": 0.43750869081380034,
+      "world_clustered_progress_m": {
+        "mean": 0.43750869081380034,
+        "clusters": 6,
+        "se": 0.06723884683278654,
+        "ci95_low": 0.3057205510215387,
+        "ci95_high": 0.569296830606062
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.0,
+        "clusters": 6,
+        "se": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "mean_path_efficiency": 0.3859327288546215,
+      "mean_action_switches": 3.0416666666666665,
+      "mean_info_recovery_delta_u": 0.6158820782847633
+    },
+    "P6_Full_V3_Rewired7": {
+      "episodes": 24,
+      "collision_episodes": 0,
+      "total_body_collision_events": 0,
+      "total_whisker_contacts": 0,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0,
+        0.1173461561549487
+      ],
+      "goal_completion_rate": 0.0,
+      "collision_free_goal_completion_rate": 0.0,
+      "collision_free_timeout_rate": 0.8333333333333334,
+      "appropriate_abstention_count": 4,
+      "unnecessary_abstention_count": 4,
+      "permanent_stall_rate": 0.0,
+      "mean_progress_m": 0.3982264057681582,
+      "world_clustered_progress_m": {
+        "mean": 0.3982264057681582,
+        "clusters": 6,
+        "se": 0.09633070982037187,
+        "ci95_low": 0.20941821452022935,
+        "ci95_high": 0.5870345970160871
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.0,
+        "clusters": 6,
+        "se": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "mean_path_efficiency": 0.34128290271669365,
+      "mean_action_switches": 3.0,
+      "mean_info_recovery_delta_u": 0.24850701981665654
+    },
+    "P6_Full_V3_GRU": {
+      "episodes": 24,
+      "collision_episodes": 0,
+      "total_body_collision_events": 0,
+      "total_whisker_contacts": 0,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0,
+        0.1173461561549487
+      ],
+      "goal_completion_rate": 0.0,
+      "collision_free_goal_completion_rate": 0.0,
+      "collision_free_timeout_rate": 0.8333333333333334,
+      "appropriate_abstention_count": 4,
+      "unnecessary_abstention_count": 0,
+      "permanent_stall_rate": 0.0,
+      "mean_progress_m": 0.37136934457381954,
+      "world_clustered_progress_m": {
+        "mean": 0.37136934457381954,
+        "clusters": 6,
+        "se": 0.04744495559870986,
+        "ci95_low": 0.2783772316003482,
+        "ci95_high": 0.46436145754729086
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.0,
+        "clusters": 6,
+        "se": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0
+      },
+      "mean_path_efficiency": 0.3335120119825832,
+      "mean_action_switches": 3.5,
+      "mean_info_recovery_delta_u": 0.45065704192492895
+    }
+  },
+  "r05": {
+    "P5_A_V1_Frozen": {
+      "episodes": 24,
+      "collision_episodes": 0,
+      "total_body_collision_events": 0,
+      "total_whisker_contacts": 4,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0,
+        0.1173461561549487
+      ],
+      "goal_completion_rate": 0.16666666666666666,
+      "collision_free_goal_completion_rate": 0.16666666666666666,
+      "collision_free_timeout_rate": 0.4583333333333333,
+      "appropriate_abstention_count": 0,
+      "unnecessary_abstention_count": 0,
+      "permanent_stall_rate": 0.375,
+      "mean_progress_m": 0.2398914007644589,
+      "world_clustered_progress_m": {
+        "mean": 0.2398914007644589,
+        "clusters": 6,
+        "se": 0.055281481616275434,
+        "ci95_low": 0.13153969679655902,
+        "ci95_high": 0.34824310473235875
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.16666666666666666,
+        "clusters": 6,
+        "se": 0.16666666666666669,
+        "ci95_low": -0.16000000000000006,
+        "ci95_high": 0.4933333333333334
+      },
+      "mean_path_efficiency": 0.31233691330567354,
+      "mean_action_switches": 21.166666666666668,
+      "mean_info_recovery_delta_u": 0.34680329108320623
+    },
+    "P5_C_Visual_Only": {
+      "episodes": 24,
+      "collision_episodes": 3,
+      "total_body_collision_events": 5,
+      "total_whisker_contacts": 13,
+      "collision_rate_clopper_pearson_95ci": [
+        0.02655931498624894,
+        0.3236113581888329
+      ],
+      "goal_completion_rate": 0.7083333333333334,
+      "collision_free_goal_completion_rate": 0.6666666666666666,
+      "collision_free_timeout_rate": 0.20833333333333334,
+      "appropriate_abstention_count": 0,
+      "unnecessary_abstention_count": 4,
+      "permanent_stall_rate": 0.0,
+      "mean_progress_m": 0.6848937742959684,
+      "world_clustered_progress_m": {
+        "mean": 0.6848937742959684,
+        "clusters": 6,
+        "se": 0.0971331087978885,
+        "ci95_low": 0.494512881052107,
+        "ci95_high": 0.8752746675398299
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.6666666666666666,
+        "clusters": 6,
+        "se": 0.17873008824606015,
+        "ci95_low": 0.3163556937043887,
+        "ci95_high": 1.0169776396289445
+      },
+      "mean_path_efficiency": 0.7169253526156422,
+      "mean_action_switches": 10.75,
+      "mean_info_recovery_delta_u": 0.4135562577296083
+    },
+    "P5_G_OldWeights_UpdatedFeas": {
+      "episodes": 24,
+      "collision_episodes": 0,
+      "total_body_collision_events": 0,
+      "total_whisker_contacts": 8,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0,
+        0.1173461561549487
+      ],
+      "goal_completion_rate": 0.20833333333333334,
+      "collision_free_goal_completion_rate": 0.20833333333333334,
+      "collision_free_timeout_rate": 0.20833333333333334,
+      "appropriate_abstention_count": 0,
+      "unnecessary_abstention_count": 0,
+      "permanent_stall_rate": 0.5833333333333334,
+      "mean_progress_m": 0.21400653112824086,
+      "world_clustered_progress_m": {
+        "mean": 0.21400653112824086,
+        "clusters": 6,
+        "se": 0.07364445969929288,
+        "ci95_low": 0.06966339011762682,
+        "ci95_high": 0.35834967213885494
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.20833333333333334,
+        "clusters": 6,
+        "se": 0.16351180725290487,
+        "ci95_low": -0.11214980888236017,
+        "ci95_high": 0.5288164755490269
+      },
+      "mean_path_efficiency": 0.29719072128911145,
+      "mean_action_switches": 3.875,
+      "mean_info_recovery_delta_u": 0.22622775625337546
+    },
+    "P6_C_Plus_IPMFeas": {
+      "episodes": 24,
+      "collision_episodes": 5,
+      "total_body_collision_events": 5,
+      "total_whisker_contacts": 14,
+      "collision_rate_clopper_pearson_95ci": [
+        0.07131861719805496,
+        0.42151284363725267
+      ],
+      "goal_completion_rate": 0.6666666666666666,
+      "collision_free_goal_completion_rate": 0.625,
+      "collision_free_timeout_rate": 0.16666666666666666,
+      "appropriate_abstention_count": 0,
+      "unnecessary_abstention_count": 1,
+      "permanent_stall_rate": 0.0,
+      "mean_progress_m": 0.6824383849860999,
+      "world_clustered_progress_m": {
+        "mean": 0.6824383849860999,
+        "clusters": 6,
+        "se": 0.08315968992749347,
+        "ci95_low": 0.5194453927282127,
+        "ci95_high": 0.8454313772439871
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.625,
+        "clusters": 6,
+        "se": 0.17969882210706523,
+        "ci95_low": 0.27279030867015214,
+        "ci95_high": 0.9772096913298478
+      },
+      "mean_path_efficiency": 0.714035409788103,
+      "mean_action_switches": 8.75,
+      "mean_info_recovery_delta_u": 0.4751690842891539
+    },
+    "P6_Bio_Single24s": {
+      "episodes": 24,
+      "collision_episodes": 0,
+      "total_body_collision_events": 0,
+      "total_whisker_contacts": 5,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0,
+        0.1173461561549487
+      ],
+      "goal_completion_rate": 0.16666666666666666,
+      "collision_free_goal_completion_rate": 0.16666666666666666,
+      "collision_free_timeout_rate": 0.20833333333333334,
+      "appropriate_abstention_count": 0,
+      "unnecessary_abstention_count": 0,
+      "permanent_stall_rate": 0.625,
+      "mean_progress_m": 0.1958861970357201,
+      "world_clustered_progress_m": {
+        "mean": 0.19588619703572008,
+        "clusters": 6,
+        "se": 0.0529428703589909,
+        "ci95_low": 0.09211817113209791,
+        "ci95_high": 0.29965422293934224
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.16666666666666666,
+        "clusters": 6,
+        "se": 0.16666666666666669,
+        "ci95_low": -0.16000000000000006,
+        "ci95_high": 0.4933333333333334
+      },
+      "mean_path_efficiency": 0.2746664123622388,
+      "mean_action_switches": 3.5416666666666665,
+      "mean_info_recovery_delta_u": 0.21230216949335357
+    },
+    "P6_Bio_MultiProt_NoRecov": {
+      "episodes": 24,
+      "collision_episodes": 0,
+      "total_body_collision_events": 0,
+      "total_whisker_contacts": 7,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0,
+        0.1173461561549487
+      ],
+      "goal_completion_rate": 0.25,
+      "collision_free_goal_completion_rate": 0.25,
+      "collision_free_timeout_rate": 0.4166666666666667,
+      "appropriate_abstention_count": 0,
+      "unnecessary_abstention_count": 0,
+      "permanent_stall_rate": 0.3333333333333333,
+      "mean_progress_m": 0.32301989200959397,
+      "world_clustered_progress_m": {
+        "mean": 0.32301989200959397,
+        "clusters": 6,
+        "se": 0.06565038977468722,
+        "ci95_low": 0.19434512805120702,
+        "ci95_high": 0.4516946559679809
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.25,
+        "clusters": 6,
+        "se": 0.158113883008419,
+        "ci95_low": -0.05990321069650123,
+        "ci95_high": 0.5599032106965012
+      },
+      "mean_path_efficiency": 0.38695019113679036,
+      "mean_action_switches": 5.375,
+      "mean_info_recovery_delta_u": 0.22494923330222216
+    },
+    "P6_Full_V3_Bio": {
+      "episodes": 24,
+      "collision_episodes": 2,
+      "total_body_collision_events": 2,
+      "total_whisker_contacts": 7,
+      "collision_rate_clopper_pearson_95ci": [
+        0.010256341281250149,
+        0.26997280155760356
+      ],
+      "goal_completion_rate": 0.2916666666666667,
+      "collision_free_goal_completion_rate": 0.2916666666666667,
+      "collision_free_timeout_rate": 0.625,
+      "appropriate_abstention_count": 0,
+      "unnecessary_abstention_count": 0,
+      "permanent_stall_rate": 0.0,
+      "mean_progress_m": 0.4548421703375576,
+      "world_clustered_progress_m": {
+        "mean": 0.4548421703375576,
+        "clusters": 6,
+        "se": 0.04098188647312443,
+        "ci95_low": 0.3745176728502337,
+        "ci95_high": 0.5351666678248814
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.2916666666666667,
+        "clusters": 6,
+        "se": 0.11931517552730296,
+        "ci95_low": 0.057808922633152876,
+        "ci95_high": 0.5255244107001805
+      },
+      "mean_path_efficiency": 0.5098532584051657,
+      "mean_action_switches": 6.666666666666667,
+      "mean_info_recovery_delta_u": 0.38415316293545754
+    },
+    "P6_Full_V3_Rewired7": {
+      "episodes": 24,
+      "collision_episodes": 6,
+      "total_body_collision_events": 6,
+      "total_whisker_contacts": 14,
+      "collision_rate_clopper_pearson_95ci": [
+        0.097730409474533,
+        0.46711280242266934
+      ],
+      "goal_completion_rate": 0.7916666666666666,
+      "collision_free_goal_completion_rate": 0.625,
+      "collision_free_timeout_rate": 0.125,
+      "appropriate_abstention_count": 0,
+      "unnecessary_abstention_count": 0,
+      "permanent_stall_rate": 0.0,
+      "mean_progress_m": 0.6498693863184315,
+      "world_clustered_progress_m": {
+        "mean": 0.6498693863184314,
+        "clusters": 6,
+        "se": 0.06188540314927258,
+        "ci95_low": 0.5285739961458571,
+        "ci95_high": 0.7711647764910057
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.625,
+        "clusters": 6,
+        "se": 0.16770509831248426,
+        "ci95_low": 0.29629800730753086,
+        "ci95_high": 0.9537019926924691
+      },
+      "mean_path_efficiency": 0.683002322884333,
+      "mean_action_switches": 11.541666666666666,
+      "mean_info_recovery_delta_u": 0.5435372034976785
+    },
+    "P6_Full_V3_GRU": {
+      "episodes": 24,
+      "collision_episodes": 0,
+      "total_body_collision_events": 0,
+      "total_whisker_contacts": 7,
+      "collision_rate_clopper_pearson_95ci": [
+        0.0,
+        0.1173461561549487
+      ],
+      "goal_completion_rate": 0.20833333333333334,
+      "collision_free_goal_completion_rate": 0.20833333333333334,
+      "collision_free_timeout_rate": 0.75,
+      "appropriate_abstention_count": 0,
+      "unnecessary_abstention_count": 0,
+      "permanent_stall_rate": 0.041666666666666664,
+      "mean_progress_m": 0.3849192221094471,
+      "world_clustered_progress_m": {
+        "mean": 0.3849192221094471,
+        "clusters": 6,
+        "se": 0.029291283733521363,
+        "ci95_low": 0.32750830599174524,
+        "ci95_high": 0.442330138227149
+      },
+      "world_clustered_goal_rate": {
+        "mean": 0.20833333333333334,
+        "clusters": 6,
+        "se": 0.16351180725290487,
+        "ci95_low": -0.11214980888236017,
+        "ci95_high": 0.5288164755490269
+      },
+      "mean_path_efficiency": 0.4466811299350144,
+      "mean_action_switches": 6.916666666666667,
+      "mean_info_recovery_delta_u": 0.34161697547257525
+    }
+  },
+  "scenario_breakdown": {
+    "P5_A_V1_Frozen": {
+      "open_healthy": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 1.324295666062635,
+        "goal_reached": 4,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "looming_post": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.1723723626676071,
+        "goal_reached": 0,
+        "permanent_stalls": 3,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 1
+      },
+      "near_miss_post": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 1.3155013109812865,
+        "goal_reached": 4,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "freeze_outage_clear": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 1.0427390109016932,
+        "goal_reached": 4,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "blocked_outage": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.12794822913695958,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 4,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "occluded_hazard": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.07197215851914077,
+        "goal_reached": 0,
+        "permanent_stalls": 4,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "corridor_pedestrian": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.13401818443284674,
+        "goal_reached": 0,
+        "permanent_stalls": 4,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "warehouse_forklift_cross": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.37122694729806427,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "outdoor_pothole": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.12855201643298886,
+        "goal_reached": 0,
+        "permanent_stalls": 4,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "lab_glass_wall": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.4457550166834783,
+        "goal_reached": 4,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "ramp_descent": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.15491384277953915,
+        "goal_reached": 0,
+        "permanent_stalls": 1,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 3
+      },
+      "night_mode": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.20488239695983618,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      }
+    },
+    "P5_C_Visual_Only": {
+      "open_healthy": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 1.324295666062635,
+        "goal_reached": 4,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "looming_post": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.5110428185571046,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "near_miss_post": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 1.3155013109812865,
+        "goal_reached": 4,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "freeze_outage_clear": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 1.0427390109016932,
+        "goal_reached": 4,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "blocked_outage": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.13594541975430638,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 4,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "occluded_hazard": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.1679336143224714,
+        "goal_reached": 0,
+        "permanent_stalls": 4,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "corridor_pedestrian": {
+        "n": 4,
+        "collision_episodes": 2,
+        "total_body_collision_events": 2,
+        "progress_mean": 0.49763701480218014,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 4,
+        "timeouts": 2
+      },
+      "warehouse_forklift_cross": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.8081193804408758,
+        "goal_reached": 4,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "outdoor_pothole": {
+        "n": 4,
+        "collision_episodes": 1,
+        "total_body_collision_events": 3,
+        "progress_mean": 1.078917888829211,
+        "goal_reached": 3,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "lab_glass_wall": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.4457550166834783,
+        "goal_reached": 4,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "ramp_descent": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.7295388362924367,
+        "goal_reached": 4,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "night_mode": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.5493945087276288,
+        "goal_reached": 1,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 3
+      }
+    },
+    "P5_G_OldWeights_UpdatedFeas": {
+      "open_healthy": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.6798109561646766,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "looming_post": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.4418390614314776,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "near_miss_post": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.43254973517278417,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "freeze_outage_clear": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.1271694927704464,
+        "goal_reached": 0,
+        "permanent_stalls": 4,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 4,
+        "timeouts": 0
+      },
+      "blocked_outage": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.1271694927704464,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 4,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "occluded_hazard": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.17301158822418192,
+        "goal_reached": 0,
+        "permanent_stalls": 4,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "corridor_pedestrian": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.1300318724161976,
+        "goal_reached": 0,
+        "permanent_stalls": 3,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 1
+      },
+      "warehouse_forklift_cross": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.441801331272472,
+        "goal_reached": 1,
+        "permanent_stalls": 1,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 2
+      },
+      "outdoor_pothole": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.09015377128750214,
+        "goal_reached": 0,
+        "permanent_stalls": 4,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "lab_glass_wall": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.4457550166834783,
+        "goal_reached": 4,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "ramp_descent": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.12710802189260334,
+        "goal_reached": 0,
+        "permanent_stalls": 4,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "night_mode": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.04918917321719195,
+        "goal_reached": 0,
+        "permanent_stalls": 2,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 2
+      }
+    },
+    "P6_C_Plus_IPMFeas": {
+      "open_healthy": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.6897187174754169,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "looming_post": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.3892389479238283,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 2,
+        "timeouts": 4
+      },
+      "near_miss_post": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.6897187174754169,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "freeze_outage_clear": {
+        "n": 4,
+        "collision_episodes": 4,
+        "total_body_collision_events": 4,
+        "progress_mean": 0.42204078604858103,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 4,
+        "timeouts": 0
+      },
+      "blocked_outage": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.3947798006202428,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 4,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "occluded_hazard": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.23532757836052373,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "corridor_pedestrian": {
+        "n": 4,
+        "collision_episodes": 4,
+        "total_body_collision_events": 4,
+        "progress_mean": 0.5545174134225086,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "warehouse_forklift_cross": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.6260162297263399,
+        "goal_reached": 4,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "outdoor_pothole": {
+        "n": 4,
+        "collision_episodes": 1,
+        "total_body_collision_events": 1,
+        "progress_mean": 0.8449454145039359,
+        "goal_reached": 2,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 1
+      },
+      "lab_glass_wall": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.4457550166834783,
+        "goal_reached": 4,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "ramp_descent": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 1.0015336752764208,
+        "goal_reached": 4,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "night_mode": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.6218625603039158,
+        "goal_reached": 1,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 1,
+        "timeouts": 3
+      }
+    },
+    "P6_Bio_Single24s": {
+      "open_healthy": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.3848327043247274,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "looming_post": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.12794822913695958,
+        "goal_reached": 0,
+        "permanent_stalls": 4,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "near_miss_post": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.3848327043247274,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "freeze_outage_clear": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.12794822913695958,
+        "goal_reached": 0,
+        "permanent_stalls": 4,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 4,
+        "timeouts": 0
+      },
+      "blocked_outage": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.1277362844662862,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 4,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "occluded_hazard": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.2283301825553686,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "corridor_pedestrian": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.10201086378423964,
+        "goal_reached": 0,
+        "permanent_stalls": 4,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "warehouse_forklift_cross": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.19678877924671628,
+        "goal_reached": 0,
+        "permanent_stalls": 2,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 2
+      },
+      "outdoor_pothole": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.11632114226680551,
+        "goal_reached": 0,
+        "permanent_stalls": 4,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "lab_glass_wall": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.4457550166834783,
+        "goal_reached": 4,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "ramp_descent": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.11526854485217507,
+        "goal_reached": 0,
+        "permanent_stalls": 4,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "night_mode": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.19917283538090572,
+        "goal_reached": 0,
+        "permanent_stalls": 1,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 3
+      }
+    },
+    "P6_Bio_MultiProt_NoRecov": {
+      "open_healthy": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.6897187174754169,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "looming_post": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.2748935883974418,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "near_miss_post": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.6897187174754169,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "freeze_outage_clear": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.16593434370517138,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 4,
+        "timeouts": 4
+      },
+      "blocked_outage": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.14166048342853793,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 4,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "occluded_hazard": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.23532757836052373,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "corridor_pedestrian": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.10616250447218481,
+        "goal_reached": 0,
+        "permanent_stalls": 4,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "warehouse_forklift_cross": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.43521818698683873,
+        "goal_reached": 1,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 3
+      },
+      "outdoor_pothole": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.12643829167310808,
+        "goal_reached": 0,
+        "permanent_stalls": 4,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "lab_glass_wall": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.4457550166834783,
+        "goal_reached": 4,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "ramp_descent": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.4076212763926327,
+        "goal_reached": 1,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 3
+      },
+      "night_mode": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.41692407584932134,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      }
+    },
+    "P6_Full_V3_Bio": {
+      "open_healthy": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.6897187174754169,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "looming_post": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.4518374441501111,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "near_miss_post": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.421480481351078,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "freeze_outage_clear": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.48617647716651313,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "blocked_outage": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.17738136637686244,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 4,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "occluded_hazard": {
+        "n": 4,
+        "collision_episodes": 4,
+        "total_body_collision_events": 4,
+        "progress_mean": 0.3984576583628201,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "corridor_pedestrian": {
+        "n": 4,
+        "collision_episodes": 2,
+        "total_body_collision_events": 2,
+        "progress_mean": 0.5257265764969196,
+        "goal_reached": 1,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 1
+      },
+      "warehouse_forklift_cross": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.30225332998400034,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "outdoor_pothole": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.3945261864239854,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "lab_glass_wall": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.43977702780309313,
+        "goal_reached": 2,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 2
+      },
+      "ramp_descent": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.4791881601001693,
+        "goal_reached": 1,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 3
+      },
+      "night_mode": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.587581741217178,
+        "goal_reached": 3,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 1
+      }
+    },
+    "P6_Full_V3_Rewired7": {
+      "open_healthy": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.6897187174754169,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "looming_post": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.27939190839747946,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "near_miss_post": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.688469403802562,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "freeze_outage_clear": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.17891173155731716,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 4,
+        "timeouts": 4
+      },
+      "blocked_outage": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.36941649780079805,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 4,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "occluded_hazard": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.18345017557537563,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "corridor_pedestrian": {
+        "n": 4,
+        "collision_episodes": 4,
+        "total_body_collision_events": 4,
+        "progress_mean": 0.5696884085346384,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "warehouse_forklift_cross": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.8111965434724557,
+        "goal_reached": 3,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 1
+      },
+      "outdoor_pothole": {
+        "n": 4,
+        "collision_episodes": 1,
+        "total_body_collision_events": 1,
+        "progress_mean": 0.5365001449056874,
+        "goal_reached": 1,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 2
+      },
+      "lab_glass_wall": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.4507768638057321,
+        "goal_reached": 4,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "ramp_descent": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.805494575350424,
+        "goal_reached": 4,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "night_mode": {
+        "n": 4,
+        "collision_episodes": 1,
+        "total_body_collision_events": 1,
+        "progress_mean": 0.7255597818416508,
+        "goal_reached": 3,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      }
+    },
+    "P6_Full_V3_GRU": {
+      "open_healthy": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.36085097716382514,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "looming_post": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.36061434092996414,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "near_miss_post": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.5441650538164235,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "freeze_outage_clear": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.4166793104723254,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "blocked_outage": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.3624562094850031,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 4,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "occluded_hazard": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.18345017557537563,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "corridor_pedestrian": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.33922260357739475,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "warehouse_forklift_cross": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.4299093852620416,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      },
+      "outdoor_pothole": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.39435818284103297,
+        "goal_reached": 1,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 3
+      },
+      "lab_glass_wall": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.4474150688051273,
+        "goal_reached": 4,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 0
+      },
+      "ramp_descent": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.2624272023757025,
+        "goal_reached": 0,
+        "permanent_stalls": 1,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 3
+      },
+      "night_mode": {
+        "n": 4,
+        "collision_episodes": 0,
+        "total_body_collision_events": 0,
+        "progress_mean": 0.4361828897953838,
+        "goal_reached": 0,
+        "permanent_stalls": 0,
+        "appropriate_abstentions": 0,
+        "unnecessary_abstentions": 0,
+        "timeouts": 4
+      }
+    }
+  }
+}

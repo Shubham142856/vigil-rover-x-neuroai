@@ -1,0 +1,84 @@
+{
+  "schema_version": "p6_pilot_v3",
+  "ctrl_hz": 20,
+  "cam_hz": 10,
+  "phys_hz": 120,
+  "feature_dim": 24,
+  "seq_len": 24,
+  "horizons_s": [
+    0.1,
+    0.3,
+    0.6,
+    1.2,
+    2.4
+  ],
+  "protected_exec_s": 0.30000000000000004,
+  "actions": [
+    "forward",
+    "slow",
+    "brake",
+    "left",
+    "right"
+  ],
+  "oracle_keys_in_inputs": 0,
+  "world_split_leakage": 0,
+  "splits": {
+    "train": {
+      "independent_worlds": 11,
+      "episodes": 11,
+      "decision_states": 33,
+      "counterfactual_branches": 165,
+      "short_safe_long_danger_count": 18,
+      "risk_protected_rate": 0.0060606058686971664,
+      "risk_continue_rates": [
+        0.0,
+        0.0,
+        0.0060606058686971664,
+        0.036363635212183,
+        0.11515151709318161
+      ],
+      "negative_delta_u_count": 2,
+      "positive_delta_u_count": 81,
+      "safe_recover_rate": 0.45454545454545453,
+      "sha256": "793c1bfdfc2891170b9e82385db2c16ba0e5033d56889c62cda9bbbc2ebbba5a"
+    },
+    "val": {
+      "independent_worlds": 4,
+      "episodes": 4,
+      "decision_states": 12,
+      "counterfactual_branches": 60,
+      "short_safe_long_danger_count": 8,
+      "risk_protected_rate": 0.0,
+      "risk_continue_rates": [
+        0.0,
+        0.0,
+        0.0,
+        0.03333333507180214,
+        0.13333334028720856
+      ],
+      "negative_delta_u_count": 11,
+      "positive_delta_u_count": 21,
+      "safe_recover_rate": 0.31666666666666665,
+      "sha256": "7a40a3d129e6cf03a9c19260568ac584e9bfa0721b4b4258ce8e4b9746de1f8a"
+    },
+    "test": {
+      "independent_worlds": 4,
+      "episodes": 4,
+      "decision_states": 12,
+      "counterfactual_branches": 60,
+      "short_safe_long_danger_count": 3,
+      "risk_protected_rate": 0.0,
+      "risk_continue_rates": [
+        0.0,
+        0.0,
+        0.0,
+        0.01666666753590107,
+        0.05000000074505806
+      ],
+      "negative_delta_u_count": 3,
+      "positive_delta_u_count": 25,
+      "safe_recover_rate": 0.3,
+      "sha256": "0d7f960d3d9b7042e24d57300fc5aad24a1c3bf0c7c826526995820ed5992b8d"
+    }
+  }
+}

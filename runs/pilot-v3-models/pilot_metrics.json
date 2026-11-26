@@ -1,0 +1,199 @@
+{
+  "epochs": 80,
+  "runs": {
+    "Single24s_Bio": {
+      "core": "bio",
+      "variant": "single_24s",
+      "val": {
+        "brier_24s": 0.07703174880747081,
+        "brier_03s_cross_err": 0.039593869394654764
+      },
+      "test": {
+        "brier_24s": 0.11840163502038224,
+        "brier_03s_cross_err": 0.06875017358384933
+      }
+    },
+    "Short03s_Bio": {
+      "core": "bio",
+      "variant": "short_03s",
+      "val": {
+        "brier_protected": 0.0011727467286160203,
+        "brier_24s_cross_err": 0.13413053440605383
+      },
+      "test": {
+        "brier_protected": 6.992315412026255e-05,
+        "brier_24s_cross_err": 0.050037653353926057
+      }
+    },
+    "MultiHorizon_Bio": {
+      "core": "bio",
+      "variant": "multi_horizon",
+      "val": {
+        "brier_survival_horizons": [
+          1.063439386848158e-05,
+          0.0002804385515469844,
+          0.00030780453107644607,
+          0.023510996531607455,
+          0.08339928725395038
+        ],
+        "brier_03s_cum": 0.0002804385515469844,
+        "brier_24s_cum": 0.08339928725395038,
+        "brier_protected": 0.7766264596897916,
+        "progress_mae": 1.6738679103587348,
+        "delta_u_mae": 1.1127958209934903,
+        "survival_monotonic": true
+      },
+      "test": {
+        "brier_survival_horizons": [
+          1.635534405063699e-10,
+          3.148515052598194e-09,
+          1.045929541939528e-06,
+          0.014640800179342191,
+          0.112316016788857
+        ],
+        "brier_03s_cum": 3.148515052598194e-09,
+        "brier_24s_cum": 0.112316016788857,
+        "brier_protected": 0.8103012472124766,
+        "progress_mae": 1.8662735548930027,
+        "delta_u_mae": 0.9208584759313295,
+        "survival_monotonic": true
+      }
+    },
+    "MultiHorizonProt_Bio": {
+      "core": "bio",
+      "variant": "multi_horizon_prot",
+      "val": {
+        "brier_survival_horizons": [
+          9.83204580976216e-06,
+          0.0004375060385123901,
+          0.004156875737395658,
+          0.030622061845116965,
+          0.08255596656146466
+        ],
+        "brier_03s_cum": 0.0004375060385123901,
+        "brier_24s_cum": 0.08255596656146466,
+        "brier_protected": 8.469239313732138e-05,
+        "progress_mae": 0.15704123074018783,
+        "delta_u_mae": 1.1835297229807369,
+        "survival_monotonic": true
+      },
+      "test": {
+        "brier_survival_horizons": [
+          3.9301576440335065e-10,
+          1.9101283795993267e-08,
+          8.390867142836881e-06,
+          0.015904846436082126,
+          0.11063107324809546
+        ],
+        "brier_03s_cum": 1.9101283795993267e-08,
+        "brier_24s_cum": 0.11063107324809546,
+        "brier_protected": 6.784865422459851e-07,
+        "progress_mae": 0.10416092934735993,
+        "delta_u_mae": 1.3208321353003072,
+        "survival_monotonic": true
+      }
+    },
+    "FullV3_NeuroCOVER_Bio": {
+      "core": "bio",
+      "variant": "full_v3_neurocover",
+      "val": {
+        "brier_survival_horizons": [
+          1.87602864873918e-05,
+          0.0004085355374196436,
+          0.0029030183246854936,
+          0.02991247541234519,
+          0.0943296739450966
+        ],
+        "brier_03s_cum": 0.0004085355374196436,
+        "brier_24s_cum": 0.0943296739450966,
+        "brier_protected": 0.00036568124316463494,
+        "progress_mae": 0.15802886268058056,
+        "delta_u_mae": 0.5624593077759729,
+        "survival_monotonic": true
+      },
+      "test": {
+        "brier_survival_horizons": [
+          3.569533516704908e-09,
+          5.778964469219267e-08,
+          1.0244321389183154e-05,
+          0.014415740007547882,
+          0.10980666573975591
+        ],
+        "brier_03s_cum": 5.778964469219267e-08,
+        "brier_24s_cum": 0.10980666573975591,
+        "brier_protected": 4.540231162897278e-06,
+        "progress_mae": 0.1620444605585113,
+        "delta_u_mae": 0.5273739743604642,
+        "survival_monotonic": true
+      }
+    },
+    "FullV3_NeuroCOVER_Rewired7": {
+      "core": "rewired",
+      "variant": "full_v3_neurocover",
+      "val": {
+        "brier_survival_horizons": [
+          5.506750766596997e-06,
+          1.980977970179685e-05,
+          0.0006125062986932148,
+          0.018702078615524538,
+          0.1138821686850274
+        ],
+        "brier_03s_cum": 1.980977970179685e-05,
+        "brier_24s_cum": 0.1138821686850274,
+        "brier_protected": 0.00019163473316521505,
+        "progress_mae": 0.13102060053733253,
+        "delta_u_mae": 0.3754604177920342,
+        "survival_monotonic": true
+      },
+      "test": {
+        "brier_survival_horizons": [
+          2.9331623497787687e-08,
+          5.602140796594383e-08,
+          5.7035992191684915e-06,
+          0.004038921356773275,
+          0.1009344760386197
+        ],
+        "brier_03s_cum": 5.602140796594383e-08,
+        "brier_24s_cum": 0.1009344760386197,
+        "brier_protected": 1.0726644586218826e-06,
+        "progress_mae": 0.08422352070555487,
+        "delta_u_mae": 0.3410129613682263,
+        "survival_monotonic": true
+      }
+    },
+    "FullV3_NeuroCOVER_GRU": {
+      "core": "gru",
+      "variant": "full_v3_neurocover",
+      "val": {
+        "brier_survival_horizons": [
+          4.3582606965623887e-07,
+          1.6321671730874247e-06,
+          9.184347788108073e-06,
+          0.03443839654495102,
+          0.13735218263501114
+        ],
+        "brier_03s_cum": 1.6321671730874247e-06,
+        "brier_24s_cum": 0.13735218263501114,
+        "brier_protected": 6.160825135068168e-07,
+        "progress_mae": 0.1712982027085804,
+        "delta_u_mae": 0.22926942740418882,
+        "survival_monotonic": true
+      },
+      "test": {
+        "brier_survival_horizons": [
+          9.330053189785036e-08,
+          5.027475628641111e-07,
+          5.950249402697791e-06,
+          0.01666121693045834,
+          0.0993032306676524
+        ],
+        "brier_03s_cum": 5.027475628641111e-07,
+        "brier_24s_cum": 0.0993032306676524,
+        "brier_protected": 2.1348277064252894e-05,
+        "progress_mae": 0.1025696292271164,
+        "delta_u_mae": 0.16794156739179017,
+        "survival_monotonic": true
+      }
+    }
+  }
+}
