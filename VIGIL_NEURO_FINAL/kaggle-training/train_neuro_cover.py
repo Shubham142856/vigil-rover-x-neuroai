@@ -63,21 +63,32 @@ class ActionHeadPolicy(nn.Module):
         return out[:, 0], out[:, 1], out[:, 2]
 
 
-def calibrate_zero_fp_threshold(probs, y_true):
-    """Freeze lowest validation threshold yielding zero false-safe misses (bounded FP)."""
+def calibrate_bounded_fp_threshold(probs, y_true, max_fpr=0.02):
+    """Freeze lowest validation threshold keeping validation FPR <= max_fpr and maximizing TPR."""
     order = np.argsort(probs)
     best_t, best_score = 0.5, (-1.0, -1.0, -1.0)
+    n_neg = max(1, int(np.sum(y_true == 0)))
+    n_pos = max(1, int(np.sum(y_true == 1)))
     for t in np.unique(probs[order]):
         pred = probs >= t
         fp = int(np.sum(pred & (y_true == 0)))
         tp = int(np.sum(pred & (y_true == 1)))
-        tpr = tp / max(1, int(np.sum(y_true == 1)))
-        tnr = 1.0 - fp / max(1, int(np.sum(y_true == 0)))
-        cand = (1.0 if fp == 0 else tnr, tpr, -float(t))
+        fpr = fp / n_neg
+        tpr = tp / n_pos
+        within_budget = 1.0 if fpr <= max_fpr else (1.0 - fpr)
+        cand = (within_budget, tpr - fpr, tpr, -float(t))
         if cand > best_score:
             best_score = cand
             best_t = float(t)
     return best_t
+
+
+def _binary_f1(pred: np.ndarray, y_true: np.ndarray) -> float:
+    tp = int(np.sum(pred & (y_true == 1)))
+    fp = int(np.sum(pred & (y_true == 0)))
+    fn = int(np.sum((~pred) & (y_true == 1)))
+    denom = 2 * tp + fp + fn
+    return float(2 * tp / denom) if denom > 0 else 0.0
 
 
 def resolve_inputs(data_dir, bio_path, rewired_path, annotations_path):
@@ -189,7 +200,8 @@ def train_and_eval(data_dir: Path, bio_npz: Path, rewired_npz: Path, annotations
     loader = DataLoader(TensorDataset(*tr), batch_size=32, shuffle=True)
     pos_count = float(tr[2].sum())
     neg_count = float(len(tr[2]) - pos_count)
-    pos_weight = torch.tensor([max(1.0, neg_count / max(pos_count, 1.0))], device=dev)
+    # Cap pos_weight at 5.0 to prevent extreme probability saturation on noisy validation frames
+    pos_weight = torch.tensor([min(5.0, max(1.0, neg_count / max(pos_count, 1.0)))], device=dev)
     bce_contact = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
     bce_recov = nn.BCEWithLogitsLoss()
     mse = nn.MSELoss()
@@ -213,7 +225,8 @@ def train_and_eval(data_dir: Path, bio_npz: Path, rewired_npz: Path, annotations
         with torch.no_grad():
             vlc, _, _ = model(va[0].to(dev), va[1].to(dev))
             vprob = torch.sigmoid(vlc).cpu().numpy()
-            thresh = calibrate_zero_fp_threshold(vprob, va[2].numpy())
+            thresh = calibrate_bounded_fp_threshold(vprob, va[2].numpy(), max_fpr=0.02)
+            zero_fp_thresh = calibrate_bounded_fp_threshold(vprob, va[2].numpy(), max_fpr=0.0)
             thresholds[name] = thresh
 
             tlc, tpr_, tlr = model(te[0].to(dev), te[1].to(dev))
@@ -222,9 +235,11 @@ def train_and_eval(data_dir: Path, bio_npz: Path, rewired_npz: Path, annotations
             pred = tprob >= thresh
             metrics[name] = {
                 "frozen_val_threshold": thresh,
+                "strict_zero_fp_val_threshold": zero_fp_thresh,
                 "test_brier": float(np.mean((tprob - ty) ** 2)),
                 "test_false_positive_rate": float(np.mean(pred[ty == 0])) if np.any(ty == 0) else 0.0,
                 "test_recall": float(np.mean(pred[ty == 1])) if np.any(ty == 1) else 0.0,
+                "test_f1": _binary_f1(pred, ty),
                 "test_progress_mae": float(np.mean(np.abs(tpr_.cpu().numpy() - te[3].numpy()))),
                 "test_recover_bce": float(bce_recov(tlr.cpu(), te[4]).item()),
             }
@@ -249,7 +264,7 @@ if __name__ == "__main__":
     p.add_argument("--rewired", type=Path, default=None)
     p.add_argument("--annotations", type=Path, default=None)
     p.add_argument("--out", type=Path, default=Path("/kaggle/working"))
-    p.add_argument("--epochs", type=int, default=35)
+    p.add_argument("--epochs", type=int, default=50)
     p.add_argument("--device", default="cuda")
     a = p.parse_args()
     data_d, bio_p, rew_p, ann_p, source = resolve_inputs(a.data, a.bio, a.rewired, a.annotations)

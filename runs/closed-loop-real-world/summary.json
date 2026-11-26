@@ -1,6 +1,8 @@
 {
   "seeds": 4,
+  "suite": "g08",
   "env_mode": "real_world",
+  "weights_path": "runs\\kaggle-training-r06\\portable_weights.npz",
   "scenarios": [
     "open_healthy",
     "looming_post",
@@ -13,38 +15,38 @@
     "recovery_off": {
       "episodes": 24,
       "total_body_collisions": 0,
-      "total_whisker_events": 0,
-      "safe_success_rate": 0.6666666666666666,
-      "false_emergency_stops": 8,
+      "total_whisker_events": 1,
+      "safe_success_rate": 0.9583333333333334,
+      "false_emergency_stops": 1,
       "abstentions": 8,
-      "mean_progress_m": 0.20394278403024244
+      "mean_progress_m": 0.45188348209412127
     },
     "ordinary_recovery": {
       "episodes": 24,
       "total_body_collisions": 0,
       "total_whisker_events": 0,
-      "safe_success_rate": 0.6666666666666666,
-      "false_emergency_stops": 8,
+      "safe_success_rate": 0.9583333333333334,
+      "false_emergency_stops": 1,
       "abstentions": 8,
-      "mean_progress_m": 0.1603675753505362
+      "mean_progress_m": 0.3857680265542343
     },
     "circuit_recovery": {
       "episodes": 24,
-      "total_body_collisions": 2,
-      "total_whisker_events": 6,
-      "safe_success_rate": 0.625,
-      "false_emergency_stops": 8,
-      "abstentions": 8,
-      "mean_progress_m": 0.3543629805507302
+      "total_body_collisions": 0,
+      "total_whisker_events": 5,
+      "safe_success_rate": 0.9583333333333334,
+      "false_emergency_stops": 1,
+      "abstentions": 5,
+      "mean_progress_m": 0.5005216751995296
     },
     "neuro_cover_l": {
       "episodes": 24,
-      "total_body_collisions": 1,
-      "total_whisker_events": 6,
-      "safe_success_rate": 0.625,
-      "false_emergency_stops": 8,
-      "abstentions": 8,
-      "mean_progress_m": 0.3702944028165375
+      "total_body_collisions": 0,
+      "total_whisker_events": 12,
+      "safe_success_rate": 0.9583333333333334,
+      "false_emergency_stops": 1,
+      "abstentions": 5,
+      "mean_progress_m": 0.6417644788678031
     }
   }
 }
