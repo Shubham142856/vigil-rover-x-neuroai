@@ -1,0 +1,15 @@
+{
+  "scene": "lab_glass_wall",
+  "seed": 1,
+  "fault": "none",
+  "steps": 80,
+  "delivered_frames": 41,
+  "final": {
+    "x_m": 0.44450487688407314,
+    "y_m": -0.006865463811867145,
+    "yaw_rad": -0.0266704884695043,
+    "speed_m_s": 0.00044027792380344177,
+    "body_contact": false,
+    "body_contact_events": 0
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "scene": "warehouse_forklift_cross",
+  "seed": 1,
+  "fault": "none",
+  "steps": 80,
+  "delivered_frames": 41,
+  "final": {
+    "x_m": 0.40834931061980495,
+    "y_m": -0.00243461063576427,
+    "yaw_rad": -0.01852741133091043,
+    "speed_m_s": 0.0011457031099978924,
+    "body_contact": false,
+    "body_contact_events": 0
+  }
+}

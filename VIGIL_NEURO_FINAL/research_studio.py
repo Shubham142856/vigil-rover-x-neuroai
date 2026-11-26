@@ -26,7 +26,7 @@ def _png_bytes(rgb_uint8: np.ndarray) -> bytes:
     return b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", ihdr) + chunk(b"IDAT", zlib.compress(raw, 6)) + chunk(b"IEND", b"")
 
 
-def verify_replay_bundle(run_dir: Path) -> dict:
+def verify_replay_bundle(run_dir: Path, check_baseline_policy: bool = True) -> dict:
     """Verify that replay.jsonl, frames.npz, and summary.json describe one identical run."""
     records = [json.loads(line) for line in (run_dir / "replay.jsonl").read_text(encoding="utf-8").splitlines() if line.strip()]
     summary = json.loads((run_dir / "summary.json").read_text(encoding="utf-8"))
@@ -44,7 +44,7 @@ def verify_replay_bundle(run_dir: Path) -> dict:
                     raise AssertionError(f"Capture timestamp mismatch at step {idx}")
                 if abs(float(s["delivery_s"]) - float(deliv[fi])) > 1e-9:
                     raise AssertionError(f"Delivery timestamp mismatch at step {idx}")
-            if rec["action"] is not None:
+            if check_baseline_policy and rec["action"] is not None:
                 expected_action = decide(s)[0]
                 if rec["action"] != expected_action:
                     raise AssertionError(f"Decision mismatch at step {idx}: {rec['action']} != {expected_action}")
@@ -64,13 +64,21 @@ def verify_replay_bundle(run_dir: Path) -> dict:
 
 def build_studio(runs_dir: Path, gates_csv: Path, out_dir: Path) -> dict:
     out_dir.mkdir(parents=True, exist_ok=True)
-    replay_names = ("my-first-drive", "rover-freeze", "rover-wall")
+    replay_specs = [
+        ("my-first-drive", True),
+        ("rover-freeze", True),
+        ("rover-wall", True),
+        ("r05-pedestrian", False),
+        ("r05-forklift", False),
+        ("r05-glass-wall", False),
+        ("r05-night", False),
+    ]
     replays = {}
     verification = {}
-    for name in replay_names:
+    for name, check_base in replay_specs:
         rdir = runs_dir / name
         if (rdir / "replay.jsonl").exists():
-            bundle = verify_replay_bundle(rdir)
+            bundle = verify_replay_bundle(rdir, check_baseline_policy=check_base)
             verification[name] = {
                 "verified": True,
                 "steps": bundle["steps"],
@@ -94,6 +102,9 @@ def build_studio(runs_dir: Path, gates_csv: Path, out_dir: Path) -> dict:
         "camera_escape": read_json_if(runs_dir / "camera-escape-zero-fp/summary.json"),
         "compass_benchmark": read_json_if(runs_dir / "compass-benchmark/summary.json"),
         "closed_loop": read_json_if(runs_dir / "closed-loop-eval/summary.json"),
+        "closed_loop_real": read_json_if(runs_dir / "closed-loop-real-world/summary.json"),
+        "closed_loop_r05": read_json_if(runs_dir / "closed-loop-r05/summary.json"),
+        "kaggle_r06": read_json_if(runs_dir / "kaggle-training-r06/metrics.json"),
         "scientific_validation": read_json_if(runs_dir / "scientific-validation/validation_report.json"),
     }
 
@@ -152,12 +163,31 @@ def build_studio(runs_dir: Path, gates_csv: Path, out_dir: Path) -> dict:
 
 <div class="grid">
   <div class="card">
-    <h3>Acceptance Gates</h3>
+    <h3>Closed-Loop Recovery Ablation (G08 rover_sim)</h3>
+    <table id="clTbl"><thead><tr><th>Policy</th><th>Collisions</th><th>False Stops</th><th>Safe Success</th><th>Progress</th></tr></thead><tbody></tbody></table>
+  </div>
+  <div class="card">
+    <h3>Real-World Transfer Benchmark (R05 6-Scenario Suite)</h3>
+    <table id="r05Tbl"><thead><tr><th>Policy</th><th>Collisions</th><th>False Stops</th><th>Safe Success</th><th>Progress</th></tr></thead><tbody></tbody></table>
+  </div>
+  <div class="card">
+    <h3>Kaggle Tesla T4 Models (R06 G07+R05)</h3>
+    <table id="kgTbl"><thead><tr><th>Model</th><th>Brier</th><th>Test FPR</th><th>Recall</th><th>Recov BCE</th></tr></thead><tbody></tbody></table>
+  </div>
+  <div class="card">
+    <h3>FAFB Directional Memory (G05 Compass Error °)</h3>
+    <table id="cmpTbl"><thead><tr><th>Model</th><th>Blackout</th><th>Reacquired</th><th>Conflict</th></tr></thead><tbody></tbody></table>
+  </div>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <h3>Acceptance Gates (G01–G10, R01–R07)</h3>
     <table id="gatesTbl"><thead><tr><th>Gate</th><th>Workstream</th><th>Status</th></tr></thead><tbody></tbody></table>
   </div>
   <div class="card">
-    <h3>Closed-Loop Recovery Ablation (G08)</h3>
-    <table id="clTbl"><thead><tr><th>Policy</th><th>Collisions</th><th>False Stops</th><th>Safe Success</th><th>Abstentions</th></tr></thead><tbody></tbody></table>
+    <h3>Scientific Validation &amp; BANC Status (G09)</h3>
+    <div id="valPanel" class="mono"></div>
   </div>
 </div>
 
@@ -212,8 +242,11 @@ function render() {{
   }}
   ctx.stroke();
   const cur = rec.state;
+  const cx = 30 + cur.x_m * 180, cy = 120 - cur.y_m * 180;
   ctx.fillStyle = cur.body_contact ? '#ef4444' : '#22c55e';
-  ctx.beginPath(); ctx.arc(30 + cur.x_m * 180, 120 - cur.y_m * 180, 5, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(cx, cy, 5, 0, Math.PI*2); ctx.fill();
+  ctx.strokeStyle = '#facc15'; ctx.lineWidth = 2; ctx.beginPath();
+  ctx.moveTo(cx, cy); ctx.lineTo(cx + 14 * Math.cos(cur.yaw_rad), cy - 14 * Math.sin(cur.yaw_rad)); ctx.stroke();
 }}
 
 document.getElementById('playBtn').onclick = () => {{
@@ -238,13 +271,43 @@ DATA.gates.forEach(g => {{
   gt.appendChild(tr);
 }});
 
-if (DATA.closed_loop && DATA.closed_loop.policies) {{
-  const ct = document.querySelector('#clTbl tbody');
-  Object.entries(DATA.closed_loop.policies).forEach(([name, m]) => {{
+function renderPolicyTable(sel, data) {{
+  if (!data || !data.policies) return;
+  const tbody = document.querySelector(sel + ' tbody');
+  Object.entries(data.policies).forEach(([name, m]) => {{
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${{name}}</td><td>${{m.total_body_collisions}}</td><td>${{m.false_emergency_stops}}</td><td>${{(m.safe_success_rate*100).toFixed(1)}}%</td><td>${{m.abstentions}}</td>`;
+    tr.innerHTML = `<td>${{name}}</td><td>${{m.total_body_collisions}}</td><td>${{m.false_emergency_stops}}</td><td>${{(m.safe_success_rate*100).toFixed(1)}}%</td><td>${{m.mean_progress_m.toFixed(3)}}m</td>`;
+    tbody.appendChild(tr);
+  }});
+}}
+renderPolicyTable('#clTbl', DATA.closed_loop);
+renderPolicyTable('#r05Tbl', DATA.closed_loop_r05);
+
+if (DATA.kaggle_r06 && DATA.kaggle_r06.models) {{
+  const kt = document.querySelector('#kgTbl tbody');
+  Object.entries(DATA.kaggle_r06.models).forEach(([name, m]) => {{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${{name}}</td><td>${{m.test_brier.toFixed(4)}}</td><td>${{m.test_false_positive_rate.toFixed(4)}}</td><td>${{m.test_recall.toFixed(3)}}</td><td>${{m.test_recover_bce.toFixed(4)}}</td>`;
+    kt.appendChild(tr);
+  }});
+}}
+
+if (DATA.compass_benchmark && DATA.compass_benchmark.mean_abs_error_deg) {{
+  const ct = document.querySelector('#cmpTbl tbody');
+  Object.entries(DATA.compass_benchmark.mean_abs_error_deg).forEach(([name, m]) => {{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${{name}}</td><td>${{m.dark_blackout_deg.toFixed(2)}}&deg;</td><td>${{m.landmark_reacquired_deg.toFixed(2)}}&deg;</td><td>${{m.distractor_conflict_deg.toFixed(2)}}&deg;</td>`;
     ct.appendChild(tr);
   }});
+}}
+
+if (DATA.scientific_validation) {{
+  const sv = DATA.scientific_validation;
+  const p = sv.recovery_contrast_progress_m_circuit_vs_off;
+  const banc = sv.banc_v888 ? sv.banc_v888.measurement_status : 'N/A';
+  document.getElementById('valPanel').innerHTML =
+    `Circuit vs Off Progress Diff: +${{p.mean_diff.toFixed(4)}}m (95% CI [${{p.ci95_low.toFixed(4)}}, ${{p.ci95_high.toFixed(4)}}])<br/><br/>` +
+    `BANC v888 Status: <span class="warn">${{banc}}</span>`;
 }}
 render();
 </script>

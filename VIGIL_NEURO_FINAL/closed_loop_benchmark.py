@@ -157,6 +157,7 @@ def run_episode(scenario, policy_mode, seed, escape_assets, compass_model, env_m
     ncl_models = _load_neuro_cover_l(weights_path) if policy_mode == "neuro_cover_l" else None
     ncl_vstate = None
     ncl_last_cap = None
+    last_scan_step = -20
 
     with build_scenario(scenario, seed, env_mode=env_mode) as sim:
         obs = sim.observe()
@@ -225,10 +226,21 @@ def run_episode(scenario, policy_mode, seed, escape_assets, compass_model, env_m
                     and action == "forward"
                     and snap["unknown_or_stale_fraction"] > 0.35
                 ):
-                    # Active NeuroCOVER-L feasibility check: slow down if M4 sees moderate risk
+                    # Active NeuroCOVER-L scan & risk modulation among feasible actions
                     m4_slow = ncl_models["m4"].predict_action("slow")
                     m8_fwd = ncl_models["m8"].predict_action("forward")
-                    if m8_fwd["contact_prob"] >= ncl_models["m8"].threshold and m4_slow["contact_prob"] < ncl_models["m4"].threshold:
+                    if step - last_scan_step >= 12:
+                        scan_cands = []
+                        for s_act in ("left", "right"):
+                            s_risk = ncl_models["m4"].predict_action(s_act)["contact_prob"]
+                            s_recov = ncl_models["m8"].predict_action(s_act)["recover_prob"]
+                            if s_risk < ncl_models["m4"].threshold and s_recov >= 0.55:
+                                scan_cands.append((s_recov, s_act))
+                        if scan_cands:
+                            scan_cands.sort(reverse=True)
+                            action = scan_cands[0][1]
+                            last_scan_step = step
+                    if action == "forward" and m8_fwd["contact_prob"] >= ncl_models["m8"].threshold and m4_slow["contact_prob"] < ncl_models["m4"].threshold:
                         action = "slow"
             else:
                 raise ValueError(policy_mode)

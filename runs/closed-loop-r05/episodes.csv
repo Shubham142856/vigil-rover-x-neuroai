@@ -75,10 +75,10 @@ corridor_pedestrian,neuro_cover_l,0,0,0,0.13705058213458898,False,False,True
 corridor_pedestrian,neuro_cover_l,1,0,0,0.1370462859119563,False,False,True
 corridor_pedestrian,neuro_cover_l,2,0,0,0.15426357372993096,False,False,True
 corridor_pedestrian,neuro_cover_l,3,0,0,0.15942966948119583,False,False,True
-warehouse_forklift_cross,neuro_cover_l,0,0,0,0.35233949722798186,False,False,True
-warehouse_forklift_cross,neuro_cover_l,1,0,0,0.40834931061980495,False,False,True
-warehouse_forklift_cross,neuro_cover_l,2,0,0,0.3734715201025454,False,False,True
-warehouse_forklift_cross,neuro_cover_l,3,0,0,0.41277343253556953,False,False,True
+warehouse_forklift_cross,neuro_cover_l,0,0,0,0.336707408821341,False,False,True
+warehouse_forklift_cross,neuro_cover_l,1,0,0,0.3779656598046479,False,False,True
+warehouse_forklift_cross,neuro_cover_l,2,0,0,0.3302717459241265,False,False,True
+warehouse_forklift_cross,neuro_cover_l,3,0,0,0.34388231504745115,False,False,True
 outdoor_pothole,neuro_cover_l,0,0,0,0.20419090661153713,False,False,True
 outdoor_pothole,neuro_cover_l,1,0,0,0.1163266919658127,False,False,True
 outdoor_pothole,neuro_cover_l,2,0,0,0.20628727734596572,False,False,True
