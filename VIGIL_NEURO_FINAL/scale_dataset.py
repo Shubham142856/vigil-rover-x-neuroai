@@ -7,10 +7,11 @@ from pathlib import Path
 import numpy as np
 
 from blindspot_dataset import ORACLE_KEYS, SectorBelief, make_paired_world
-from branch_rollout import compare_actions
+from branch_rollout import compare_actions, evaluate_action_branches_v2
 from camera_escape import visual_looming
 from real_world_env import RealWorldEnv
 from rover_sim import RoverSim
+from spatial_belief_v2 import FactorizedSpatialBelief
 
 ACTIONS = ("forward", "slow", "brake", "left", "right")
 R05_FAMILIES = (
@@ -114,12 +115,13 @@ def generate_shards(out: Path, episodes_per_split=None, suite="g07"):
     state_split_map = {}
 
     for split, specs in episodes_per_split.items():
-        seqs, act_ids, y_contact, y_prog, y_recov = [], [], [], [], []
+        seqs, act_ids, y_contact, y_prog, y_recov, y_gain = [], [], [], [], [], []
         for family, fault, seed in specs:
             state_id = f"{family}:{fault}:{seed}"
             state_split_map.setdefault(state_id, set()).add(split)
             with build_world(family, seed, fault) as sim:
                 belief = SectorBelief(max_age_s=0.45)
+                belief_v2 = FactorizedSpatialBelief(max_age_s=0.60)
                 vstate = None
                 hist = []
                 prev_t = 0.0
@@ -128,10 +130,11 @@ def generate_shards(out: Path, episodes_per_split=None, suite="g07"):
                     dt = max(0.05, obs["time_s"] - prev_t)
                     prev_t = obs["time_s"]
                     snap = belief.update(obs)
+                    belief_v2.update(obs)
                     feat, vstate = extract_features(obs, snap, vstate, dt)
                     hist.append(feat)
                     if step in (12, 16, 20):
-                        branches = compare_actions(sim, list(ACTIONS), 28)
+                        branches = evaluate_action_branches_v2(sim, list(ACTIONS), 28, belief_v2)
                         seq = np.zeros((24, 16), dtype=np.float32)
                         seq[-len(hist) :] = np.stack(hist)
                         for a_idx, act in enumerate(ACTIONS):
@@ -140,7 +143,10 @@ def generate_shards(out: Path, episodes_per_split=None, suite="g07"):
                             act_ids.append(a_idx)
                             y_contact.append(1.0 if res["body_contact"] else 0.0)
                             y_prog.append(float(res["forward_progress_m"]))
-                            y_recov.append(1.0 if (not res["body_contact"] and abs(res["heading_change_rad"]) > 0.2) else 0.0)
+                            g_t = float(res["info_gain"])
+                            y_gain.append(g_t)
+                            # True recoverability: safe + camera healthy at t+H + decision-relevant U_task reduction
+                            y_recov.append(1.0 if (not res["body_contact"] and res["cam_healthy_end"] and g_t >= 0.04) else 0.0)
                     sim.step("forward")
 
         arr_path = out / f"{split}.npz"
@@ -151,10 +157,13 @@ def generate_shards(out: Path, episodes_per_split=None, suite="g07"):
             y_contact=np.asarray(y_contact, dtype=np.float32),
             y_progress=np.asarray(y_prog, dtype=np.float32),
             y_recover=np.asarray(y_recov, dtype=np.float32),
+            y_info_gain=np.asarray(y_gain, dtype=np.float32),
         )
         split_arrays[split] = {
             "samples": len(seqs),
             "positive_contact_rate": float(np.mean(y_contact)) if y_contact else 0.0,
+            "positive_recover_rate": float(np.mean(y_recov)) if y_recov else 0.0,
+            "mean_info_gain": float(np.mean(y_gain)) if y_gain else 0.0,
             "sha256": hashlib.sha256(arr_path.read_bytes()).hexdigest(),
         }
 
