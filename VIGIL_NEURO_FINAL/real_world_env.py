@@ -325,7 +325,7 @@ class RealWorldEnv:
 
     def __init__(self, scene="open", seed=7,
                  fault="none", fault_start_s=0.2, fault_end_s=0.5,
-                 delay_s=0.03, sensor_noise=True):
+                 delay_s=0.3, sensor_noise=True):
         """
         Args:
             scene:        One of SCENES keys.
@@ -359,9 +359,14 @@ class RealWorldEnv:
 
         # Lighting state
         cfg = SCENES.get(scene, SCENES["open"])
+        self._scene_cfg  = cfg
         self._base_lux   = cfg.get("lighting_lux", 400)
         self._flicker_t  = 0.0
         self._tint       = self._rng.uniform(0.85, 1.0)
+        self._sensor_model = None
+        if self._sensor_noise:
+            from real_sensor_model import RealSensorModel
+            self._sensor_model = RealSensorModel(seed=seed)
 
         # Build world
         self._static_bodies = []
@@ -470,13 +475,9 @@ class RealWorldEnv:
         frame = (np.asarray(rgba).reshape(96, 128, 4)[:, :, :3] *
                  self._lighting_tint()).astype(np.uint8)
 
-        # Apply sensor noise if enabled (delegated to RealSensorModel)
-        if self._sensor_noise:
-            try:
-                from real_sensor_model import RealSensorModel
-                frame = RealSensorModel.apply_camera_noise(frame, self._angular_velocity())
-            except ImportError:
-                pass   # sensor model optional — degrade gracefully
+        # Apply persistent sensor noise model if enabled
+        if self._sensor_model is not None:
+            frame = self._sensor_model.camera(frame, self._angular_velocity())
         return frame
 
     def _angular_velocity(self):
@@ -496,7 +497,7 @@ class RealWorldEnv:
                 capture, image = self._packet[:2]
             else:
                 capture, image = now, self.render()
-            delivery = now + (self._delay_s if fault == "delay" else self._delay_s)
+            delivery = now + (self._delay_s if fault == "delay" else 0.0)
             self._queue.append((delivery, capture, image))
 
         pending = []
@@ -519,6 +520,9 @@ class RealWorldEnv:
         now = self._tick / self.CTRL_HZ
         capture, image, delivery = self._packet or (None, self._rgb0, None)
         left, right = self.whiskers()
+        if self._sensor_model is not None:
+            w = self._sensor_model.whisker(left, right, now)
+            left, right = w["left"], w["right"]
         return dict(
             time_s=now, rgb=image.copy(),
             capture_s=capture, delivery_s=delivery,
@@ -531,7 +535,8 @@ class RealWorldEnv:
             looming_center=self._growth,
             # Reality-grounded extras (available to policy but not required)
             scene_lux=self._base_lux,
-            terrain_bump_rms_m=SCENES.get("open", {}).get("bump_std_m", 0.003),
+            terrain_bump_rms_m=self._scene_cfg.get("bump_std_m", 0.003),
+            friction_mu=self._scene_cfg.get("friction_mu", 0.6),
         )
 
     def step(self, action):

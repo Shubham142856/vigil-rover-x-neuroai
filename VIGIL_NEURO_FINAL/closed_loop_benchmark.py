@@ -17,131 +17,115 @@ from blindspot_dataset import ORACLE_KEYS, SectorBelief, make_paired_world
 from camera_compass import bearing, fresh_heading
 from camera_escape import Network, visual_looming
 from compass_benchmark import ConnectomeCompass, load_compass_connectome
+from real_world_env import RealWorldEnv
 from recovery_policy import choose_recovery_action
 from rover_sim import RoverSim
+from scale_dataset import ACTIONS, extract_features
 
-# Optional: load NeuroCOVER-L weights from G07 Kaggle training
 _WEIGHTS_PATH = Path("runs/kaggle-training-v1/portable_weights.npz")
 
 
+def _sigmoid(x: float) -> float:
+    x = float(np.clip(x, -30.0, 30.0))
+    return 1.0 / (1.0 + float(np.exp(-x)))
+
+
+def _softplus(x: np.ndarray) -> np.ndarray:
+    return np.where(x > 20.0, x, np.log1p(np.exp(np.clip(x, -50.0, 20.0))))
+
+
+class _PortableMaskedPolicy:
+    """Exact NumPy runtime for Kaggle-trained MaskedCircuitCore + ActionHeadPolicy."""
+
+    def __init__(self, arrays, prefix: str):
+        p = f"{prefix}__"
+        adj = arrays[p + "core.adj_mask"]
+        sign = arrays[p + "core.sign_mask"]
+        theta = arrays[p + "core.theta"]
+        self.w_eff = (adj * sign * _softplus(theta)).astype(np.float32)
+        self.enc_w = arrays[p + "core.enc.weight"].astype(np.float32)
+        self.enc_b = arrays[p + "core.enc.bias"].astype(np.float32)
+        self.act_emb = arrays[p + "act_emb.weight"].astype(np.float32)
+        self.h0_w = arrays[p + "head.0.weight"].astype(np.float32)
+        self.h0_b = arrays[p + "head.0.bias"].astype(np.float32)
+        self.h2_w = arrays[p + "head.2.weight"].astype(np.float32)
+        self.h2_b = arrays[p + "head.2.bias"].astype(np.float32)
+        self.threshold = float(arrays[p + "threshold"][0])
+        self.state = np.zeros(adj.shape[0], dtype=np.float32)
+
+    def step_core(self, feats: np.ndarray):
+        drive = feats @ self.enc_w.T + self.enc_b
+        self.state = self.state + 0.2 * (np.tanh(drive + self.state @ self.w_eff.T) - self.state)
+
+    def predict_action(self, action_name: str) -> dict:
+        idx = ACTIONS.index(action_name)
+        inp = np.concatenate([self.state, self.act_emb[idx]])
+        h0 = np.maximum(0.0, inp @ self.h0_w.T + self.h0_b)
+        out = h0 @ self.h2_w.T + self.h2_b
+        return {
+            "contact_prob": _sigmoid(out[0]),
+            "progress": float(out[1]),
+            "recover_prob": _sigmoid(out[2]),
+        }
+
+
 def _load_neuro_cover_l():
-    """
-    Load M4_BioMasked weights from portable_weights.npz.
-
-    Returns a callable f(obs_vec: np.ndarray) -> float (collision probability)
-    or None if weights are not available.
-
-    The obs_vec encodes the same features used in scale_dataset.py:
-      [obstacle_center, looming_center, brightness, contrast,
-       frame_valid, frame_age_clamped, whisker_left, whisker_right]
-    """
+    """Load frozen M4_BioMasked (risk) and M8_NeuroCOVER_L (recovery) from portable_weights.npz."""
     if not _WEIGHTS_PATH.exists():
         return None
-    try:
-        arrays = np.load(_WEIGHTS_PATH)
-        # M4_BioMasked weights: W_in, b_in, W_h, b_h, W_out, b_out
-        # Stored as flat arrays with keys from train_neuro_cover.py
-        keys = list(arrays.keys())
-        # Find M4_BioMasked or fall back to first available set
-        prefix = None
-        for p in ("M4_BioMasked", "M5_Rewired", "M3_GRU"):
-            matching = [k for k in keys if k.startswith(p + ".")]
-            if matching:
-                prefix = p; break
-        if prefix is None:
-            return None
-
-        # Simple linear + GRU-like forward pass using stored weights
-        # This is a best-effort inference that respects stored array names.
-        # Full forward pass requires knowing the architecture from train_neuro_cover.py.
-        # We implement a minimal GRU: input→hidden→output with sigmoid output.
-
-        def _make_key(name):
-            return f"{prefix}.{name}"
-
-        def forward(obs_vec):
-            x = obs_vec.astype(np.float32)
-            # Input projection (if present)
-            if _make_key("rnn.weight_ih_l0") in arrays:
-                Wih = arrays[_make_key("rnn.weight_ih_l0")]   # [3*H, D]
-                bih = arrays[_make_key("rnn.bias_ih_l0")]     # [3*H]
-                Whh = arrays[_make_key("rnn.weight_hh_l0")]   # [3*H, H]
-                bhh = arrays[_make_key("rnn.bias_hh_l0")]     # [3*H]
-                Wo  = arrays[_make_key("fc.weight")]           # [1, H]
-                bo  = arrays[_make_key("fc.bias")]             # [1]
-
-                H = Whh.shape[1]
-                # Pad / truncate obs to input size
-                D = Wih.shape[1]
-                if x.shape[0] < D:
-                    x = np.pad(x, (0, D - x.shape[0]))
-                else:
-                    x = x[:D]
-
-                # Single GRU step from zero hidden state
-                h = np.zeros(H, dtype=np.float32)
-                gates = Wih @ x + bih + Whh @ h + bhh
-                z = 1 / (1 + np.exp(-gates[:H]))           # update gate
-                r = 1 / (1 + np.exp(-gates[H:2*H]))        # reset gate
-                n = np.tanh(Wih[2*H:] @ x + bih[2*H:] + r * (Whh[2*H:] @ h + bhh[2*H:]))
-                h_new = (1 - z) * n + z * h
-
-                logit = Wo @ h_new + bo
-                prob  = float(1 / (1 + np.exp(-logit[0])))
-                return prob
-            else:
-                # Weights not in expected GRU format; return conservative 0.5
-                return 0.5
-
-        return forward
-    except Exception:
+    arrays = np.load(_WEIGHTS_PATH)
+    if "M4_BioMasked__core.theta" not in arrays or "M8_NeuroCOVER_L__core.theta" not in arrays:
         return None
+    return {
+        "m4": _PortableMaskedPolicy(arrays, "M4_BioMasked"),
+        "m8": _PortableMaskedPolicy(arrays, "M8_NeuroCOVER_L"),
+    }
 
 
-def _obs_to_vec(obs: dict) -> np.ndarray:
-    """Encode an observation dict into a float feature vector for NeuroCOVER-L."""
-    return np.array([
-        obs.get("obstacle_center", 0.0),
-        obs.get("looming_center", 0.0),
-        obs.get("brightness", 0.5),
-        obs.get("contrast", 0.1),
-        float(obs.get("frame_valid", False)),
-        min(obs.get("frame_age_s") or 0.0, 1.0),
-        float(obs.get("whisker_left", False)),
-        float(obs.get("whisker_right", False)),
-    ], dtype=np.float32)
+def _make_sim(scene, seed, env_mode="rover_sim", **kwargs):
+    if env_mode == "real_world":
+        return RealWorldEnv(scene=scene, seed=seed, sensor_noise=True, **kwargs)
+    return RoverSim(scene=scene, seed=seed, **kwargs)
 
 
-def build_scenario(name, seed):
+def build_scenario(name, seed, env_mode="rover_sim"):
     rng = np.random.default_rng(seed)
     if name == "open_healthy":
-        sim = RoverSim(scene="open", seed=seed)
+        sim = _make_sim("open", seed=seed, env_mode=env_mode)
     elif name == "looming_post":
         x = float(rng.uniform(0.60, 0.78))
-        sim = RoverSim(scene="open", seed=seed)
-        sim.solids.append(sim.box([x, 0.0, 0.12], [0.03, 0.02, 0.12], 0, [0.86, 0.17, 0.09, 1]))
+        sim = _make_sim("open", seed=seed, env_mode=env_mode)
+        box_fn = sim._box if hasattr(sim, "_box") else sim.box
+        sim.solids.append(box_fn([x, 0.0, 0.12], [0.03, 0.02, 0.12], 0, [0.86, 0.17, 0.09, 1]))
     elif name == "near_miss_post":
         x = float(rng.uniform(0.60, 0.78))
         side = 1.0 if seed % 2 == 0 else -1.0
         y = side * float(rng.uniform(0.15, 0.22))
-        sim = RoverSim(scene="open", seed=seed)
-        sim.solids.append(sim.box([x, y, 0.12], [0.03, 0.02, 0.12], 0, [0.86, 0.17, 0.09, 1]))
+        sim = _make_sim("open", seed=seed, env_mode=env_mode)
+        box_fn = sim._box if hasattr(sim, "_box") else sim.box
+        sim.solids.append(box_fn([x, y, 0.12], [0.03, 0.02, 0.12], 0, [0.86, 0.17, 0.09, 1]))
     elif name == "freeze_outage_clear":
-        sim = RoverSim(scene="left", seed=seed, fault="drop", fault_start_s=0.95, fault_end_s=1.45)
+        sim = _make_sim("left", seed=seed, env_mode=env_mode, fault="drop", fault_start_s=0.95, fault_end_s=1.45)
     elif name == "blocked_outage":
-        sim = RoverSim(scene="left", seed=seed, fault="freeze", fault_start_s=0.95, fault_end_s=5.0)
-        sim.solids.append(sim.box([0.55, -0.18, 0.12], [0.03, 0.05, 0.12], 0, [0.86, 0.17, 0.09, 1]))
+        sim = _make_sim("left", seed=seed, env_mode=env_mode, fault="freeze", fault_start_s=0.95, fault_end_s=5.0)
+        box_fn = sim._box if hasattr(sim, "_box") else sim.box
+        sim.solids.append(box_fn([0.55, -0.18, 0.12], [0.03, 0.05, 0.12], 0, [0.86, 0.17, 0.09, 1]))
     elif name == "occluded_hazard":
         return make_paired_world("occluded_hazard", seed=seed, fault="none", hidden_side=1)
     else:
         raise ValueError(f"Unknown scenario: {name}")
-    sim.packet = None
-    sim.queue.clear()
-    sim.update_camera()
+    if hasattr(sim, "_packet"):
+        sim._packet = None
+        sim._queue.clear()
+        sim._update_camera()
+    else:
+        sim.packet = None
+        sim.queue.clear()
+        sim.update_camera()
     return sim
 
 
-def run_episode(scenario, policy_mode, seed, escape_assets, compass_model):
+def run_episode(scenario, policy_mode, seed, escape_assets, compass_model, env_mode="rover_sim"):
     belief = SectorBelief(max_age_s=0.6)
     vstate = None
     last_cap = None
@@ -153,10 +137,11 @@ def run_episode(scenario, policy_mode, seed, escape_assets, compass_model):
     whisker_events = 0
     prev_whisker = False
     anchor = None
-    ncl_forward = _load_neuro_cover_l() if policy_mode == "neuro_cover_l" else None
-    ncl_threshold = 0.035   # calibrated on G07 validation set (M4_BioMasked test FPR=0.0)
+    ncl_models = _load_neuro_cover_l() if policy_mode == "neuro_cover_l" else None
+    ncl_vstate = None
+    ncl_last_cap = None
 
-    with build_scenario(scenario, seed) as sim:
+    with build_scenario(scenario, seed, env_mode=env_mode) as sim:
         obs = sim.observe()
         for step in range(80):
             if not ORACLE_KEYS.isdisjoint(obs):
@@ -203,14 +188,17 @@ def run_episode(scenario, policy_mode, seed, escape_assets, compass_model):
                 if "abstain" in reason:
                     abstained = True
             elif policy_mode == "neuro_cover_l":
-                # NeuroCOVER-L: load M4_BioMasked weights from G07 Kaggle training
-                # and run forward pass on each observation.
-                if ncl_forward is not None:
-                    ncl_prob = ncl_forward(_obs_to_vec(obs))
-                    ncl_alert = ncl_prob >= ncl_threshold
-                else:
-                    # Weights not available: fall back to obstacle_center heuristic
-                    ncl_alert = obs["obstacle_center"] > 0.08 or obs["looming_center"] > 0.04
+                # Exact G07 MaskedCircuitCore (M4_BioMasked risk + M8_NeuroCOVER_L recoverability)
+                ncl_alert = False
+                if ncl_models is not None:
+                    dt = 0.1 if ncl_last_cap is None else max(0.05, obs["time_s"] - ncl_last_cap)
+                    feats, ncl_vstate = extract_features(obs, snap, ncl_vstate, dt)
+                    ncl_last_cap = obs["time_s"]
+                    ncl_models["m4"].step_core(feats)
+                    ncl_models["m8"].step_core(feats)
+                    if step >= 8:
+                        m4_fwd = ncl_models["m4"].predict_action("forward")
+                        ncl_alert = bool(m4_fwd["contact_prob"] >= ncl_models["m4"].threshold)
                 action, reason = choose_recovery_action(obs, snap, looming_alert=ncl_alert)
                 if "abstain" in reason:
                     abstained = True
@@ -241,7 +229,7 @@ def run_episode(scenario, policy_mode, seed, escape_assets, compass_model):
     }
 
 
-def run(out: Path, seeds=4):
+def run(out: Path, seeds=4, env_mode="rover_sim"):
     escape_dir = Path("runs/graph-controls/escape")
     ann_path = Path("runs/connectome/escape/annotations.csv")
     compass_dir = Path("runs/connectome/compass")
@@ -263,7 +251,7 @@ def run(out: Path, seeds=4):
     for policy in policies:
         for sc in scenarios:
             for s in range(seeds):
-                rows.append(run_episode(sc, policy, s, escape_assets, compass_model))
+                rows.append(run_episode(sc, policy, s, escape_assets, compass_model, env_mode=env_mode))
 
     out.mkdir(parents=True, exist_ok=True)
     with (out / "episodes.csv").open("w", newline="") as f:
@@ -283,7 +271,7 @@ def run(out: Path, seeds=4):
             "abstentions": sum(r["abstained"] for r in sub),
             "mean_progress_m": float(np.mean([r["progress_m"] for r in sub])),
         }
-    summary = {"seeds": seeds, "scenarios": list(scenarios), "policies": agg}
+    summary = {"seeds": seeds, "env_mode": env_mode, "scenarios": list(scenarios), "policies": agg}
     (out / "summary.json").write_text(json.dumps(summary, indent=2))
     return summary
 
@@ -292,5 +280,6 @@ if __name__ == "__main__":
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--out", type=Path, required=True)
     p.add_argument("--seeds", type=int, default=4)
+    p.add_argument("--env", choices=["rover_sim", "real_world"], default="rover_sim")
     args = p.parse_args()
-    print(json.dumps(run(args.out, args.seeds), indent=2))
+    print(json.dumps(run(args.out, args.seeds, env_mode=args.env), indent=2))

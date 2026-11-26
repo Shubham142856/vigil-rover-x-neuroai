@@ -1,0 +1,50 @@
+{
+  "seeds": 4,
+  "env_mode": "real_world",
+  "scenarios": [
+    "open_healthy",
+    "looming_post",
+    "near_miss_post",
+    "freeze_outage_clear",
+    "blocked_outage",
+    "occluded_hazard"
+  ],
+  "policies": {
+    "recovery_off": {
+      "episodes": 24,
+      "total_body_collisions": 0,
+      "total_whisker_events": 0,
+      "safe_success_rate": 0.6666666666666666,
+      "false_emergency_stops": 8,
+      "abstentions": 8,
+      "mean_progress_m": 0.20394278403024244
+    },
+    "ordinary_recovery": {
+      "episodes": 24,
+      "total_body_collisions": 0,
+      "total_whisker_events": 0,
+      "safe_success_rate": 0.6666666666666666,
+      "false_emergency_stops": 8,
+      "abstentions": 8,
+      "mean_progress_m": 0.1603675753505362
+    },
+    "circuit_recovery": {
+      "episodes": 24,
+      "total_body_collisions": 2,
+      "total_whisker_events": 6,
+      "safe_success_rate": 0.625,
+      "false_emergency_stops": 8,
+      "abstentions": 8,
+      "mean_progress_m": 0.3543629805507302
+    },
+    "neuro_cover_l": {
+      "episodes": 24,
+      "total_body_collisions": 1,
+      "total_whisker_events": 6,
+      "safe_success_rate": 0.625,
+      "false_emergency_stops": 8,
+      "abstentions": 8,
+      "mean_progress_m": 0.3702944028165375
+    }
+  }
+}

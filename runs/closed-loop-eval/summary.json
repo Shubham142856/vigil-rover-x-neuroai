@@ -1,5 +1,6 @@
 {
   "seeds": 4,
+  "env_mode": "rover_sim",
   "scenarios": [
     "open_healthy",
     "looming_post",
@@ -35,6 +36,15 @@
       "false_emergency_stops": 0,
       "abstentions": 8,
       "mean_progress_m": 0.5753336568215254
+    },
+    "neuro_cover_l": {
+      "episodes": 24,
+      "total_body_collisions": 0,
+      "total_whisker_events": 12,
+      "safe_success_rate": 1.0,
+      "false_emergency_stops": 0,
+      "abstentions": 8,
+      "mean_progress_m": 0.6719587478306854
     }
   }
 }
