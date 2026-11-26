@@ -1,0 +1,30 @@
+{
+  "feature_dim": 16,
+  "seq_len": 24,
+  "actions": [
+    "forward",
+    "slow",
+    "brake",
+    "left",
+    "right"
+  ],
+  "oracle_keys_in_inputs": 0,
+  "world_split_leakage": 0,
+  "splits": {
+    "train": {
+      "samples": 540,
+      "positive_contact_rate": 0.044444444444444446,
+      "sha256": "424ebb4dbc5a22ba843cdba097ff8195af312d80794039713b4ca27790d372f9"
+    },
+    "val": {
+      "samples": 180,
+      "positive_contact_rate": 0.08333333333333333,
+      "sha256": "b3d30fe52d0e19ea621626f26a50e818b22b3d8940b743fc68ea50c04ace4512"
+    },
+    "test": {
+      "samples": 180,
+      "positive_contact_rate": 0.03888888888888889,
+      "sha256": "7de0a6dc43bfc4c2d86e8512a30ad276436227bfae61094fe863f571e401ec35"
+    }
+  }
+}

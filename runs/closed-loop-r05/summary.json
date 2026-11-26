@@ -1,0 +1,51 @@
+{
+  "seeds": 4,
+  "suite": "r05",
+  "env_mode": "real_world",
+  "scenarios": [
+    "corridor_pedestrian",
+    "warehouse_forklift_cross",
+    "outdoor_pothole",
+    "lab_glass_wall",
+    "ramp_descent",
+    "night_mode"
+  ],
+  "policies": {
+    "recovery_off": {
+      "episodes": 24,
+      "total_body_collisions": 0,
+      "total_whisker_events": 4,
+      "safe_success_rate": 1.0,
+      "false_emergency_stops": 0,
+      "abstentions": 0,
+      "mean_progress_m": 0.3600161436528318
+    },
+    "ordinary_recovery": {
+      "episodes": 24,
+      "total_body_collisions": 0,
+      "total_whisker_events": 4,
+      "safe_success_rate": 1.0,
+      "false_emergency_stops": 0,
+      "abstentions": 0,
+      "mean_progress_m": 0.22932104428803526
+    },
+    "circuit_recovery": {
+      "episodes": 24,
+      "total_body_collisions": 0,
+      "total_whisker_events": 4,
+      "safe_success_rate": 1.0,
+      "false_emergency_stops": 0,
+      "abstentions": 0,
+      "mean_progress_m": 0.28160708243322025
+    },
+    "neuro_cover_l": {
+      "episodes": 24,
+      "total_body_collisions": 4,
+      "total_whisker_events": 8,
+      "safe_success_rate": 0.875,
+      "false_emergency_stops": 0,
+      "abstentions": 1,
+      "mean_progress_m": 0.46199978320952256
+    }
+  }
+}

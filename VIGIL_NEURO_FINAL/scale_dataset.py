@@ -9,15 +9,26 @@ import numpy as np
 from blindspot_dataset import ORACLE_KEYS, SectorBelief, make_paired_world
 from branch_rollout import compare_actions
 from camera_escape import visual_looming
+from real_world_env import RealWorldEnv
 from rover_sim import RoverSim
 
 ACTIONS = ("forward", "slow", "brake", "left", "right")
+R05_FAMILIES = (
+    "corridor_pedestrian",
+    "warehouse_forklift_cross",
+    "outdoor_pothole",
+    "lab_glass_wall",
+    "ramp_descent",
+    "night_mode",
+)
 
 
 def build_world(family, seed, fault):
     """Instantiate diverse PyBullet geometries keeping oracle state separate."""
     rng = np.random.default_rng(seed)
-    if family == "corridor":
+    if family in R05_FAMILIES:
+        return RealWorldEnv(scene=family, seed=seed, fault=fault, fault_start_s=0.35, fault_end_s=0.95, sensor_noise=True)
+    elif family == "corridor":
         sim = RoverSim(scene="open", seed=seed, fault=fault, fault_start_s=0.35, fault_end_s=0.95)
         sim.solids.append(sim.box([0.9, 0.24, 0.12], [0.8, 0.02, 0.12], 0, [0.45, 0.48, 0.52, 1]))
         sim.solids.append(sim.box([0.9, -0.24, 0.12], [0.8, 0.02, 0.12], 0, [0.45, 0.48, 0.52, 1]))
@@ -71,10 +82,10 @@ def extract_features(obs, belief_snap, looming_state, dt):
     return feats, next_state
 
 
-def generate_shards(out: Path, episodes_per_split=None):
+def generate_shards(out: Path, episodes_per_split=None, suite="g07"):
     """Generate world-split counterfactual training shards (.npz + manifest.json)."""
     if episodes_per_split is None:
-        episodes_per_split = {
+        g07_splits = {
             "train": [("post_sweep", "none", s) for s in range(100, 112)]
             + [("shelf_clear", "none", s) for s in range(120, 126)]
             + [("shelf_hazard", "none", s) for s in range(120, 126)]
@@ -86,6 +97,17 @@ def generate_shards(out: Path, episodes_per_split=None):
             + [("shelf_clear", "freeze", s) for s in range(310, 313)]
             + [("shelf_hazard", "freeze", s) for s in range(310, 313)],
         }
+        r05_splits = {
+            "train": [(f, fault, 400 + s) for f in R05_FAMILIES for fault in ("none", "freeze") for s in range(3)],
+            "val": [(f, "delay", 500 + s) for f in R05_FAMILIES for s in range(2)],
+            "test": [(f, "drop", 600 + s) for f in R05_FAMILIES for s in range(2)],
+        }
+        if suite == "r05":
+            episodes_per_split = r05_splits
+        elif suite == "combined":
+            episodes_per_split = {k: g07_splits[k] + r05_splits[k] for k in ("train", "val", "test")}
+        else:
+            episodes_per_split = g07_splits
 
     out.mkdir(parents=True, exist_ok=True)
     split_arrays = {}
@@ -155,4 +177,6 @@ def generate_shards(out: Path, episodes_per_split=None):
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--out", type=Path, required=True)
-    print(json.dumps(generate_shards(p.parse_args().out), indent=2))
+    p.add_argument("--suite", choices=["g07", "r05", "combined"], default="g07")
+    args = p.parse_args()
+    print(json.dumps(generate_shards(args.out, suite=args.suite), indent=2))

@@ -12,15 +12,22 @@ from rover_sim import RoverSim
 def compare_actions(sim,actions,steps):
     if steps<=0 or not actions or len(set(actions))!=len(actions):
         raise ValueError("Supply distinct actions and a positive decision horizon")
-    fields=("tick","speed","turn","events","touch","queue","packet","last_center","growth")
-    saved={name:deepcopy(getattr(sim,name)) for name in fields}
+    use_snap = hasattr(sim, "snapshot_state") and hasattr(sim, "restore_state")
+    if use_snap:
+        saved = sim.snapshot_state()
+    else:
+        fields=("tick","speed","turn","events","touch","queue","packet","last_center","growth")
+        saved={name:deepcopy(getattr(sim,name)) for name in fields}
     initial=sim.evaluator()
     state=pb.saveState(physicsClientId=sim.client)
 
     def restore():
         pb.restoreState(state,physicsClientId=sim.client)
-        for name,value in saved.items():
-            setattr(sim,name,deepcopy(value))
+        if use_snap:
+            sim.restore_state(saved)
+        else:
+            for name,value in saved.items():
+                setattr(sim,name,deepcopy(value))
 
     results={}
     try:

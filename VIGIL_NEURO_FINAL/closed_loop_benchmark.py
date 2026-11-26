@@ -88,9 +88,21 @@ def _make_sim(scene, seed, env_mode="rover_sim", **kwargs):
     return RoverSim(scene=scene, seed=seed, **kwargs)
 
 
+R05_SCENARIOS = (
+    "corridor_pedestrian",
+    "warehouse_forklift_cross",
+    "outdoor_pothole",
+    "lab_glass_wall",
+    "ramp_descent",
+    "night_mode",
+)
+
+
 def build_scenario(name, seed, env_mode="rover_sim"):
     rng = np.random.default_rng(seed)
-    if name == "open_healthy":
+    if name in R05_SCENARIOS:
+        return RealWorldEnv(scene=name, seed=seed, sensor_noise=True)
+    elif name == "open_healthy":
         sim = _make_sim("open", seed=seed, env_mode=env_mode)
     elif name == "looming_post":
         x = float(rng.uniform(0.60, 0.78))
@@ -212,7 +224,7 @@ def run_episode(scenario, policy_mode, seed, escape_assets, compass_model, env_m
     false_stop = navigable and ev["x_m"] < 0.90 and ev["body_contact_events"] == 0 and not abstained
     if scenario in ("open_healthy", "near_miss_post"):
         safe_success = ev["body_contact_events"] == 0 and ev["x_m"] >= 0.90
-    elif scenario in ("looming_post", "occluded_hazard"):
+    elif scenario in ("looming_post", "occluded_hazard") or scenario in R05_SCENARIOS:
         safe_success = ev["body_contact_events"] == 0
     else:
         safe_success = ev["body_contact_events"] == 0 and (abstained or ev["x_m"] > 0.30)
@@ -229,7 +241,7 @@ def run_episode(scenario, policy_mode, seed, escape_assets, compass_model, env_m
     }
 
 
-def run(out: Path, seeds=4, env_mode="rover_sim"):
+def run(out: Path, seeds=4, env_mode="rover_sim", suite="g08"):
     escape_dir = Path("runs/graph-controls/escape")
     ann_path = Path("runs/connectome/escape/annotations.csv")
     compass_dir = Path("runs/connectome/compass")
@@ -244,7 +256,11 @@ def run(out: Path, seeds=4, env_mode="rover_sim"):
     }
     compass_model = load_compass_connectome(compass_dir)
 
-    scenarios = ("open_healthy", "looming_post", "near_miss_post", "freeze_outage_clear", "blocked_outage", "occluded_hazard")
+    if suite == "r05":
+        scenarios = R05_SCENARIOS
+        env_mode = "real_world"
+    else:
+        scenarios = ("open_healthy", "looming_post", "near_miss_post", "freeze_outage_clear", "blocked_outage", "occluded_hazard")
     policies = ("recovery_off", "ordinary_recovery", "circuit_recovery", "neuro_cover_l")
 
     rows = []
@@ -271,7 +287,7 @@ def run(out: Path, seeds=4, env_mode="rover_sim"):
             "abstentions": sum(r["abstained"] for r in sub),
             "mean_progress_m": float(np.mean([r["progress_m"] for r in sub])),
         }
-    summary = {"seeds": seeds, "env_mode": env_mode, "scenarios": list(scenarios), "policies": agg}
+    summary = {"seeds": seeds, "suite": suite, "env_mode": env_mode, "scenarios": list(scenarios), "policies": agg}
     (out / "summary.json").write_text(json.dumps(summary, indent=2))
     return summary
 
@@ -281,5 +297,6 @@ if __name__ == "__main__":
     p.add_argument("--out", type=Path, required=True)
     p.add_argument("--seeds", type=int, default=4)
     p.add_argument("--env", choices=["rover_sim", "real_world"], default="rover_sim")
+    p.add_argument("--suite", choices=["g08", "r05"], default="g08")
     args = p.parse_args()
-    print(json.dumps(run(args.out, args.seeds, env_mode=args.env), indent=2))
+    print(json.dumps(run(args.out, args.seeds, env_mode=args.env, suite=args.suite), indent=2))

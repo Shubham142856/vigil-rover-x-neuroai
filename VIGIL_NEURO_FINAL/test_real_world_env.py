@@ -199,6 +199,33 @@ class TestRealWorldEnv(unittest.TestCase):
         except Exception as e:
             self.skipTest(f"Corridor scene failed: {e}")
 
+    # R05: all 6 real-world transfer scenarios initialize & execute cleanly
+    def test_r05_scenarios_execute_and_glass_wall_whisker_safe(self):
+        from real_world_env import RealWorldEnv
+        from branch_rollout import compare_actions
+        r05 = ("corridor_pedestrian", "warehouse_forklift_cross", "outdoor_pothole",
+               "lab_glass_wall", "ramp_descent", "night_mode")
+        for sc in r05:
+            with RealWorldEnv(scene=sc, seed=3, sensor_noise=True) as env:
+                obs = env.observe()
+                self.assertEqual(obs["rgb"].shape, (96, 128, 3))
+                for _ in range(15):
+                    obs = env.step("forward")
+                if sc == "lab_glass_wall":
+                    # Red-channel detector misses glass wall; whiskers must stop before chassis impact
+                    self.assertLess(obs["obstacle_center"], 0.05)
+                    ev = env.evaluator()
+                    self.assertEqual(ev["body_contact_events"], 0)
+        # Branch rollback equivalence on RealWorldEnv (within sub-mm heightfield solver tolerance)
+        with RealWorldEnv(scene="warehouse_forklift_cross", seed=1, sensor_noise=True) as env:
+            b1 = compare_actions(env, ["forward", "brake"], 10)
+            b2 = compare_actions(env, ["forward", "brake"], 10)
+            for act in ("forward", "brake"):
+                self.assertEqual(b1[act]["body_contact"], b2[act]["body_contact"])
+                self.assertAlmostEqual(b1[act]["forward_progress_m"], b2[act]["forward_progress_m"], delta=1e-3)
+                self.assertAlmostEqual(b1[act]["heading_change_rad"], b2[act]["heading_change_rad"], delta=5e-3)
+                self.assertAlmostEqual(b1[act]["final_speed_m_s"], b2[act]["final_speed_m_s"], delta=5e-3)
+
 
 # ---------------------------------------------------------------------------
 # Test HardwareInterface
