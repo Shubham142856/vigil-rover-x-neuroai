@@ -150,6 +150,7 @@ def run_episode(scenario, policy_mode, seed, escape_assets, compass_model, env_m
     thresh = escape_assets["threshold"] if escape_assets else 0.024
     compass = ConnectomeCompass(compass_model) if compass_model else None
     latched_escape = False
+    escape_hold = 0
     abstained = False
     whisker_events = 0
     prev_whisker = False
@@ -186,13 +187,17 @@ def run_episode(scenario, policy_mode, seed, escape_assets, compass_model, env_m
                     abstained = True
             elif policy_mode in ("circuit_recovery", "neuro_cover_l"):
                 # Biological FAFB core: LPLC2/LC4 looming circuit + EPG/PEN ConnectomeCompass
+                bio_score = 0.0
                 if obs["capture_s"] != last_cap:
                     dt_bio = 0.1 if last_cap is None else max(0.05, obs["capture_s"] - last_cap)
                     lplc2_d, lc4_d, vstate = visual_looming(obs["rgb"], vstate, dt_bio)
                     if net is not None:
-                        score = net.update(lplc2_d, lc4_d)
-                        if score >= thresh:
-                            latched_escape = True
+                        bio_score = net.update(lplc2_d, lc4_d)
+                        if bio_score >= thresh:
+                            if env_mode == "real_world":
+                                escape_hold = 8
+                            else:
+                                latched_escape = True
                     if compass is not None:
                         b = bearing(obs["rgb"])
                         if anchor is None and b is not None:
@@ -200,10 +205,19 @@ def run_episode(scenario, policy_mode, seed, escape_assets, compass_model, env_m
                         cue = None if (b is None or anchor is None) else (b - anchor)
                         _, bump = compass.step(0.0, cue)
                         if bump < 0.25:
-                            latched_escape = True
+                            if env_mode == "real_world":
+                                escape_hold = max(escape_hold, 4)
+                            else:
+                                latched_escape = True
                     last_cap = obs["capture_s"]
 
-                looming_alert = latched_escape
+                # Leaky refractory hold in dynamic real-world scenes: clears once obstacle exits lane
+                if env_mode == "real_world" and escape_hold > 0:
+                    if bio_score < thresh * 0.75 and obs["obstacle_center"] < 0.08:
+                        escape_hold -= 1
+                looming_alert = latched_escape or (escape_hold > 0)
+
+                m4_fwd = m8_fwd = None
                 if policy_mode == "neuro_cover_l" and ncl_models is not None:
                     # Learned extension: M4_BioMasked risk + M8_NeuroCOVER_L recoverability on top of bio core
                     dt_ncl = 0.1 if ncl_last_cap is None else max(0.05, obs["time_s"] - ncl_last_cap)
@@ -213,7 +227,12 @@ def run_episode(scenario, policy_mode, seed, escape_assets, compass_model, env_m
                     ncl_models["m8"].step_core(feats)
                     if step >= 8:
                         m4_fwd = ncl_models["m4"].predict_action("forward")
-                        if m4_fwd["contact_prob"] >= ncl_models["m4"].threshold:
+                        m8_fwd = ncl_models["m8"].predict_action("forward")
+                        # Dual-core consensus reduces false alarms on ramp pitch / lighting flicker
+                        if (
+                            m4_fwd["contact_prob"] >= ncl_models["m4"].threshold
+                            and m8_fwd["contact_prob"] >= ncl_models["m8"].threshold
+                        ):
                             looming_alert = True
 
                 action, reason = choose_recovery_action(obs, snap, looming_alert=looming_alert)
@@ -223,15 +242,33 @@ def run_episode(scenario, policy_mode, seed, escape_assets, compass_model, env_m
                     policy_mode == "neuro_cover_l"
                     and ncl_models is not None
                     and step >= 8
-                    and action == "forward"
-                    and snap["unknown_or_stale_fraction"] > 0.35
+                    and snap["camera_healthy"]
+                    and not w_any
                 ):
-                    # Active NeuroCOVER-L scan & risk modulation among feasible actions
-                    m4_slow = ncl_models["m4"].predict_action("slow")
-                    m8_fwd = ncl_models["m8"].predict_action("forward")
-                    if step - last_scan_step >= 12:
+                    states = snap["sector_states"]
+                    mid = len(states) // 2
+                    left_clear = all(st == "observed_free" for st in states[:mid])
+                    right_clear = all(st == "observed_free" for st in states[mid + 1 :])
+
+                    # Counterfactual evasion: if forward is blocked by looming_alert, steer into a verified-free sector
+                    if action == "brake" and looming_alert and step - last_scan_step >= 4:
+                        evade_cands = []
+                        for s_act, is_free in (("left", left_clear), ("right", right_clear)):
+                            if not is_free:
+                                continue
+                            p4 = ncl_models["m4"].predict_action(s_act)
+                            p8 = ncl_models["m8"].predict_action(s_act)
+                            if p4["contact_prob"] < ncl_models["m4"].threshold and p8["recover_prob"] >= 0.50:
+                                evade_cands.append((p8["recover_prob"] + 0.5 * p8["progress"], s_act))
+                        if evade_cands:
+                            evade_cands.sort(reverse=True)
+                            action = evade_cands[0][1]
+                            last_scan_step = step
+                    elif action == "forward" and snap["unknown_or_stale_fraction"] > 0.35 and step - last_scan_step >= 12:
                         scan_cands = []
-                        for s_act in ("left", "right"):
+                        for s_act, is_free in (("left", left_clear), ("right", right_clear)):
+                            if not is_free:
+                                continue
                             s_risk = ncl_models["m4"].predict_action(s_act)["contact_prob"]
                             s_recov = ncl_models["m8"].predict_action(s_act)["recover_prob"]
                             if s_risk < ncl_models["m4"].threshold and s_recov >= 0.55:
@@ -240,8 +277,16 @@ def run_episode(scenario, policy_mode, seed, escape_assets, compass_model, env_m
                             scan_cands.sort(reverse=True)
                             action = scan_cands[0][1]
                             last_scan_step = step
-                    if action == "forward" and m8_fwd["contact_prob"] >= ncl_models["m8"].threshold and m4_slow["contact_prob"] < ncl_models["m4"].threshold:
-                        action = "slow"
+                    elif (
+                        action == "forward"
+                        and m4_fwd is not None
+                        and m8_fwd is not None
+                        and m4_fwd["contact_prob"] >= 0.5 * ncl_models["m4"].threshold
+                        and m8_fwd["recover_prob"] < 0.65
+                    ):
+                        m4_slow = ncl_models["m4"].predict_action("slow")
+                        if m4_slow["contact_prob"] < ncl_models["m4"].threshold:
+                            action = "slow"
             else:
                 raise ValueError(policy_mode)
 

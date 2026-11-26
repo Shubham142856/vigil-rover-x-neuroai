@@ -37,7 +37,7 @@
       "safe_success_rate": 1.0,
       "false_emergency_stops": 0,
       "abstentions": 0,
-      "mean_progress_m": 0.28160708243322025
+      "mean_progress_m": 0.3082306076258166
     },
     "neuro_cover_l": {
       "episodes": 24,
@@ -46,7 +46,7 @@
       "safe_success_rate": 1.0,
       "false_emergency_stops": 0,
       "abstentions": 0,
-      "mean_progress_m": 0.2713997700094506
+      "mean_progress_m": 0.24766131562428448
     }
   }
 }

@@ -42,11 +42,11 @@
     "neuro_cover_l": {
       "episodes": 24,
       "total_body_collisions": 0,
-      "total_whisker_events": 4,
+      "total_whisker_events": 0,
       "safe_success_rate": 1.0,
       "false_emergency_stops": 0,
       "abstentions": 8,
-      "mean_progress_m": 0.5753336568215254
+      "mean_progress_m": 0.6609350388701053
     }
   }
 }

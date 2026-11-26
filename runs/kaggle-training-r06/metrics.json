@@ -1,40 +1,48 @@
 {
   "device": "Tesla T4",
-  "epochs": 35,
+  "epochs": 50,
   "unknown_sign_nodes": 5,
   "models": {
     "M3_GRU": {
-      "frozen_val_threshold": 0.9834370613098145,
-      "test_brier": 0.0915243998169899,
-      "test_false_positive_rate": 0.005813953488372093,
-      "test_recall": 0.625,
-      "test_progress_mae": 0.05125141516327858,
-      "test_recover_bce": 0.7695226073265076
+      "frozen_val_threshold": 0.4768596589565277,
+      "strict_zero_fp_val_threshold": 0.9907463788986206,
+      "test_brier": 0.027219261974096298,
+      "test_false_positive_rate": 0.0377906976744186,
+      "test_recall": 1.0,
+      "test_f1": 0.7111111111111111,
+      "test_progress_mae": 0.03836209326982498,
+      "test_recover_bce": 0.694994330406189
     },
     "M4_BioMasked": {
-      "frozen_val_threshold": 0.9994469285011292,
-      "test_brier": 0.08778044581413269,
-      "test_false_positive_rate": 0.0,
-      "test_recall": 0.25,
-      "test_progress_mae": 0.04114022105932236,
-      "test_recover_bce": 0.8544947504997253
+      "frozen_val_threshold": 0.7864097356796265,
+      "strict_zero_fp_val_threshold": 0.999007523059845,
+      "test_brier": 0.032610055059194565,
+      "test_false_positive_rate": 0.03197674418604651,
+      "test_recall": 1.0,
+      "test_f1": 0.7441860465116279,
+      "test_progress_mae": 0.04059447720646858,
+      "test_recover_bce": 1.1500576734542847
     },
     "M5_Rewired": {
-      "frozen_val_threshold": 0.9991061091423035,
-      "test_brier": 0.12699516117572784,
-      "test_false_positive_rate": 0.0,
-      "test_recall": 0.25,
-      "test_progress_mae": 0.07031697034835815,
-      "test_recover_bce": 0.9190649390220642
+      "frozen_val_threshold": 0.8636716604232788,
+      "strict_zero_fp_val_threshold": 0.986403226852417,
+      "test_brier": 0.05441341549158096,
+      "test_false_positive_rate": 0.03488372093023256,
+      "test_recall": 1.0,
+      "test_f1": 0.7272727272727273,
+      "test_progress_mae": 0.04059601575136185,
+      "test_recover_bce": 0.8251278400421143
     },
     "M8_NeuroCOVER_L": {
-      "frozen_val_threshold": 0.9980860948562622,
-      "test_brier": 0.10138396173715591,
-      "test_false_positive_rate": 0.0029069767441860465,
-      "test_recall": 0.25,
-      "test_progress_mae": 0.07469974458217621,
-      "test_recover_bce": 0.12567144632339478
+      "frozen_val_threshold": 0.27681857347488403,
+      "strict_zero_fp_val_threshold": 0.9945874214172363,
+      "test_brier": 0.016571683809161186,
+      "test_false_positive_rate": 0.02616279069767442,
+      "test_recall": 1.0,
+      "test_f1": 0.7804878048780488,
+      "test_progress_mae": 0.04387744516134262,
+      "test_recover_bce": 0.13321395218372345
     }
   },
-  "source": "github:1f421f49a1fb51bc35ad7ae0e68376e889c5b209"
+  "source": "github:e65f848efcbc39d6d3a524f5aee3a7abdf5d0ecc"
 }
