@@ -31,12 +31,13 @@ import numpy as np
 
 @dataclass
 class CameraParams:
-    """Camera intrinsics and noise parameters."""
-    # Intrinsics (96×128 at 66° H-FOV → fx ≈ 128/(2 tan(33°)) ≈ 98.6 px)
-    fx: float = 98.6
-    fy: float = 98.6
-    cx: float = 64.0   # principal point x [px]
-    cy: float = 48.0   # principal point y [px]
+    """Camera intrinsics calibrated to PyBullet 66 deg vertical FOV on 96x128."""
+    # Intrinsics matching pb.computeProjectionMatrixFOV(66, 128/96, ...):
+    # fy = H / (2 * tan(66°/2)) ≈ 73.914 px; square pixels -> fx = fy ≈ 73.914 px (H-FOV ≈ 81.8°)
+    fx: float = 96.0 / (2.0 * math.tan(math.radians(66.0) / 2.0))
+    fy: float = 96.0 / (2.0 * math.tan(math.radians(66.0) / 2.0))
+    cx: float = 63.5   # principal point x [px]
+    cy: float = 47.5   # principal point y [px]
 
     # Radial distortion coefficients (barrel-ish, typical cheap lens)
     # Source: empirical characterisation of Pi Camera at similar FOV
@@ -49,8 +50,6 @@ class CameraParams:
     max_dn: int = 255
 
     # Rolling shutter: pixels per rad/s of rotation
-    # At 10 fps, 96 rows, 10 ms exposure → 1 row ≈ 0.104 ms
-    # At 1 rad/s rotation, field moves ≈ 66°/s → ≈ 0.14 px/ms → 0.014 px/row
     shutter_px_per_rad_s: float = 2.0  # conservative estimate
 
 
@@ -74,6 +73,7 @@ class RealSensorModel:
 
         # IMU state
         self._gyro_bias   = 0.0
+        self._gyro_y_bias = 0.0
         self._gyro_noise  = imu_gyro_noise
         self._gyro_drift  = imu_gyro_bias_drift
         self._accel_noise = imu_accel_noise
@@ -190,27 +190,31 @@ class RealSensorModel:
     # ------------------------------------------------------------------
 
     def imu(self, true_gyro_z_rad_s: float, true_accel_x_m_s2: float,
-            dt: float) -> dict:
+            dt: float, true_gyro_y_rad_s: float = 0.0) -> dict:
         """
         Returns a noisy IMU reading.
 
-        Gyro model: white noise + random-walk bias drift
+        Gyro model: white noise + random-walk bias drift (yaw z and pitch y)
         Accel model: white noise only (bias assumed calibrated)
 
         Args:
             true_gyro_z_rad_s:  True yaw rate [rad/s].
             true_accel_x_m_s2:  True forward acceleration [m/s²].
             dt:                 Timestep [s].
+            true_gyro_y_rad_s:  True body pitch rate [rad/s].
 
         Returns:
-            dict with keys: gyro_z_rad_s, accel_x_m_s2
+            dict with keys: gyro_z_rad_s, gyro_y_rad_s, accel_x_m_s2
         """
+        dt_pos = max(float(dt), 1e-6)
         # Bias random walk
-        self._gyro_bias += float(self._rng.normal(0, self._gyro_drift * math.sqrt(dt)))
+        self._gyro_bias += float(self._rng.normal(0, self._gyro_drift * math.sqrt(dt_pos)))
+        self._gyro_y_bias += float(self._rng.normal(0, self._gyro_drift * math.sqrt(dt_pos)))
         # Measurement
-        gyro_meas  = true_gyro_z_rad_s + self._gyro_bias + float(self._rng.normal(0, self._gyro_noise))
+        gyro_z_meas = true_gyro_z_rad_s + self._gyro_bias + float(self._rng.normal(0, self._gyro_noise))
+        gyro_y_meas = true_gyro_y_rad_s + self._gyro_y_bias + float(self._rng.normal(0, self._gyro_noise))
         accel_meas = true_accel_x_m_s2 + float(self._rng.normal(0, self._accel_noise))
-        return {"gyro_z_rad_s": gyro_meas, "accel_x_m_s2": accel_meas}
+        return {"gyro_z_rad_s": gyro_z_meas, "gyro_y_rad_s": gyro_y_meas, "accel_x_m_s2": accel_meas}
 
     # ------------------------------------------------------------------
     # Encoder  (quadrature, 360 CPR)

@@ -429,6 +429,7 @@ class RealWorldEnv:
         self._sensor_noise = sensor_noise
 
         self._speed = 0.0
+        self._prev_speed = 0.0
         self._turn  = 0.0
         self._motor = _MotorModel()
         self._touch = False
@@ -438,6 +439,8 @@ class RealWorldEnv:
         self._last_center = 0.0
         self._growth = 0.0
         self._rgb0   = np.zeros((96, 128, 3), dtype=np.uint8)
+        self._last_imu = {"gyro_z_rad_s": 0.0, "gyro_y_rad_s": 0.0, "accel_x_m_s2": 0.0}
+        self._last_enc_speed = 0.0
 
         # Lighting & motor state
         cfg = SCENES.get(scene, SCENES["open"])
@@ -619,6 +622,10 @@ class RealWorldEnv:
             contrast=float(image.std() / 255),
             obstacle_center=self._last_center,
             looming_center=self._growth,
+            imu_gyro_z=float(self._last_imu["gyro_z_rad_s"]),
+            imu_gyro_y=float(self._last_imu["gyro_y_rad_s"]),
+            imu_accel_x=float(self._last_imu["accel_x_m_s2"]),
+            encoder_speed_m_s=float(self._last_enc_speed),
             # Reality-grounded extras (available to policy but not required)
             scene_lux=self._base_lux,
             terrain_bump_rms_m=self._scene_cfg.get("bump_std_m", 0.003),
@@ -635,8 +642,11 @@ class RealWorldEnv:
             target_speed, turn = 0.0, 0.0
 
         dt_ctrl = 1.0 / self.CTRL_HZ
+        prev_speed = self._prev_speed
         actual_speed = self._motor.update(target_speed, dt_ctrl)
+        self._prev_speed = actual_speed
 
+        ang_vel_accum = np.zeros(3, dtype=float)
         for _ in range(self.STEPS_PER_CTRL):
             _, yaw = self.pose()
             vx = actual_speed * math.cos(yaw)
@@ -644,10 +654,26 @@ class RealWorldEnv:
             pb.resetBaseVelocity(self.rover, [vx, vy, 0], [0, 0, turn],
                                  physicsClientId=self.client)
             pb.stepSimulation(physicsClientId=self.client)
+            _, av = pb.getBaseVelocity(self.rover, physicsClientId=self.client)
+            ang_vel_accum += np.asarray(av, dtype=float)
             touching = any(pb.getContactPoints(self.rover, o, physicsClientId=self.client)
                            for o in self.solids)
             self._events += int(touching and not self._touch)
             self._touch = touching
+
+        av_mean = ang_vel_accum / max(1, self.STEPS_PER_CTRL)
+        _, yaw = self.pose()
+        true_gyro_z = float(av_mean[2])
+        true_gyro_y = float(-math.sin(yaw) * av_mean[0] + math.cos(yaw) * av_mean[1])
+        true_accel_x = (actual_speed - prev_speed) / dt_ctrl
+        if self._sensor_model is not None:
+            self._last_imu = self._sensor_model.imu(true_gyro_z, true_accel_x, dt_ctrl, true_gyro_y_rad_s=true_gyro_y)
+            enc_l = self._sensor_model.encoder(actual_speed, 0.032, dt_ctrl, side="left")
+            enc_r = self._sensor_model.encoder(actual_speed, 0.032, dt_ctrl, side="right")
+            self._last_enc_speed = 0.5 * (enc_l["delta_rad"] + enc_r["delta_rad"]) * 0.032 / dt_ctrl
+        else:
+            self._last_imu = {"gyro_z_rad_s": true_gyro_z, "gyro_y_rad_s": true_gyro_y, "accel_x_m_s2": true_accel_x}
+            self._last_enc_speed = float(actual_speed)
 
         # Advance dynamic obstacles
         for obj in self._dynamic_objs:
@@ -679,8 +705,9 @@ class RealWorldEnv:
             else:
                 dyn.append(("none", None))
         return {
-            "scalars": (self._tick, self._speed, self._turn, self._events, self._touch,
-                        self._last_center, self._growth, self._flicker_t, self._motor._speed),
+            "scalars": (self._tick, self._speed, self._prev_speed, self._turn, self._events, self._touch,
+                        self._last_center, self._growth, self._flicker_t, self._motor._speed, self._last_enc_speed),
+            "imu": deepcopy(self._last_imu),
             "queue": deepcopy(self._queue),
             "packet": deepcopy(self._packet),
             "dyn": dyn,
@@ -690,8 +717,9 @@ class RealWorldEnv:
     def restore_state(self, snap):
         """Restore complete Python/scheduler/dynamic state after pb.restoreState."""
         from copy import deepcopy
-        (self._tick, self._speed, self._turn, self._events, self._touch,
-         self._last_center, self._growth, self._flicker_t, self._motor._speed) = snap["scalars"]
+        (self._tick, self._speed, self._prev_speed, self._turn, self._events, self._touch,
+         self._last_center, self._growth, self._flicker_t, self._motor._speed, self._last_enc_speed) = snap["scalars"]
+        self._last_imu = deepcopy(snap["imu"])
         self._queue = deepcopy(snap["queue"])
         self._packet = deepcopy(snap["packet"])
         self._sensor_model = deepcopy(snap["sensor"])
