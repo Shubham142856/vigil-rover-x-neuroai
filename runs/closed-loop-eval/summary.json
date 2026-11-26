@@ -1,0 +1,40 @@
+{
+  "seeds": 4,
+  "scenarios": [
+    "open_healthy",
+    "looming_post",
+    "near_miss_post",
+    "freeze_outage_clear",
+    "blocked_outage",
+    "occluded_hazard"
+  ],
+  "policies": {
+    "recovery_off": {
+      "episodes": 24,
+      "total_body_collisions": 0,
+      "total_whisker_events": 0,
+      "safe_success_rate": 1.0,
+      "false_emergency_stops": 0,
+      "abstentions": 8,
+      "mean_progress_m": 0.5016566334309079
+    },
+    "ordinary_recovery": {
+      "episodes": 24,
+      "total_body_collisions": 0,
+      "total_whisker_events": 0,
+      "safe_success_rate": 1.0,
+      "false_emergency_stops": 0,
+      "abstentions": 8,
+      "mean_progress_m": 0.4793324852414021
+    },
+    "circuit_recovery": {
+      "episodes": 24,
+      "total_body_collisions": 0,
+      "total_whisker_events": 4,
+      "safe_success_rate": 1.0,
+      "false_emergency_stops": 0,
+      "abstentions": 8,
+      "mean_progress_m": 0.5753336568215254
+    }
+  }
+}

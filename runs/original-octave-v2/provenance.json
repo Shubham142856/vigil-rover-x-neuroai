@@ -1,0 +1,20 @@
+{
+  "revision": "50c7c8f3f74052b2562ccba967c9f1032f37405b",
+  "runtime": "GNU Octave, version 8.4.0",
+  "hashes": {
+    "Square_expanded-motion.mat": "81811b471769301ee88695ef3c56deb9f839bc91c39d2f68ae0c85d83f7758cf",
+    "Grating_horizontal-motion.mat": "f4f8fff79a53c22ffecaa449586ae2c3cbc9438631b2310e3837d7f5ea5e1736",
+    "emd.m": "9183f38e27b4c3054e21a66f28f5bfae0c41ce5e8b85966d8081e97280c67920",
+    "Grating_vertical-motion.mat": "7fee55764c514a1e8e4302f7ae308c7337071f1b5ad0bf150663d6dc089b64ae",
+    "Edge_horizontal-motion.mat": "d176bf6d57ab98c2704ff973d350c5fd2e3c6940366ef66b8b31f3c3ca58a336",
+    "Looming_50ms.mat": "bc93c23386b28e9bbe677f286ce5860aacd2b538d4d5828d8534dc38cfcc9a2b",
+    "Cross_centrifugal-motion.mat": "bcbd80cc20386a1ab23891576b2059168918860e060d9d566f5bf1907ca09a46",
+    "OffRect.m": "956348ec5f5eea6dcd5de3fb77f4ba335bc662bc485e813597c573f38ae8854c",
+    "lplc2conv2.m": "0839c9169f46c21132779d13802445256d3aaf8f0fe20d1c63d9b66993dd9a6e",
+    "loom.m": "e59c039e2190345144bb7a7a20ed40492f9d2023d6c400ae49f257f6f85525df",
+    "Cross_concentric-motion.mat": "3bb9235dbefddfee057d1d5acc6e19212bb22e9d42440aa409fc7fc1399c7bed",
+    "Bar_horizontal-motion.mat": "67d5aeccbfc15d664bc6c7b4c29976fcc71c2b39761f5ae9115d37310e1f585d",
+    "Edge_vertical-motion.mat": "f018000c9975387f239a738cc4e01b1163a7002f2b55283988cc0e549450b37f",
+    "Bar_vertical-motion.mat": "6fcf83f77c25dfc4f88aa27f01d92fb9c5420faf52115e5b057167be34ef7f1c"
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "topology_contrast_lead_s_bio_vs_rewired7": {
+    "n_pairs": 8,
+    "mean_a": 1.0,
+    "mean_b": 1.0875,
+    "mean_diff": -0.08750000000000006,
+    "ci95_low": -0.10000000000000009,
+    "ci95_high": -0.06250000000000004
+  },
+  "recovery_contrast_safe_success_circuit_vs_ordinary": {
+    "n_pairs": 24,
+    "mean_a": 1.0,
+    "mean_b": 1.0,
+    "mean_diff": 0.0,
+    "ci95_low": 0.0,
+    "ci95_high": 0.0
+  },
+  "recovery_contrast_safe_success_circuit_vs_off": {
+    "n_pairs": 24,
+    "mean_a": 1.0,
+    "mean_b": 1.0,
+    "mean_diff": 0.0,
+    "ci95_low": 0.0,
+    "ci95_high": 0.0
+  },
+  "recovery_contrast_progress_m_circuit_vs_off": {
+    "n_pairs": 24,
+    "mean_a": 0.5753336568215254,
+    "mean_b": 0.5016566334309079,
+    "mean_diff": 0.0736770233906175,
+    "ci95_low": 0.02940344093275689,
+    "ci95_high": 0.12379969521351411
+  },
+  "compass_summary_errors_deg": {
+    "odometry": {
+      "blackout": 19.883555697383123,
+      "reacquired": 24.90308199278565,
+      "conflict": 4.0702892618122775
+    },
+    "bayesian": {
+      "blackout": 25.11896454222365,
+      "reacquired": 4.447375170035324,
+      "conflict": 11.420234543529702
+    },
+    "connectome_ring": {
+      "blackout": 16.27243164223412,
+      "reacquired": 4.498077357013874,
+      "conflict": 5.777833875851237
+    },
+    "gru": {
+      "blackout": 14.31476378111855,
+      "reacquired": 2.8341434445306644,
+      "conflict": 22.059432099146868
+    }
+  },
+  "banc_v888": {
+    "local_dir": "data\\banc-v888-absent",
+    "dataset_present": false,
+    "measurement_status": "NOT_DOWNLOADED_LOCAL (Codex auth required at https://codex.flywire.ai/banc)",
+    "mapped_homolog_types": {
+      "LC4": {
+        "fafb_type": "LC4",
+        "banc_homolog": "LC4",
+        "role": "angular_expansion_velocity"
+      },
+      "LPLC2": {
+        "fafb_type": "LPLC2",
+        "banc_homolog": "LPLC2",
+        "role": "radial_looming"
+      },
+      "DNp01": {
+        "fafb_type": "DNp01",
+        "banc_homolog": "DNp01 (Giant Fiber)",
+        "role": "escape_descending"
+      },
+      "EPG": {
+        "fafb_type": "EPG",
+        "banc_homolog": "EPG",
+        "role": "heading_wedge"
+      },
+      "PEG": {
+        "fafb_type": "PEG",
+        "banc_homolog": "PEG",
+        "role": "recurrent_heading"
+      },
+      "PEN_a/PEN1": {
+        "fafb_type": "PEN_a/PEN1",
+        "banc_homolog": "PEN_a",
+        "role": "angular_velocity_shift"
+      },
+      "PEN_b/PEN2": {
+        "fafb_type": "PEN_b/PEN2",
+        "banc_homolog": "PEN_b",
+        "role": "heading_feedback"
+      },
+      "Delta7": {
+        "fafb_type": "Delta7",
+        "banc_homolog": "Delta7",
+        "role": "global_opponent_inhibition"
+      }
+    },
+    "transfer_limits": [
+      "Cross-connectome root IDs are disjoint between FAFB v783 and BANC v888; transfer uses cell-type and side homology only.",
+      "On single-post open-field escape with per-topology calibration, biological and degree-preserving rewired graphs both achieve 0 collisions (rewired-7 lead slightly longer in this pilot); biological advantage is not assumed."
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "replays_verified": {
+    "my-first-drive": {
+      "verified": true,
+      "steps": 81,
+      "delivered_frames": 41,
+      "scene": "open",
+      "fault": "freeze",
+      "final": {
+        "x_m": 1.2853159553214413,
+        "y_m": 0.0,
+        "yaw_rad": 0.0,
+        "speed_m_s": 0.34984250000352035,
+        "body_contact": false,
+        "body_contact_events": 0
+      }
+    },
+    "rover-freeze": {
+      "verified": true,
+      "steps": 81,
+      "delivered_frames": 41,
+      "scene": "open",
+      "fault": "freeze",
+      "final": {
+        "x_m": 1.2853159553214413,
+        "y_m": 0.0,
+        "yaw_rad": 0.0,
+        "speed_m_s": 0.34984250000352035,
+        "body_contact": false,
+        "body_contact_events": 0
+      }
+    },
+    "rover-wall": {
+      "verified": true,
+      "steps": 81,
+      "delivered_frames": 41,
+      "scene": "wall",
+      "fault": "none",
+      "final": {
+        "x_m": 0.0,
+        "y_m": 0.0,
+        "yaw_rad": 0.0,
+        "speed_m_s": 0.0,
+        "body_contact": false,
+        "body_contact_events": 0
+      }
+    }
+  },
+  "studio_html": "runs\\research-studio\\index.html"
+}

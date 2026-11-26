@@ -19,19 +19,18 @@ def build_world(family, seed, fault):
     rng = np.random.default_rng(seed)
     if family == "corridor":
         sim = RoverSim(scene="open", seed=seed, fault=fault, fault_start_s=0.35, fault_end_s=0.95)
-        # Parallel corridor walls; optional central post ahead
         sim.solids.append(sim.box([0.9, 0.24, 0.12], [0.8, 0.02, 0.12], 0, [0.45, 0.48, 0.52, 1]))
         sim.solids.append(sim.box([0.9, -0.24, 0.12], [0.8, 0.02, 0.12], 0, [0.45, 0.48, 0.52, 1]))
         if seed % 2 == 0:
             y = float(rng.uniform(-0.04, 0.04))
-            sim.solids.append(sim.box([float(rng.uniform(0.65, 0.9)), y, 0.12], [0.03, 0.025, 0.12], 0, [0.86, 0.17, 0.09, 1]))
+            sim.solids.append(sim.box([float(rng.uniform(0.58, 0.85)), y, 0.12], [0.03, 0.025, 0.12], 0, [0.86, 0.17, 0.09, 1]))
     elif family == "shelf_clear":
         return make_paired_world("occluded_clear", seed=seed, fault=fault, hidden_side=1 if seed % 2 else -1)
     elif family == "shelf_hazard":
         return make_paired_world("occluded_hazard", seed=seed, fault=fault, hidden_side=1 if seed % 2 else -1)
     elif family == "post_sweep":
         sim = RoverSim(scene="open", seed=seed, fault=fault, fault_start_s=0.35, fault_end_s=0.95)
-        x = float(rng.uniform(0.55, 0.85))
+        x = float(rng.uniform(0.52, 0.85))
         side = 1.0 if seed % 2 == 0 else -1.0
         y = side * (float(rng.uniform(0.0, 0.02)) if (seed // 2) % 2 == 0 else float(rng.uniform(0.14, 0.22)))
         sim.solids.append(sim.box([x, y, 0.12], [0.03, 0.02, 0.12], 0, [0.86, 0.17, 0.09, 1]))
@@ -75,18 +74,17 @@ def extract_features(obs, belief_snap, looming_state, dt):
 def generate_shards(out: Path, episodes_per_split=None):
     """Generate world-split counterfactual training shards (.npz + manifest.json)."""
     if episodes_per_split is None:
-        # Hold out geometry + fault families cleanly across splits
         episodes_per_split = {
-            "train": [("post_sweep", "none", s) for s in range(100, 108)]
-            + [("shelf_clear", "none", s) for s in range(110, 114)]
-            + [("shelf_hazard", "none", s) for s in range(110, 114)]
-            + [("corridor", "freeze", s) for s in range(120, 126)],
-            "val": [("post_sweep", "freeze", s) for s in range(200, 204)]
-            + [("shelf_clear", "delay", s) for s in range(210, 212)]
-            + [("shelf_hazard", "delay", s) for s in range(210, 212)],
-            "test": [("corridor", "drop", s) for s in range(300, 304)]
-            + [("shelf_clear", "freeze", s) for s in range(310, 312)]
-            + [("shelf_hazard", "freeze", s) for s in range(310, 312)],
+            "train": [("post_sweep", "none", s) for s in range(100, 112)]
+            + [("shelf_clear", "none", s) for s in range(120, 126)]
+            + [("shelf_hazard", "none", s) for s in range(120, 126)]
+            + [("corridor", "freeze", s) for s in range(130, 138)],
+            "val": [("post_sweep", "freeze", s) for s in range(200, 206)]
+            + [("shelf_clear", "delay", s) for s in range(210, 213)]
+            + [("shelf_hazard", "delay", s) for s in range(210, 213)],
+            "test": [("corridor", "drop", s) for s in range(300, 306)]
+            + [("shelf_clear", "freeze", s) for s in range(310, 313)]
+            + [("shelf_hazard", "freeze", s) for s in range(310, 313)],
         }
 
     out.mkdir(parents=True, exist_ok=True)
@@ -110,7 +108,7 @@ def generate_shards(out: Path, episodes_per_split=None):
                     snap = belief.update(obs)
                     feat, vstate = extract_features(obs, snap, vstate, dt)
                     hist.append(feat)
-                    if step in (14, 21):
+                    if step in (12, 16, 20):
                         branches = compare_actions(sim, list(ACTIONS), 28)
                         seq = np.zeros((24, 16), dtype=np.float32)
                         seq[-len(hist) :] = np.stack(hist)
@@ -120,7 +118,6 @@ def generate_shards(out: Path, episodes_per_split=None):
                             act_ids.append(a_idx)
                             y_contact.append(1.0 if res["body_contact"] else 0.0)
                             y_prog.append(float(res["forward_progress_m"]))
-                            # Recoverability label: clear view / non-contact progress under cautious scan
                             y_recov.append(1.0 if (not res["body_contact"] and abs(res["heading_change_rad"]) > 0.2) else 0.0)
                     sim.step("forward")
 

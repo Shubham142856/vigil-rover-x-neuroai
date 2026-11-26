@@ -12,19 +12,19 @@
   "world_split_leakage": 0,
   "splits": {
     "train": {
-      "samples": 220,
-      "positive_contact_rate": 0.06363636363636363,
-      "sha256": "35ef24d0ede93055a82aae3ce8a73c59990cbda0b9565f152459727bb04fa6fd"
+      "samples": 480,
+      "positive_contact_rate": 0.06458333333333334,
+      "sha256": "d9428c972d7329a9efbe45f26d36da9c0837dcf3b4a66900ec26a58ec3b9edc4"
     },
     "val": {
-      "samples": 80,
-      "positive_contact_rate": 0.05,
-      "sha256": "9097a5a3af6a6cd822a8cca18d6511cb1e03196a5f92880ec8d8590e17832092"
+      "samples": 180,
+      "positive_contact_rate": 0.06111111111111111,
+      "sha256": "8edb44bbc456dafeca97353b0796f8270bc85757e51261324459b0d764efba44"
     },
     "test": {
-      "samples": 80,
+      "samples": 180,
       "positive_contact_rate": 0.05,
-      "sha256": "cbc7a01f7d32e92069875bf84c0964b55df76a753cd385f988ee6cf756e9915a"
+      "sha256": "82e53b6930bd0f85a1677385e18d3406ab96e9dc85a48b5f42f522eec686a67e"
     }
   }
 }

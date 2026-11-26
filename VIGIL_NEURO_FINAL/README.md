@@ -7,7 +7,7 @@ The project studies whether biological wiring changes a rover’s ability to ant
 ## Project files
 
 - [Research and implementation specification](NEURO_RESEARCH_PLAN.md) defines the circuit inputs, learning targets, engineering interfaces and comparison models. The [Word edition](VIGIL_ROVER_X_NeuroAI_Plan.docx) and [PDF edition](VIGIL_ROVER_X_NeuroAI_Plan.pdf) contain the same specification and a linked source index.
-- [Milestone tracker](Implementation_Acceptance_Gates.csv) records the 20-week sequence, acceptance evidence and status (G02–G06 met; G01 and G07–G10 planned).
+- [Milestone tracker](Implementation_Acceptance_Gates.csv) records the 20-week sequence, acceptance evidence and status (G02–G06 and G08–G10 met; G01 historical 2D source unavailable; G07 Kaggle GPU training ready/pending run).
 - [Research resources](Research_Resources.csv) indexes the literature, source data, access guidance and software. A catalog entry identifies where to obtain a resource.
 - [Graph extractor](extract_graph.py) pools directed synapse counts across rows for reviewed neuron IDs. [Extractor tests](test_extract.py) use synthetic input.
 - [Classical stopping baseline](baseline_policy.py) provides a partial M1 comparator for delivered camera and tactile observations. Its [tests](test_policy.py) exercise decision priorities. It has no navigation benchmark result.
@@ -93,4 +93,19 @@ From D:\rover, run the `G02` unfiltered `min_synapses` `1 vs 5` sensitivity + NT
 Observed results (`43` passing unit tests):
 - `runs/connectome/unfiltered-audit/unfiltered_sensitivity.json`: verified `connections_princeton_no_threshold.csv.gz` (`275,679,780` bytes); escape (`316` nodes, `98.42%` known ACH sign) shifts from `17,448` edges / `40,633` synapses / `0` isolates at `min=1` to `1,513` edges / `12,135` synapses / `5` isolates at `min=5`; compass (`151` nodes, `97.35%` known ACH+GLUT sign) shifts from `8,275` edges / `81,615` synapses at `min=1` to `4,364` edges / `73,686` synapses / `0` isolates at `min=5`.
 - `runs/compass-benchmark/summary.json`: FAFB `PEN_a` hemispheres induce opposite-signed `EPG` phase shifts (`+5.32°` left, `-4.78°` right); bump stability `0.7588 ± 0.0117` (`0` missing estimates); under `1–4 s` freeze + `1.4 rad` conflicting distractor at `t = 0.8 s`, `connectome_ring` achieved `16.27°` blackout error, `4.50°` reacquired error, and `5.78°` conflict error (vs. `24.90°` reacquired odometry, `11.42°` Bayesian conflict, and `22.06°` GRU conflict).
-- `runs/scaled-dataset/manifest.json` + `VIGIL_NEURO_FINAL/kaggle-training/train_neuro_cover.py`: exported `380` world-split counterfactual samples (`train: 220`, `val: 80`, `test: 80`; `oracle_keys_in_inputs = 0`, `world_split_leakage = 0`) ready for Kaggle GPU training (`M3_GRU`, `M4_BioMasked`, `M5_Rewired`, `M8_NeuroCOVER_L`).
+- `runs/scaled-dataset/manifest.json` + `VIGIL_NEURO_FINAL/kaggle-training/train_neuro_cover.py`: exported `840` world-split counterfactual samples (`train: 480`, `val: 180`, `test: 180`; `oracle_keys_in_inputs = 0`, `world_split_leakage = 0`) ready for Kaggle GPU training (`M3_GRU`, `M4_BioMasked`, `M5_Rewired`, `M8_NeuroCOVER_L`), plus ready-to-import `train_neuro_cover.ipynb`.
+
+## Closed-loop controller, scientific validation, and research studio (`G08–G10`)
+
+From D:\rover, run the `G08` closed-loop ablation (`recovery_off`, `ordinary_recovery`, `circuit_recovery`), `G09` paired bootstrap validation + BANC v888 transfer audit, and `G10` replay-verified interactive HTML studio:
+
+```powershell
+.\rover-python.ps1 VIGIL_NEURO_FINAL/closed_loop_benchmark.py --out runs/closed-loop-eval --seeds 4
+.\rover-python.ps1 VIGIL_NEURO_FINAL/scientific_validation.py
+.\rover-python.ps1 VIGIL_NEURO_FINAL/research_studio.py
+```
+
+Observed results (`46` passing unit tests + Kaggle GNU Octave reference parity `7.11e-15` in `runs/original-octave-v2/parity.json`):
+- `runs/closed-loop-eval/summary.json`: `0` body collisions and `0` false emergency stops across `72` episodes (`24` per policy); `circuit_recovery` achieved `+0.0737 m` higher progress (`95% CI [+0.0294, +0.1238]`) over `recovery_off` with safe abstention preserved on blocked outages.
+- `runs/scientific-validation/validation_report.json`: paired 95% bootstrap CIs (`2,000` resamples) across topology, recovery, and compass contrasts, with `BANC v888` cell-type homology mapped (`NOT_DOWNLOADED_LOCAL`).
+- `runs/research-studio/index.html`: verified deterministic `replay.jsonl`/`frames.npz`/`summary.json` equivalence across `my-first-drive`, `rover-freeze`, and `rover-wall`.
