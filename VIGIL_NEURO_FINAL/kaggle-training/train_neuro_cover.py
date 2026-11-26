@@ -87,14 +87,15 @@ def resolve_inputs(data_dir, bio_path, rewired_path, annotations_path):
 
     candidates = [Path("."), Path("/kaggle/input")]
     for root in candidates:
-        if (root / "runs/scaled-dataset/train.npz").exists():
-            return (
-                root / "runs/scaled-dataset",
-                root / "runs/graph-controls/escape/biological.npz",
-                root / "runs/graph-controls/escape/rewired-7.npz",
-                root / "runs/connectome/escape/annotations.csv",
-                str(root),
-            )
+        for ds_name in ("scaled-dataset-combined", "scaled-dataset"):
+            if (root / f"runs/{ds_name}/train.npz").exists():
+                return (
+                    root / f"runs/{ds_name}",
+                    root / "runs/graph-controls/escape/biological.npz",
+                    root / "runs/graph-controls/escape/rewired-7.npz",
+                    root / "runs/connectome/escape/annotations.csv",
+                    str(root),
+                )
         if root.exists():
             found = list(root.rglob("train.npz"))
             if found:
@@ -109,8 +110,11 @@ def resolve_inputs(data_dir, bio_path, rewired_path, annotations_path):
         clone_dir.parent.mkdir(parents=True, exist_ok=True)
         subprocess.run(["git", "clone", "--depth", "1", REPO_URL, str(clone_dir)], check=True)
     commit = subprocess.check_output(["git", "-C", str(clone_dir), "rev-parse", "HEAD"], text=True).strip()
+    ds_dir = clone_dir / "runs/scaled-dataset-combined"
+    if not (ds_dir / "train.npz").exists():
+        ds_dir = clone_dir / "runs/scaled-dataset"
     return (
-        clone_dir / "runs/scaled-dataset",
+        ds_dir,
         clone_dir / "runs/graph-controls/escape/biological.npz",
         clone_dir / "runs/graph-controls/escape/rewired-7.npz",
         clone_dir / "runs/connectome/escape/annotations.csv",
