@@ -35,6 +35,7 @@ Inspect the emitted nodes, edges and manifest. Compare thresholds of one and fiv
 The D-drive workspace keeps the earlier supplied ZIPs under `references/package-originals`, the earlier simulator report under `references`, and the published EMD–LPLC2–GF code under `references/EMD-LPLC2-GF-model` (checkout `50c7c8f3f74052b2562ccba967c9f1032f37405b`). These are separate from the portable starter package.
 
 Kaggle training is scheduled for weeks 13–14. Its inputs are versioned spatial image sequences, validated circuit states and counterfactual labels. A run should record the source and model versions, world-level split, actual CUDA device, frozen thresholds, metrics and checkpoint. The resource index links the official CLI commands. The available evidence at this revision consists of synthetic extractor and policy tests. Biological validation, GPU training and closed-loop performance are pending.
+
 ## Running the initial build on D
 
 From D:\rover, use the D-drive Python environment:
@@ -75,6 +76,7 @@ From D:\rover, run the G04 biological vision benchmark, zero-false-positive came
 ```
 
 Observed results (`39` passing unit tests):
+
 - `runs/vision-benchmark/summary.json`: `96x128` RGB at `10 Hz` and `66°` vertical FOV; multiplicative LPLC2 response peaks at `1.0` on `approach` and `0.0` across `recede`, `translate`, `yaw`, `near_miss`, and `empty`.
 - `runs/camera-escape-zero-fp/summary.json`: across `8` collision courses and `8` near misses (`seeds 20000..20015`), bearing-gated LPLC2/LC4 drive and zero-FP threshold calibration yield `0` false warnings, `0` closed-loop collisions, and `8/8` near misses passed (`1.025 s` biological median lead; `1.10 s` rewired median lead).
 - `runs/blindspot-dataset/manifest.json`: `80` counterfactual branch records across `8` paired indistinguishable worlds (`max_pre_branch_pixel_diff = 0`, `oracle_keys_in_inputs = 0`, `pair_split_leakage = 0`).
@@ -91,6 +93,7 @@ From D:\rover, run the `G02` unfiltered `min_synapses` `1 vs 5` sensitivity + NT
 ```
 
 Observed results (`43` passing unit tests):
+
 - `runs/connectome/unfiltered-audit/unfiltered_sensitivity.json`: verified `connections_princeton_no_threshold.csv.gz` (`275,679,780` bytes); escape (`316` nodes, `98.42%` known ACH sign) shifts from `17,448` edges / `40,633` synapses / `0` isolates at `min=1` to `1,513` edges / `12,135` synapses / `5` isolates at `min=5`; compass (`151` nodes, `97.35%` known ACH+GLUT sign) shifts from `8,275` edges / `81,615` synapses at `min=1` to `4,364` edges / `73,686` synapses / `0` isolates at `min=5`.
 - `runs/compass-benchmark/summary.json`: FAFB `PEN_a` hemispheres induce opposite-signed `EPG` phase shifts (`+5.32°` left, `-4.78°` right); bump stability `0.7588 ± 0.0117` (`0` missing estimates); under `1–4 s` freeze + `1.4 rad` conflicting distractor at `t = 0.8 s`, `connectome_ring` achieved `16.27°` blackout error, `4.50°` reacquired error, and `5.78°` conflict error (vs. `24.90°` reacquired odometry, `11.42°` Bayesian conflict, and `22.06°` GRU conflict).
 - `runs/scaled-dataset/manifest.json` + `VIGIL_NEURO_FINAL/kaggle-training/train_neuro_cover.py`: exported `840` world-split counterfactual samples (`train: 480`, `val: 180`, `test: 180`; `oracle_keys_in_inputs = 0`, `world_split_leakage = 0`) and ran on Kaggle **`Tesla T4`** (`runs/kaggle-training-v1/metrics.json`, `checkpoints.pt`, `portable_weights.npz` from commit `ae20be5`): `M4_BioMasked` achieved `test_brier = 0.00435`, `test_false_positive_rate = 0.0`, `test_recall = 1.0`, `test_progress_mae = 0.0184 m` (vs. `M5_Rewired`: `0.00755` Brier / `0.00585` FPR / `1.0` recall; `M3_GRU`: `0.0925` Brier / `0.0351` FPR / `0.111` recall; `M8_NeuroCOVER_L`: `0.0356` recoverability BCE / `1.0` recall).
@@ -106,6 +109,25 @@ From D:\rover, run the `G08` closed-loop ablation (`recovery_off`, `ordinary_rec
 ```
 
 Observed results (`46` passing unit tests + Kaggle GNU Octave reference parity `7.11e-15` in `runs/original-octave-v2/parity.json`):
+
 - `runs/closed-loop-eval/summary.json`: `0` body collisions and `0` false emergency stops across `72` episodes (`24` per policy); `circuit_recovery` achieved `+0.0737 m` higher progress (`95% CI [+0.0294, +0.1238]`) over `recovery_off` with safe abstention preserved on blocked outages.
 - `runs/scientific-validation/validation_report.json`: paired 95% bootstrap CIs (`2,000` resamples) across topology, recovery, and compass contrasts, with `BANC v888` cell-type homology mapped (`NOT_DOWNLOADED_LOCAL`).
-- `runs/research-studio/index.html`: verified deterministic `replay.jsonl`/`frames.npz`/`summary.json` equivalence across `my-first-drive`, `rover-freeze`, and `rover-wall`.
+- `runs/research-studio/index.html`: verified deterministic `replay.jsonl`/`frames.npz`/`summary.json` equivalence across `my-first-drive`, `rover-freeze`, `rover-wall`, `r05-pedestrian`, `r05-forklift`, `r05-glass-wall`, and `r05-night`.
+
+## Reality-grounded simulator, sensor model & `Neuro-COVER-L` (`R01–R06`)
+
+From `D:\rover`, run the domain-randomized dataset generator, `suite=r05` / `suite=g08` closed-loop benchmarks with Kaggle weights, real-time CPU latency test, and Research Studio rebuild:
+
+```powershell
+.\rover-python.ps1 VIGIL_NEURO_FINAL/closed_loop_benchmark.py --out runs/closed-loop-r05 --seeds 4 --suite r05 --weights runs/kaggle-training-r06/portable_weights.npz
+.\rover-python.ps1 VIGIL_NEURO_FINAL/closed_loop_benchmark.py --out runs/closed-loop-eval --seeds 4 --suite g08 --weights runs/kaggle-training-r06/portable_weights.npz
+.\rover-python.ps1 -m unittest discover -s VIGIL_NEURO_FINAL -p "test_*.py"
+```
+
+Observed results (`68` passing unit tests + Kaggle **Tesla T4** run `e65f848` + `p95 = 4.09 ms` CPU stack latency):
+
+- `runs/kaggle-training-r06/metrics.json`: trained on `runs/scaled-dataset-combined` (`1,740` samples across G07 + R05 scenarios); **`M8_NeuroCOVER_L`** led all models (`test_recall = 1.0`, `test_brier = 0.01657`, `test_false_positive_rate = 0.02616`, `test_f1 = 0.7805`, `test_recover_bce = 0.1332`).
+- `runs/closed-loop-eval/summary.json` (`suite=g08`, `24` episodes/policy): **`neuro_cover_l`** (leaky hold + dual-core consensus + sector-verified counterfactual steering) achieved **`0` body collisions**, **`0` whisker events**, `100%` safe success, and **`0.6609 m`** mean progress (`+0.159 m` over `recovery_off`).
+- `runs/closed-loop-r05/summary.json` (`suite=r05`, `24` episodes/policy across `corridor_pedestrian`, `warehouse_forklift_cross`, `outdoor_pothole`, `lab_glass_wall`, `ramp_descent`, `night_mode`): all policies achieved **`0` body collisions** and `100%` safe success (`circuit_recovery`: `0.3082 m`; `neuro_cover_l`: `0.2477 m`, both resolving `corridor_pedestrian` freezes where `recovery_off` stalls at `0.000 m`).
+- `VIGIL_NEURO_FINAL/test_latency_budget.py`: full Layer-3 neural stack on `RealWorldEnv` measures `mean = 2.89 ms`, `p95 = 4.09 ms`, `max = 5.81 ms` on CPU (well within the `100 ms` / `10 Hz` hardware transfer budget).
+- `VIGIL_NEURO_FINAL/hardware_interface.py`: `SimInterface` live; `ROSInterface` and `SerialInterface` remain explicitly stubbed (`NotImplementedError` — `R07` Planned) until physical rover chassis and bench integration begin.

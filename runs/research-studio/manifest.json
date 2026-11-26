@@ -44,6 +44,66 @@
         "body_contact": false,
         "body_contact_events": 0
       }
+    },
+    "r05-pedestrian": {
+      "verified": true,
+      "steps": 81,
+      "delivered_frames": 41,
+      "scene": "corridor_pedestrian",
+      "fault": "none",
+      "final": {
+        "x_m": 0.1370462859119563,
+        "y_m": -0.0010058058735263023,
+        "yaw_rad": -0.003174244726408578,
+        "speed_m_s": 3.149222475372718e-06,
+        "body_contact": false,
+        "body_contact_events": 0
+      }
+    },
+    "r05-forklift": {
+      "verified": true,
+      "steps": 81,
+      "delivered_frames": 41,
+      "scene": "warehouse_forklift_cross",
+      "fault": "none",
+      "final": {
+        "x_m": 0.40834931061980495,
+        "y_m": -0.00243461063576427,
+        "yaw_rad": -0.01852741133091043,
+        "speed_m_s": 0.0011457031099978924,
+        "body_contact": false,
+        "body_contact_events": 0
+      }
+    },
+    "r05-glass-wall": {
+      "verified": true,
+      "steps": 81,
+      "delivered_frames": 41,
+      "scene": "lab_glass_wall",
+      "fault": "none",
+      "final": {
+        "x_m": 0.44450487688407314,
+        "y_m": -0.006865463811867145,
+        "yaw_rad": -0.0266704884695043,
+        "speed_m_s": 0.00044027792380344177,
+        "body_contact": false,
+        "body_contact_events": 0
+      }
+    },
+    "r05-night": {
+      "verified": true,
+      "steps": 81,
+      "delivered_frames": 41,
+      "scene": "night_mode",
+      "fault": "none",
+      "final": {
+        "x_m": 0.24158505007422848,
+        "y_m": -0.0012474489842997033,
+        "yaw_rad": -0.0031238283639062722,
+        "speed_m_s": 4.2226958518505295e-05,
+        "body_contact": false,
+        "body_contact_events": 0
+      }
     }
   },
   "studio_html": "runs\\research-studio\\index.html"
