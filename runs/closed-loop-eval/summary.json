@@ -1,6 +1,8 @@
 {
   "seeds": 4,
+  "suite": "g08",
   "env_mode": "rover_sim",
+  "weights_path": "runs\\kaggle-training-r06\\portable_weights.npz",
   "scenarios": [
     "open_healthy",
     "looming_post",
@@ -40,11 +42,11 @@
     "neuro_cover_l": {
       "episodes": 24,
       "total_body_collisions": 0,
-      "total_whisker_events": 12,
+      "total_whisker_events": 4,
       "safe_success_rate": 1.0,
       "false_emergency_stops": 0,
       "abstentions": 8,
-      "mean_progress_m": 0.6719587478306854
+      "mean_progress_m": 0.5753336568215254
     }
   }
 }

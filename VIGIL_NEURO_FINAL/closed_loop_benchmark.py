@@ -22,7 +22,10 @@ from recovery_policy import choose_recovery_action
 from rover_sim import RoverSim
 from scale_dataset import ACTIONS, extract_features
 
-_WEIGHTS_PATH = Path("runs/kaggle-training-v1/portable_weights.npz")
+_WEIGHTS_CANDIDATES = (
+    Path("runs/kaggle-training-r06/portable_weights.npz"),
+    Path("runs/kaggle-training-v1/portable_weights.npz"),
+)
 
 
 def _sigmoid(x: float) -> float:
@@ -69,14 +72,16 @@ class _PortableMaskedPolicy:
         }
 
 
-def _load_neuro_cover_l():
+def _load_neuro_cover_l(weights_path: Path = None):
     """Load frozen M4_BioMasked (risk) and M8_NeuroCOVER_L (recovery) from portable_weights.npz."""
-    if not _WEIGHTS_PATH.exists():
+    path = Path(weights_path) if weights_path is not None else next((p for p in _WEIGHTS_CANDIDATES if p.exists()), None)
+    if path is None or not path.exists():
         return None
-    arrays = np.load(_WEIGHTS_PATH)
+    arrays = np.load(path)
     if "M4_BioMasked__core.theta" not in arrays or "M8_NeuroCOVER_L__core.theta" not in arrays:
         return None
     return {
+        "path": str(path),
         "m4": _PortableMaskedPolicy(arrays, "M4_BioMasked"),
         "m8": _PortableMaskedPolicy(arrays, "M8_NeuroCOVER_L"),
     }
@@ -137,7 +142,7 @@ def build_scenario(name, seed, env_mode="rover_sim"):
     return sim
 
 
-def run_episode(scenario, policy_mode, seed, escape_assets, compass_model, env_mode="rover_sim"):
+def run_episode(scenario, policy_mode, seed, escape_assets, compass_model, env_mode="rover_sim", weights_path=None):
     belief = SectorBelief(max_age_s=0.6)
     vstate = None
     last_cap = None
@@ -149,7 +154,7 @@ def run_episode(scenario, policy_mode, seed, escape_assets, compass_model, env_m
     whisker_events = 0
     prev_whisker = False
     anchor = None
-    ncl_models = _load_neuro_cover_l() if policy_mode == "neuro_cover_l" else None
+    ncl_models = _load_neuro_cover_l(weights_path) if policy_mode == "neuro_cover_l" else None
     ncl_vstate = None
     ncl_last_cap = None
 
@@ -178,11 +183,11 @@ def run_episode(scenario, policy_mode, seed, escape_assets, compass_model, env_m
                 action, reason = choose_recovery_action(obs, snap, looming_alert=generic_alert)
                 if "abstain" in reason:
                     abstained = True
-            elif policy_mode == "circuit_recovery":
-                # Connectome-informed: FAFB escape looming circuit + compass stability + safe recovery
+            elif policy_mode in ("circuit_recovery", "neuro_cover_l"):
+                # Biological FAFB core: LPLC2/LC4 looming circuit + EPG/PEN ConnectomeCompass
                 if obs["capture_s"] != last_cap:
-                    dt = 0.1 if last_cap is None else max(0.05, obs["capture_s"] - last_cap)
-                    lplc2_d, lc4_d, vstate = visual_looming(obs["rgb"], vstate, dt)
+                    dt_bio = 0.1 if last_cap is None else max(0.05, obs["capture_s"] - last_cap)
+                    lplc2_d, lc4_d, vstate = visual_looming(obs["rgb"], vstate, dt_bio)
                     if net is not None:
                         score = net.update(lplc2_d, lc4_d)
                         if score >= thresh:
@@ -196,24 +201,35 @@ def run_episode(scenario, policy_mode, seed, escape_assets, compass_model, env_m
                         if bump < 0.25:
                             latched_escape = True
                     last_cap = obs["capture_s"]
-                action, reason = choose_recovery_action(obs, snap, looming_alert=latched_escape)
-                if "abstain" in reason:
-                    abstained = True
-            elif policy_mode == "neuro_cover_l":
-                # Exact G07 MaskedCircuitCore (M4_BioMasked risk + M8_NeuroCOVER_L recoverability)
-                ncl_alert = False
-                if ncl_models is not None:
-                    dt = 0.1 if ncl_last_cap is None else max(0.05, obs["time_s"] - ncl_last_cap)
-                    feats, ncl_vstate = extract_features(obs, snap, ncl_vstate, dt)
+
+                looming_alert = latched_escape
+                if policy_mode == "neuro_cover_l" and ncl_models is not None:
+                    # Learned extension: M4_BioMasked risk + M8_NeuroCOVER_L recoverability on top of bio core
+                    dt_ncl = 0.1 if ncl_last_cap is None else max(0.05, obs["time_s"] - ncl_last_cap)
+                    feats, ncl_vstate = extract_features(obs, snap, ncl_vstate, dt_ncl)
                     ncl_last_cap = obs["time_s"]
                     ncl_models["m4"].step_core(feats)
                     ncl_models["m8"].step_core(feats)
                     if step >= 8:
                         m4_fwd = ncl_models["m4"].predict_action("forward")
-                        ncl_alert = bool(m4_fwd["contact_prob"] >= ncl_models["m4"].threshold)
-                action, reason = choose_recovery_action(obs, snap, looming_alert=ncl_alert)
+                        if m4_fwd["contact_prob"] >= ncl_models["m4"].threshold:
+                            looming_alert = True
+
+                action, reason = choose_recovery_action(obs, snap, looming_alert=looming_alert)
                 if "abstain" in reason:
                     abstained = True
+                elif (
+                    policy_mode == "neuro_cover_l"
+                    and ncl_models is not None
+                    and step >= 8
+                    and action == "forward"
+                    and snap["unknown_or_stale_fraction"] > 0.35
+                ):
+                    # Active NeuroCOVER-L feasibility check: slow down if M4 sees moderate risk
+                    m4_slow = ncl_models["m4"].predict_action("slow")
+                    m8_fwd = ncl_models["m8"].predict_action("forward")
+                    if m8_fwd["contact_prob"] >= ncl_models["m8"].threshold and m4_slow["contact_prob"] < ncl_models["m4"].threshold:
+                        action = "slow"
             else:
                 raise ValueError(policy_mode)
 
@@ -241,7 +257,7 @@ def run_episode(scenario, policy_mode, seed, escape_assets, compass_model, env_m
     }
 
 
-def run(out: Path, seeds=4, env_mode="rover_sim", suite="g08"):
+def run(out: Path, seeds=4, env_mode="rover_sim", suite="g08", weights_path=None):
     escape_dir = Path("runs/graph-controls/escape")
     ann_path = Path("runs/connectome/escape/annotations.csv")
     compass_dir = Path("runs/connectome/compass")
@@ -267,7 +283,7 @@ def run(out: Path, seeds=4, env_mode="rover_sim", suite="g08"):
     for policy in policies:
         for sc in scenarios:
             for s in range(seeds):
-                rows.append(run_episode(sc, policy, s, escape_assets, compass_model, env_mode=env_mode))
+                rows.append(run_episode(sc, policy, s, escape_assets, compass_model, env_mode=env_mode, weights_path=weights_path))
 
     out.mkdir(parents=True, exist_ok=True)
     with (out / "episodes.csv").open("w", newline="") as f:
@@ -287,7 +303,12 @@ def run(out: Path, seeds=4, env_mode="rover_sim", suite="g08"):
             "abstentions": sum(r["abstained"] for r in sub),
             "mean_progress_m": float(np.mean([r["progress_m"] for r in sub])),
         }
-    summary = {"seeds": seeds, "suite": suite, "env_mode": env_mode, "scenarios": list(scenarios), "policies": agg}
+    resolved_weights = (
+        str(weights_path)
+        if weights_path is not None
+        else next((str(p) for p in _WEIGHTS_CANDIDATES if p.exists()), None)
+    )
+    summary = {"seeds": seeds, "suite": suite, "env_mode": env_mode, "weights_path": resolved_weights, "scenarios": list(scenarios), "policies": agg}
     (out / "summary.json").write_text(json.dumps(summary, indent=2))
     return summary
 
@@ -298,5 +319,6 @@ if __name__ == "__main__":
     p.add_argument("--seeds", type=int, default=4)
     p.add_argument("--env", choices=["rover_sim", "real_world"], default="rover_sim")
     p.add_argument("--suite", choices=["g08", "r05"], default="g08")
+    p.add_argument("--weights", type=Path, default=None)
     args = p.parse_args()
-    print(json.dumps(run(args.out, args.seeds, env_mode=args.env, suite=args.suite), indent=2))
+    print(json.dumps(run(args.out, args.seeds, env_mode=args.env, suite=args.suite, weights_path=args.weights), indent=2))

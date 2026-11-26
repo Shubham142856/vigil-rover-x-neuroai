@@ -2,6 +2,7 @@
   "seeds": 4,
   "suite": "r05",
   "env_mode": "real_world",
+  "weights_path": "runs\\kaggle-training-r06\\portable_weights.npz",
   "scenarios": [
     "corridor_pedestrian",
     "warehouse_forklift_cross",
@@ -40,12 +41,12 @@
     },
     "neuro_cover_l": {
       "episodes": 24,
-      "total_body_collisions": 4,
-      "total_whisker_events": 8,
-      "safe_success_rate": 0.875,
+      "total_body_collisions": 0,
+      "total_whisker_events": 4,
+      "safe_success_rate": 1.0,
       "false_emergency_stops": 0,
-      "abstentions": 1,
-      "mean_progress_m": 0.46199978320952256
+      "abstentions": 0,
+      "mean_progress_m": 0.2779875462964645
     }
   }
 }

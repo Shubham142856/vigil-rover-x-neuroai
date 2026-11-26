@@ -1,0 +1,40 @@
+{
+  "device": "Tesla T4",
+  "epochs": 35,
+  "unknown_sign_nodes": 5,
+  "models": {
+    "M3_GRU": {
+      "frozen_val_threshold": 0.9834370613098145,
+      "test_brier": 0.0915243998169899,
+      "test_false_positive_rate": 0.005813953488372093,
+      "test_recall": 0.625,
+      "test_progress_mae": 0.05125141516327858,
+      "test_recover_bce": 0.7695226073265076
+    },
+    "M4_BioMasked": {
+      "frozen_val_threshold": 0.9994469285011292,
+      "test_brier": 0.08778044581413269,
+      "test_false_positive_rate": 0.0,
+      "test_recall": 0.25,
+      "test_progress_mae": 0.04114022105932236,
+      "test_recover_bce": 0.8544947504997253
+    },
+    "M5_Rewired": {
+      "frozen_val_threshold": 0.9991061091423035,
+      "test_brier": 0.12699516117572784,
+      "test_false_positive_rate": 0.0,
+      "test_recall": 0.25,
+      "test_progress_mae": 0.07031697034835815,
+      "test_recover_bce": 0.9190649390220642
+    },
+    "M8_NeuroCOVER_L": {
+      "frozen_val_threshold": 0.9980860948562622,
+      "test_brier": 0.10138396173715591,
+      "test_false_positive_rate": 0.0029069767441860465,
+      "test_recall": 0.25,
+      "test_progress_mae": 0.07469974458217621,
+      "test_recover_bce": 0.12567144632339478
+    }
+  },
+  "source": "github:1f421f49a1fb51bc35ad7ae0e68376e889c5b209"
+}
