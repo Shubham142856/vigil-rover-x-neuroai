@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """G07 Kaggle GPU trainer: M3 GRU, M4 Biological Masked, M5 Rewired, and M8 Neuro-COVER-L."""
 import argparse
 import csv
@@ -7,14 +9,25 @@ from pathlib import Path
 
 import numpy as np
 from scipy.sparse import load_npz
-import torch
-import torch.nn as nn
-from torch.utils.data import DataLoader, TensorDataset
+
+try:
+    import torch
+    import torch.nn as nn
+    from torch.utils.data import DataLoader, TensorDataset
+    _TORCH_AVAILABLE = True
+    _ModuleBase = nn.Module
+except ImportError:
+    torch = None
+    nn = None
+    DataLoader = None
+    TensorDataset = None
+    _TORCH_AVAILABLE = False
+    _ModuleBase = object
 
 REPO_URL = "https://github.com/Shubham142856/vigil-rover-x-neuroai.git"
 
 
-class MaskedCircuitCore(nn.Module):
+class MaskedCircuitCore(_ModuleBase):
     """Differentiable rate core: W_eff = M * S * softplus(theta)."""
 
     def __init__(self, adj_mask: torch.Tensor, sign_mask: torch.Tensor, in_dim: int):
@@ -34,7 +47,7 @@ class MaskedCircuitCore(nn.Module):
         return state
 
 
-class ActionHeadPolicy(nn.Module):
+class ActionHeadPolicy(_ModuleBase):
     """Shared action-conditioned risk, progress, and recoverability heads."""
 
     def __init__(self, core_type, core_dim, in_dim, n_actions=5, adj_mask=None, sign_mask=None):
@@ -91,12 +104,26 @@ def _binary_f1(pred: np.ndarray, y_true: np.ndarray) -> float:
     return float(2 * tp / denom) if denom > 0 else 0.0
 
 
+def resolve_output_dir(explicit_out: Path | None) -> Path:
+    """Resolve output directory: explicit path, /kaggle/working, /content/working, or local fallback."""
+    if explicit_out is not None:
+        p = Path(explicit_out)
+    elif Path("/kaggle/working").exists():
+        p = Path("/kaggle/working")
+    elif Path("/content").exists():
+        p = Path("/content/working")
+    else:
+        p = Path("runs/kaggle-training-output")
+    p.mkdir(parents=True, exist_ok=True)
+    return p
+
+
 def resolve_inputs(data_dir, bio_path, rewired_path, annotations_path):
-    """Resolve inputs from CLI args, local repo, /kaggle/input, or pinned public GitHub clone."""
+    """Resolve inputs from CLI args, local repo, /kaggle/input, /content, or pinned public GitHub clone."""
     if all(p is not None and Path(p).exists() for p in (data_dir, bio_path, rewired_path, annotations_path)):
         return Path(data_dir), Path(bio_path), Path(rewired_path), Path(annotations_path), "explicit"
 
-    candidates = [Path("."), Path("/kaggle/input")]
+    candidates = [Path("."), Path("/kaggle/input"), Path("/content")]
     for root in candidates:
         for ds_name in ("scaled-dataset-combined", "scaled-dataset"):
             if (root / f"runs/{ds_name}/train.npz").exists():
@@ -111,12 +138,13 @@ def resolve_inputs(data_dir, bio_path, rewired_path, annotations_path):
             found = list(root.rglob("train.npz"))
             if found:
                 d = found[0].parent
-                b = list(root.rglob("biological.npz"))[0]
-                r = list(root.rglob("rewired-7.npz"))[0]
-                a = list(root.rglob("annotations.csv"))[0]
-                return d, b, r, a, str(root)
+                b_list = list(root.rglob("biological.npz"))
+                r_list = list(root.rglob("rewired-7.npz"))
+                a_list = list(root.rglob("annotations.csv"))
+                if b_list and r_list and a_list:
+                    return d, b_list[0], r_list[0], a_list[0], str(root)
 
-    clone_dir = Path("/kaggle/temp/vigil-repo")
+    clone_dir = Path("/kaggle/temp/vigil-repo") if Path("/kaggle").exists() else Path("/tmp/vigil-repo")
     if not clone_dir.exists():
         clone_dir.parent.mkdir(parents=True, exist_ok=True)
         subprocess.run(["git", "clone", "--depth", "1", REPO_URL, str(clone_dir)], check=True)
@@ -159,6 +187,8 @@ def export_portable_npz(checkpoints, thresholds, out_path: Path):
 
 
 def train_and_eval(data_dir: Path, bio_npz: Path, rewired_npz: Path, annotations_csv: Path, out_dir: Path, epochs=35, device="cuda"):
+    if not _TORCH_AVAILABLE:
+        raise RuntimeError("PyTorch is not installed in this environment. Please run training on Kaggle GPU or Google Colab.")
     torch.manual_seed(7)
     out_dir.mkdir(parents=True, exist_ok=True)
     dev = torch.device(device if torch.cuda.is_available() else "cpu")
@@ -257,18 +287,25 @@ def train_and_eval(data_dir: Path, bio_npz: Path, rewired_npz: Path, annotations
     return report
 
 
-if __name__ == "__main__":
+def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--data", type=Path, default=None)
     p.add_argument("--bio", type=Path, default=None)
     p.add_argument("--rewired", type=Path, default=None)
     p.add_argument("--annotations", type=Path, default=None)
-    p.add_argument("--out", type=Path, default=Path("/kaggle/working"))
+    p.add_argument("--out", type=Path, default=None)
     p.add_argument("--epochs", type=int, default=50)
     p.add_argument("--device", default="cuda")
-    a = p.parse_args()
+    # parse_known_args safely ignores extra flags like -f injected by Jupyter / Google Colab kernels
+    a, _ = p.parse_known_args(argv)
+    out_dir = resolve_output_dir(a.out)
     data_d, bio_p, rew_p, ann_p, source = resolve_inputs(a.data, a.bio, a.rewired, a.annotations)
-    rep = train_and_eval(data_d, bio_p, rew_p, ann_p, a.out, a.epochs, a.device)
+    rep = train_and_eval(data_d, bio_p, rew_p, ann_p, out_dir, a.epochs, a.device)
     rep["source"] = source
-    (a.out / "metrics.json").write_text(json.dumps(rep, indent=2))
+    (out_dir / "metrics.json").write_text(json.dumps(rep, indent=2))
     print(json.dumps(rep, indent=2))
+    return rep
+
+
+if __name__ == "__main__":
+    main()
