@@ -17,12 +17,54 @@ from copy import deepcopy
 from typing import Optional
 
 import numpy as np
+from scipy.special import i0, i1
 
 from t4_t5_vision import DEFAULT_CX, DEFAULT_FX
 
 
 def _wrap_angle(angle: np.ndarray | float) -> np.ndarray | float:
     return (angle + math.pi) % (2.0 * math.pi) - math.pi
+
+
+def _vm_mean_resultant(kappa: float) -> float:
+    """Mean resultant length A(kappa) = I_1(kappa) / I_0(kappa) in [0, 1)."""
+    k = max(0.0, float(kappa))
+    if k < 1e-8:
+        return 0.0
+    if k > 50.0:
+        # Asymptotic expansion accurate to <1e-7 for large concentration
+        return float(max(0.0, min(1.0 - 1e-9, 1.0 - 1.0 / (2.0 * k) - 1.0 / (8.0 * k * k))))
+    return float(max(0.0, min(1.0 - 1e-9, i1(k) / max(float(i0(k)), 1e-12))))
+
+
+def _vm_inv_resultant(r: float) -> float:
+    """Inverse A^{-1}(R) mapping circular resultant length R in [0, 1) to von Mises kappa."""
+    rc = float(np.clip(r, 0.0, 1.0 - 1e-7))
+    if rc < 1e-8:
+        return 0.0
+    # Best-of-breed rational init (Banerjee et al. 2005) refined by Newton steps
+    if rc < 0.53:
+        k = 2.0 * rc + rc ** 3 + 5.0 * (rc ** 5) / 6.0
+    elif rc < 0.85:
+        k = -0.4 + 1.39 * rc + 0.43 / (1.0 - rc)
+    else:
+        k = 1.0 / (rc ** 3 - 4.0 * rc * rc + 3.0 * rc)
+    for _ in range(4):
+        a = _vm_mean_resultant(k)
+        da = 1.0 - a * a - (a / max(k, 1e-8))
+        if abs(da) < 1e-10:
+            break
+        k = max(0.0, k - (a - rc) / da)
+    return float(min(k, 2500.0))
+
+
+def _circular_std_from_kappa(kappa: float) -> float:
+    """Calibrated circular standard deviation sqrt(-2 ln A(kappa)) clamped to [0.01, pi]."""
+    r = _vm_mean_resultant(kappa)
+    if r <= 1e-8:
+        return float(math.pi)
+    std = math.sqrt(max(0.0, -2.0 * math.log(r)))
+    return float(np.clip(std, 0.01, math.pi))
 
 
 def _binary_entropy_bits(p: np.ndarray) -> np.ndarray:
@@ -62,10 +104,15 @@ class FactorizedSpatialBelief:
         self.last_obs_s = np.full(n_sectors, -np.inf, dtype=np.float64)
         self.u_dyn = np.zeros(n_sectors, dtype=np.float64)
         self.yaw_est_rad = 0.0
-        self.heading_uncertainty_rad = 0.02
+        self.heading_kappa = 2500.0
+        self.heading_uncertainty_rad = _circular_std_from_kappa(self.heading_kappa)
+        self.heading_conflict = False
         self.compass_conc = 1.0
         self.camera_healthy = False
         self._last_time_s: Optional[float] = None
+        # Derive symmetric ego snapshot FOV directly from calibrated pinhole H-FOV & bin width
+        # Guarantees outermost ego rays stay inside observed camera frustum bins without ad-hoc constants
+        self.ego_span_rad = float(max(self.sector_width, self.cam_hfov_rad - self.sector_width))
 
     def copy(self) -> FactorizedSpatialBelief:
         return deepcopy(self)
@@ -108,23 +155,86 @@ class FactorizedSpatialBelief:
         res_motion_cols: Optional[np.ndarray] = None,
         compass_conc: Optional[float] = None,
         world_yaw_rad: Optional[float] = None,
+        action_cmd: Optional[str] = None,
+        visual_yaw_rad: Optional[float] = None,
+        visual_yaw_kappa: float = 0.0,
+        visual_motion_stable: bool = False,
     ) -> dict:
         now = float(obs["time_s"])
         dt = 0.05 if self._last_time_s is None else max(0.0, now - self._last_time_s)
         self._last_time_s = now
 
+        fresh = (
+            obs.get("frame_valid") is True
+            and obs.get("frame_age_s") is not None
+            and float(obs["frame_age_s"]) <= 0.051
+        )
+        contrast = float(obs.get("contrast", 0.2))
+        brightness = float(obs.get("brightness", 0.5))
+        has_visual_evidence = fresh and contrast >= 0.035 and brightness <= 0.88
+
+        self.heading_conflict = False
         if world_yaw_rad is not None:
             self.yaw_est_rad = float(_wrap_angle(world_yaw_rad))
-        elif delta_yaw_rad is not None:
-            self.advance_ego_yaw(delta_yaw_rad)
+            self.heading_kappa = 2500.0
         else:
-            gyro_z = obs.get("imu_gyro_z")
-            if gyro_z is not None and np.isfinite(gyro_z):
-                self.advance_ego_yaw(float(gyro_z) * dt)
+            # 1. Propagate von Mises circular heading belief according to available proprioceptive sensors
+            if delta_yaw_rad is not None:
+                self.advance_ego_yaw(delta_yaw_rad)
+                proc_var = (0.04 ** 2) * dt + (0.02 * abs(delta_yaw_rad)) ** 2
             else:
-                self.heading_uncertainty_rad = min(math.pi, self.heading_uncertainty_rad + 0.08 * dt)
+                gyro_z = obs.get("imu_gyro_z")
+                if gyro_z is not None and np.isfinite(gyro_z):
+                    dy = float(gyro_z) * dt
+                    self.advance_ego_yaw(dy)
+                    proc_var = (0.04 ** 2) * dt + (0.02 * abs(dy)) ** 2
+                elif action_cmd in ("left", "right"):
+                    omega_cmd = 1.0 if action_cmd == "left" else -1.0
+                    self.advance_ego_yaw(omega_cmd * dt)
+                    proc_var = (0.40 ** 2) * dt
+                elif action_cmd in ("forward", "slow", "brake"):
+                    # Straight / braked motion without IMU accumulates bounded heading diffusion
+                    proc_var = (0.05 ** 2) * dt
+                else:
+                    # Unknown motion & missing IMU
+                    proc_var = (0.22 ** 2) * max(dt, 0.05)
 
-        self.heading_uncertainty_rad = float(np.clip(self.heading_uncertainty_rad + heading_unc_delta_rad, 0.01, math.pi))
+            if heading_unc_delta_rad > 0.0:
+                proc_var += heading_unc_delta_rad ** 2
+
+            r_pred = _vm_mean_resultant(self.heading_kappa) * math.exp(-0.5 * proc_var)
+            kappa_pred = _vm_inv_resultant(r_pred)
+            mu_pred = self.yaw_est_rad
+
+            # 2. Bayesian von Mises visual directional fusion ONLY when real visual directional cues exist
+            if has_visual_evidence and visual_yaw_rad is not None and visual_yaw_kappa > 0.0:
+                err = abs(float(_wrap_angle(visual_yaw_rad - mu_pred)))
+                if err > math.radians(35.0):
+                    # Conflicting cues: circular mixture attenuates resultant length -> higher uncertainty
+                    self.heading_conflict = True
+                    z_mix = (
+                        0.60 * _vm_mean_resultant(kappa_pred) * complex(math.cos(mu_pred), math.sin(mu_pred))
+                        + 0.40 * _vm_mean_resultant(visual_yaw_kappa) * complex(math.cos(visual_yaw_rad), math.sin(visual_yaw_rad))
+                    )
+                    kappa_pred = _vm_inv_resultant(abs(z_mix))
+                    if abs(z_mix) > 1e-8:
+                        mu_pred = float(math.atan2(z_mix.imag, z_mix.real))
+                else:
+                    # Consistent directional landmark: conjugate von Mises vector fusion reduces justified uncertainty
+                    kx = kappa_pred * math.cos(mu_pred) + visual_yaw_kappa * math.cos(visual_yaw_rad)
+                    ky = kappa_pred * math.sin(mu_pred) + visual_yaw_kappa * math.sin(visual_yaw_rad)
+                    mu_pred = float(math.atan2(ky, kx))
+                    kappa_pred = float(min(2500.0, math.hypot(kx, ky)))
+            elif has_visual_evidence and visual_motion_stable and action_cmd in ("forward", "slow", "brake"):
+                # Weak rotational stability constraint from textured non-rotating optic flow
+                kx = kappa_pred * math.cos(mu_pred) + (2.5 * max(dt, 0.05) / 0.05) * math.cos(mu_pred)
+                ky = kappa_pred * math.sin(mu_pred) + (2.5 * max(dt, 0.05) / 0.05) * math.sin(mu_pred)
+                kappa_pred = float(min(400.0, math.hypot(kx, ky)))
+
+            self.yaw_est_rad = float(_wrap_angle(mu_pred))
+            self.heading_kappa = kappa_pred
+
+        self.heading_uncertainty_rad = _circular_std_from_kappa(self.heading_kappa)
 
         # World-referenced belief uncertainty grows back toward prior as observations age
         self.log_odds *= math.exp(-dt / 4.0)
@@ -132,11 +242,6 @@ class FactorizedSpatialBelief:
         if compass_conc is not None:
             self.compass_conc = float(np.clip(compass_conc, 0.0, 1.0))
 
-        fresh = (
-            obs.get("frame_valid") is True
-            and obs.get("frame_age_s") is not None
-            and float(obs["frame_age_s"]) <= 0.051
-        )
         if not fresh:
             self.camera_healthy = False
             self.visible.fill(False)
@@ -215,8 +320,8 @@ class FactorizedSpatialBelief:
         p_occ = self.occupancy_probs
         ages = self.ages(now)
 
-        # Build egocentric 9-sector view within +-33 deg (maps strictly to +-30 deg world bins inside +-40.9 deg H-FOV)
-        occ_ego, obs_ego, near_ego = self.ego_window(n_ego=9, fov_rad=math.radians(66.0))
+        # Build egocentric 9-sector view derived strictly from calibrated pinhole H-FOV & bin geometry
+        occ_ego, obs_ego, near_ego = self.ego_window(n_ego=9, fov_rad=self.ego_span_rad)
         ego_ages = np.where(np.isfinite(obs_ego), np.maximum(0.0, now - obs_ego), np.inf)
         fov9_states = []
         for s in range(len(occ_ego)):
@@ -237,7 +342,9 @@ class FactorizedSpatialBelief:
             "visibility": [bool(v) for v in self.visible],
             "dynamic_uncertainty": [round(float(v), 4) for v in self.u_dyn],
             "yaw_est_rad": float(self.yaw_est_rad),
+            "heading_kappa": float(self.heading_kappa),
             "heading_uncertainty_rad": float(self.heading_uncertainty_rad),
+            "heading_conflict": bool(self.heading_conflict),
             "compass_concentration": float(self.compass_conc),
             "task_uncertainty": self.task_uncertainty(now),
             "free_fraction": float(sum(st == "observed_free" for st in fov9_states) / len(fov9_states)),

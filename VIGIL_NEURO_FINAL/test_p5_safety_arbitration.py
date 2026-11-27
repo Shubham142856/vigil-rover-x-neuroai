@@ -7,7 +7,7 @@ import pybullet as pb
 
 from blindspot_dataset import make_paired_world
 from branch_rollout import evaluate_action_branches_v2
-from evaluation_metrics_v2 import clopper_pearson_ci, classify_episode
+from evaluation_metrics_v2 import clopper_pearson_ci, clopper_pearson_one_sided_upper, classify_episode
 from real_world_env import RealWorldEnv
 from rover_sim import RoverSim
 from safety_arbitrator_v2 import (
@@ -257,11 +257,12 @@ class TestP5Mandatory18Suite(unittest.TestCase):
         self.assertEqual(act, "brake")
         self.assertIn("abstain", rsn)
 
-    # 18. Disaggregated metrics & Clopper-Pearson general bounds check
+    # 18. Disaggregated metrics & consistent two-sided Clopper-Pearson bounds check
     def test_18_disaggregated_metrics_and_general_clopper_pearson(self):
         lo0, hi0 = clopper_pearson_ci(0, 24)
         self.assertEqual(lo0, 0.0)
-        self.assertAlmostEqual(hi0, 1.0 - 0.05 ** (1.0 / 24), places=6)
+        self.assertAlmostEqual(hi0, 1.0 - 0.025 ** (1.0 / 24), places=6)
+        self.assertAlmostEqual(clopper_pearson_one_sided_upper(0, 24), 1.0 - 0.05 ** (1.0 / 24), places=6)
         lo2, hi2 = clopper_pearson_ci(2, 50)
         self.assertGreater(lo2, 0.0)
         self.assertLess(lo2, 2 / 50)

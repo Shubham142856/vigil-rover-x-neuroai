@@ -33,16 +33,27 @@ SCENARIO_SPECS: Dict[str, dict] = {
 
 
 def clopper_pearson_ci(k: int, n: int, alpha: float = 0.05) -> Tuple[float, float]:
-    """Exact (1 - alpha) two-sided Clopper-Pearson binomial confidence interval; one-sided upper at k=0."""
+    """Exact two-sided (1 - alpha) Clopper-Pearson binomial confidence interval across all k in [0, n]."""
     if n <= 0:
         return (0.0, 1.0)
     if k == 0:
-        return (0.0, float(1.0 - (alpha) ** (1.0 / n)))
+        return (0.0, float(1.0 - (alpha / 2.0) ** (1.0 / n)))
     if k == n:
-        return (float((alpha) ** (1.0 / n)), 1.0)
+        return (float((alpha / 2.0) ** (1.0 / n)), 1.0)
     lo = float(beta.ppf(alpha / 2.0, k, n - k + 1))
     hi = float(beta.ppf(1.0 - alpha / 2.0, k + 1, n - k))
     return (lo, hi)
+
+
+def clopper_pearson_one_sided_upper(k: int, n: int, alpha: float = 0.05) -> float:
+    """Exact one-sided (1 - alpha) upper Clopper-Pearson safety bound for collision rate."""
+    if n <= 0:
+        return 1.0
+    if k == 0:
+        return float(1.0 - alpha ** (1.0 / n))
+    if k >= n:
+        return 1.0
+    return float(beta.ppf(1.0 - alpha, k + 1, n - k))
 
 
 def world_clustered_mean_ci(values_by_cluster: Dict[str, List[float]], z: float = 1.96) -> dict:

@@ -28,6 +28,7 @@ from pilot_dataset_v3 import ACTIONS, extract_features_v3
 from safety_arbitrator_v2 import (
     ActionFeasibilityChecker,
     ArbitrationConfig,
+    BoundedExplorationMonitor,
     ObservationIntegrityMonitor,
     select_protected_action_p5,
 )
@@ -224,6 +225,7 @@ def run_p6_episode(
     vis_v2 = DualPathwayT4T5Vision()
     integrity_mon = ObservationIntegrityMonitor(max_freeze_probes=2)
     checker = ActionFeasibilityChecker()
+    exploration_mon = BoundedExplorationMonitor()
     cfg = ArbitrationConfig()
     compass = ConnectomeCompass(compass_model)
     _ = Network(escape_assets["npz"], escape_assets["labels"])
@@ -233,6 +235,7 @@ def run_p6_episode(
     last_cap = None
     prev_t = 0.0
     anchor = None
+    cue_latest = None
     prev_action = "brake"
     actions_seq = []
     abstained = False
@@ -260,30 +263,47 @@ def run_p6_episode(
             if not rep.camera_healthy:
                 outage_steps += 1
 
-            dyaw_compass = rep.delta_yaw_rad if rep.delta_yaw_rad is not None else 0.0
+            eff_dyaw = (1.0 if prev_action == "left" else (-1.0 if prev_action == "right" else 0.0)) * dt
+            dyaw_compass = rep.delta_yaw_rad if rep.delta_yaw_rad is not None else eff_dyaw
             if obs["capture_s"] != last_cap:
                 dt_bio = 0.1 if last_cap is None else max(0.05, obs["capture_s"] - last_cap)
-                b_ang = bearing(obs["rgb"])
-                if anchor is None and b_ang is not None:
-                    anchor = b_ang
-                cue = None if (b_ang is None or anchor is None) else (b_ang - anchor)
-                _, comp_conc = compass.step(dyaw_compass, cue)
                 vis_out_latest = vis_v2.step(obs["rgb"], dt_bio, rep.imu_gyro_z, rep.imu_gyro_y)
+                if rep.camera_healthy:
+                    b_ang = bearing(obs["rgb"])
+                    if anchor is None and b_ang is not None and abs(vis_out_latest.get("residual_lc4", 0.0)) < 0.35:
+                        anchor = b_ang
+                    cue_latest = None if (b_ang is None or anchor is None or abs(vis_out_latest.get("residual_lc4", 0.0)) >= 0.35) else (b_ang - anchor)
+                else:
+                    cue_latest = None
+                _, comp_conc = compass.step(dyaw_compass, cue_latest)
                 last_cap = obs["capture_s"]
             else:
                 comp_conc = belief_v2.compass_conc
 
+            vis_motion_stable = bool(
+                rep.camera_healthy
+                and float(obs.get("contrast", 0.0)) >= 0.04
+                and abs(float(vis_out_latest.get("residual_lc4", 0.0))) < 0.18
+            )
             snap_v2 = belief_v2.update(
                 obs,
                 delta_yaw_rad=rep.delta_yaw_rad,
                 heading_unc_delta_rad=rep.heading_uncertainty_delta_rad,
                 compass_conc=comp_conc,
+                action_cmd=prev_action,
+                visual_yaw_rad=cue_latest,
+                visual_yaw_kappa=10.0 if (rep.camera_healthy and cue_latest is not None) else 0.0,
+                visual_motion_stable=vis_motion_stable,
             )
             if u_start is None:
                 u_start = snap_v2["task_uncertainty"]
             u_end = snap_v2["task_uncertainty"]
 
-            ipm_out = estimate_ground_contact_clearance(obs["rgb"], pitch_rad=0.0)
+            # P6.9.3: Strictly invalidate stale IPM estimates during camera outage/freeze/glare
+            if rep.camera_healthy:
+                ipm_out = estimate_ground_contact_clearance(obs["rgb"], pitch_rad=0.0)
+            else:
+                ipm_out = {"obstacle_detected": False, "estimated_clearance_m": 4.0, "ipm_reliable": False}
             feat_v3, lstate = extract_features_v3(obs, snap_v1, snap_v2, vis_out_latest, ipm_out, lstate, dt)
             hist.append(feat_v3)
 
@@ -295,12 +315,17 @@ def run_p6_episode(
                 raw_preds = policy.predict_actions(seq)
                 m4_preds, m8_preds = build_p6_arbitration_inputs(raw_preds, variant, use_recovery=use_recovery)
 
+            speed_est = float(
+                obs["encoder_speed_m_s"]
+                if ("encoder_speed_m_s" in obs and obs["encoder_speed_m_s"] is not None)
+                else (0.35 if prev_action == "forward" else (0.12 if prev_action == "slow" else 0.0))
+            )
             action, rsn = select_protected_action_p5(
                 obs=obs,
                 belief_snap=snap_v2,
                 integrity=rep,
                 vis_out=vis_out_latest,
-                speed_m_s=sim.evaluator()["speed_m_s"],
+                speed_m_s=speed_est,
                 m4_preds=m4_preds,
                 m8_preds=m8_preds,
                 prev_action=prev_action,
@@ -310,6 +335,7 @@ def run_p6_episode(
                 use_risk_arbitration=True,
                 use_feasibility_check=True,
                 use_revised_utility=True,
+                exploration_monitor=exploration_mon,
             )
             if "abstain" in rsn:
                 abstained = True

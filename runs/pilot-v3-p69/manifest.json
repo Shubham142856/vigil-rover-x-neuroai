@@ -1,0 +1,164 @@
+{
+  "schema_version": "p69_targeted_v1",
+  "ctrl_hz": 20,
+  "cam_hz": 10,
+  "phys_hz": 120,
+  "feature_dim": 24,
+  "seq_len": 24,
+  "horizons_s": [
+    0.1,
+    0.3,
+    0.6,
+    1.2,
+    2.4
+  ],
+  "protected_exec_s": 0.30000000000000004,
+  "actions": [
+    "forward",
+    "slow",
+    "brake",
+    "left",
+    "right"
+  ],
+  "oracle_keys_in_inputs": 0,
+  "sensor_only_belief_provenance": true,
+  "world_split_leakage": 0,
+  "untouched_test_families": [
+    "chicane_slalom",
+    "blind_alcove_emergence",
+    "dynamic_crosswalk",
+    "ramp_chicanery"
+  ],
+  "splits": {
+    "train": {
+      "independent_worlds": 76,
+      "episodes": 76,
+      "decision_states": 227,
+      "unmined_branches": 1135,
+      "hard_mined_oversampled": 284,
+      "counterfactual_branches": 1419,
+      "short_safe_long_danger_count": 140,
+      "risk_protected_pos": 244,
+      "risk_protected_rate": 0.17195208370685577,
+      "risk_continue_pos": [
+        0,
+        72,
+        153,
+        254,
+        378
+      ],
+      "risk_continue_rates": [
+        0.0,
+        0.05073995888233185,
+        0.10782241076231003,
+        0.17899928987026215,
+        0.2663847804069519
+      ],
+      "negative_delta_u_count": 167,
+      "positive_delta_u_count": 524,
+      "safe_recover_rate": 0.24101479915433405,
+      "families": {
+        "close_occluded_hazard": 11,
+        "shelf_hazard": 11,
+        "pedestrian_close_cross": 7,
+        "corridor_pedestrian": 4,
+        "warehouse_forklift_cross": 4,
+        "close_static": 11,
+        "corridor": 5,
+        "ramp_descent": 3,
+        "ramp_ascent": 2,
+        "outdoor_pothole": 3,
+        "post_sweep": 2,
+        "night_mode": 2,
+        "open_rover": 4,
+        "open_real": 3,
+        "shelf_clear": 4
+      },
+      "sha256": "d4ba4b61700af447356fb32794e38cf3cd48c58b4d597846cc9d224e8c68be4f"
+    },
+    "val": {
+      "independent_worlds": 17,
+      "episodes": 17,
+      "decision_states": 51,
+      "unmined_branches": 255,
+      "hard_mined_oversampled": 0,
+      "counterfactual_branches": 255,
+      "short_safe_long_danger_count": 17,
+      "risk_protected_pos": 50,
+      "risk_protected_rate": 0.19607843458652496,
+      "risk_continue_pos": [
+        15,
+        23,
+        36,
+        50,
+        67
+      ],
+      "risk_continue_rates": [
+        0.05882352963089943,
+        0.09019608050584793,
+        0.1411764770746231,
+        0.19607843458652496,
+        0.26274511218070984
+      ],
+      "negative_delta_u_count": 22,
+      "positive_delta_u_count": 84,
+      "safe_recover_rate": 0.22745098039215686,
+      "families": {
+        "close_occluded_hazard": 2,
+        "shelf_hazard": 1,
+        "shelf_clear": 1,
+        "pedestrian_close_cross": 2,
+        "corridor_pedestrian": 1,
+        "warehouse_forklift_cross": 1,
+        "close_static": 2,
+        "corridor": 1,
+        "post_sweep": 1,
+        "ramp_descent": 1,
+        "outdoor_pothole": 1,
+        "night_mode": 1,
+        "open_rover": 1,
+        "open_real": 1
+      },
+      "sha256": "f9f72d7b8bce253010c19344052391aa45adee248f6ea9e03e98692c26147c47"
+    },
+    "test": {
+      "independent_worlds": 17,
+      "episodes": 17,
+      "decision_states": 51,
+      "unmined_branches": 255,
+      "hard_mined_oversampled": 0,
+      "counterfactual_branches": 255,
+      "short_safe_long_danger_count": 37,
+      "risk_protected_pos": 68,
+      "risk_protected_rate": 0.2666666805744171,
+      "risk_continue_pos": [
+        0,
+        33,
+        64,
+        86,
+        105
+      ],
+      "risk_continue_rates": [
+        0.0,
+        0.12941177189350128,
+        0.250980406999588,
+        0.33725491166114807,
+        0.4117647111415863
+      ],
+      "negative_delta_u_count": 15,
+      "positive_delta_u_count": 111,
+      "safe_recover_rate": 0.2549019607843137,
+      "families": {
+        "chicane_slalom": 4,
+        "blind_alcove_emergence": 4,
+        "dynamic_crosswalk": 2,
+        "ramp_chicanery": 2,
+        "close_static": 2,
+        "close_occluded_hazard": 1,
+        "pedestrian_close_cross": 1,
+        "open_rover": 1
+      },
+      "sha256": "3d733024962f3970d424f257c7fc4c5e08fe91f514c63bc105d2c69527333ac9"
+    }
+  }
+}

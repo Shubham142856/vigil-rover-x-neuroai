@@ -83,11 +83,12 @@ class ObservationIntegrityMonitor:
 
         imu_available = raw_gz is not None and np.isfinite(raw_gz)
         if not imu_available:
-            # Missing IMU telemetry: never silently pretend angular velocity is known zero
+            # Missing IMU telemetry: never silently pretend angular velocity is known zero;
+            # FactorizedSpatialBelief handles motion/vision/efference-copy circular uncertainty propagation.
             gz = 0.0
             gy = 0.0
             dyaw = None
-            unc_delta = 0.08 * max(dt, 0.05) if self.last_imu_t is not None else 0.02
+            unc_delta = 0.0
             if dt > 0:
                 self.last_imu_t = now
         elif imu_dup:
@@ -167,27 +168,33 @@ def fuse_biological_visual_threat(
     lplc2_thresh: float = 0.45,
     lc4_thresh: float = 0.35,
     near_red_thresh: float = 0.11,
+    speed_m_s: float = 0.35,
+    u_dyn_front: float = 0.0,
 ) -> Tuple[bool, str, float]:
-    """P5.2 Context-conditioned dual-pathway visual threat fusion (no unconditional AND gate).
+    """P5.2 / P6.9.3 Context-conditioned dual-pathway visual threat fusion.
 
-    Preserves raw collision-course expansion on stationary walls (where ego-flow is forward
-    translation, not rotation), while using compensated residual flow + lateral imbalance
-    to interpret pitch/yaw ego-motion and near-miss lateral crossings.
+    Strictly invalidates IPM range estimates when the camera is unhealthy/frozen/stale,
+    and dynamically scales near-field protection using stopping distance + dynamic obstacle margin.
     """
     raw_l2 = float(vis_out.get("raw_lplc2", 0.0))
     res_l2 = float(vis_out.get("residual_lplc2", 0.0))
     res_lc4 = float(vis_out.get("residual_lc4", 0.0))
     lat_imb = float(vis_out.get("lateral_imbalance", 0.0))
     obs_center = float(obs.get("obstacle_center", 0.0))
+    mu = float(obs.get("friction_mu", 0.60))
 
-    # Near-field static obstacle fallback grounded in pinhole ground-contact IPM (fixes tall pedestrian 1.05m false stop)
+    # P6.9.3: Never use stale or frozen RGB frames for IPM ground-contact distance estimates
     rgb = obs.get("rgb")
-    if rgb is not None and isinstance(rgb, np.ndarray) and rgb.ndim == 3:
+    if integrity.camera_healthy and rgb is not None and isinstance(rgb, np.ndarray) and rgb.ndim == 3:
         ipm = estimate_ground_contact_clearance(rgb, pitch_rad=0.0)
-        if ipm["obstacle_detected"] and ipm["ipm_reliable"] and ipm["estimated_clearance_m"] <= 0.30:
+        d_stop_dyn = AdaptiveBrakingModel().stopping_distance_m(speed_m_s, friction_mu=mu)
+        near_thresh_m = max(0.30, d_stop_dyn + 0.10 + 0.15 * float(u_dyn_front))
+        if ipm["obstacle_detected"] and ipm["ipm_reliable"] and ipm["estimated_clearance_m"] <= near_thresh_m:
             return True, f"near_field_ipm_clearance={ipm['estimated_clearance_m']:.2f}m", float(min(1.0, 0.35 / max(ipm["estimated_clearance_m"], 0.05)))
-    elif obs_center >= near_red_thresh:
+    elif not integrity.camera_healthy and obs_center >= near_red_thresh:
         return True, "near_field_obstacle_center", float(min(1.0, obs_center / 0.25))
+    elif integrity.camera_healthy and obs_center >= 0.35:
+        return True, "near_field_large_red_center", float(min(1.0, obs_center / 0.45))
 
     # Rotational pitch/yaw disturbance regime (skip false triggers during large deliberate turns or steep ramp pitch)
     high_rotation = abs(integrity.imu_gyro_z) > 0.25 or abs(integrity.imu_gyro_y) > 0.18
@@ -265,9 +272,9 @@ class ActionFeasibilityChecker:
                 if age is None or not np.isfinite(age) or float(age) > self.max_age:
                     return False, "stale_or_unobserved_sector"
                 if check_near_only and near_blk is not None:
-                    # Only block forward path when calibrated IPM distance indicates stopping boundary reached (or manual unit-test flag)
+                    # Only override near-field occupancy if IPM actively measured THAT obstacle cleanly beyond stopping distance
                     if near_blk[idx]:
-                        if ipm is not None and ipm["ipm_reliable"] and est_clear > d_stop + 0.10:
+                        if ipm is not None and ipm["obstacle_detected"] and ipm["ipm_reliable"] and est_clear > d_stop + 0.10:
                             continue
                         return False, "near_field_occupied_sector"
                 else:
@@ -288,6 +295,7 @@ class ActionFeasibilityChecker:
 
         out: Dict[str, Tuple[bool, str]] = {}
         self.last_diagnostics = {}
+        d_stop_slow = self.stopping_distance(0.12, mu)
         for act in actions:
             rejected_by = []
             if act == "brake":
@@ -295,12 +303,19 @@ class ActionFeasibilityChecker:
             elif w_left and w_right:
                 allowed, rsn = False, "bilateral_tactile_block"
                 rejected_by.append(rsn)
-            elif head_unc > self.max_head_unc and act in ("forward", "left", "right", "reverse"):
+            elif act == "reverse" and head_unc > self.max_head_unc:
+                # Reversing blindly relies on global world-referenced map orientation
+                allowed, rsn = False, "excessive_heading_uncertainty"
+                rejected_by.append(rsn)
+            elif head_unc > self.max_head_unc and (not integrity.camera_healthy) and act in ("forward", "left", "right"):
+                # Without fresh local vision AND without global orientation certainty, blind motion is unsafe
                 allowed, rsn = False, "excessive_heading_uncertainty"
                 rejected_by.append(rsn)
             elif act == "forward":
                 if w_left or w_right:
                     rejected_by.append("tactile_contact_forward_blocked")
+                elif head_unc > max(self.max_head_unc * 1.45, 0.80):
+                    rejected_by.append("excessive_global_heading_uncertainty_use_slow")
                 if not integrity.camera_healthy and not front_ok:
                     rejected_by.append(f"camera_{integrity.camera_status}_front_unverified")
                 elif not front_ok:
@@ -314,8 +329,14 @@ class ActionFeasibilityChecker:
                     rejected_by.append("tactile_contact_slow_blocked")
                 elif integrity.camera_status in ("blackout", "frozen") and not front_ok:
                     rejected_by.append(f"camera_{integrity.camera_status}_unverified")
-                elif states[mid] == "occupied" and (not use_near_mode or (ipm is not None and est_clear <= self.stopping_distance(0.12, mu))):
-                    rejected_by.append("center_occupied")
+                elif ipm is not None and ipm["obstacle_detected"] and ipm["ipm_reliable"] and est_clear <= d_stop_slow + 0.05:
+                    rejected_by.append("insufficient_slow_ground_clearance")
+                elif any(
+                    (bool(near_blk[idx]) if (use_near_mode and (ipm is None or not ipm["obstacle_detected"] or not ipm["ipm_reliable"] or est_clear <= d_stop_slow + 0.10))
+                     else (states[idx] == "occupied" and (ipm is None or not ipm["obstacle_detected"] or not ipm["ipm_reliable"] or est_clear <= d_stop_slow + 0.10)))
+                    for idx in front_idx
+                ):
+                    rejected_by.append("front_chassis_footprint_blocked")
                 allowed = len(rejected_by) == 0
                 rsn = rejected_by[0] if rejected_by else "bounded_cautious_advance"
             elif act == "left":
@@ -367,7 +388,7 @@ class ActionFeasibilityChecker:
 
 @dataclass
 class ArbitrationConfig:
-    """Parameters for calibrated disagreement arbitration & continuous utility optimization."""
+    """Parameters for calibrated disagreement arbitration, bounded exploration & utility optimization."""
     kappa_disagree: float = 0.50
     risk_limit_eps: float = 0.55
     alpha_progress: float = 1.0
@@ -378,6 +399,24 @@ class ArbitrationConfig:
     tau_uncertainty: float = 0.35
     temp_uncertainty: float = 0.10
     use_continuous_u_weight: bool = True
+    gamma_info_unc: float = 0.50
+    max_explore_turn_streak: int = 2
+    explore_cooldown_steps: int = 2
+
+
+@dataclass
+class BoundedExplorationMonitor:
+    """P6.9.3: Limits exploratory turn sequences into micro-steps followed by re-observation."""
+    turn_streak: int = 0
+    cooldown: int = 0
+    detour_hold_dir: Optional[str] = None
+    detour_hold_steps: int = 0
+
+    def reset(self) -> None:
+        self.turn_streak = 0
+        self.cooldown = 0
+        self.detour_hold_dir = None
+        self.detour_hold_steps = 0
 
 
 def compute_arbitrated_risk(r4: float, r8: float, kappa: float = 0.50) -> float:
@@ -433,13 +472,16 @@ def select_protected_action_p5(
     use_risk_arbitration: bool = True,
     use_feasibility_check: bool = True,
     use_revised_utility: bool = True,
+    exploration_monitor: Optional[BoundedExplorationMonitor] = None,
 ) -> Tuple[str, str]:
-    """Full P5.2-P5.6 protected decision pipeline with isolated ablation switches."""
+    """Full P5.2-P5.6 + P6.9.3 protected decision pipeline with bounded active observation."""
     w_left = bool(obs.get("whisker_left"))
     w_right = bool(obs.get("whisker_right"))
 
     # P5.2 Tier A: Unconditional tactile emergency protection (outside learned arbitration)
     if w_left and w_right:
+        if exploration_monitor is not None:
+            exploration_monitor.turn_streak = 0
         return "brake", "p5_2:bilateral_tactile_stop"
     if w_left or w_right:
         if use_feasibility_check:
@@ -450,9 +492,11 @@ def select_protected_action_p5(
             return "brake", f"p5_2:abstain_tactile_blocked({feas[esc_act][1]})"
         return choose_recovery_action(obs, belief_snap, looming_alert=False)
 
-    # P5.2 Tier B: Context-conditioned biological looming / near-field collision guard
+    # P5.2 Tier B: Context-conditioned biological looming / near-field dynamic collision guard
+    dyn_u = belief_snap.get("dynamic_uncertainty") or []
+    u_dyn_front = float(max(dyn_u)) if dyn_u else 0.0
     if use_visual_fusion:
-        threat, threat_rsn, _ = fuse_biological_visual_threat(vis_out, obs, integrity)
+        threat, threat_rsn, _ = fuse_biological_visual_threat(vis_out, obs, integrity, speed_m_s=speed_m_s, u_dyn_front=u_dyn_front)
     else:
         threat, threat_rsn = (obs.get("obstacle_center", 0.0) > 0.12), "legacy_center_thresh"
 
@@ -464,6 +508,8 @@ def select_protected_action_p5(
 
     # Check if forward collision is imminent visually
     if threat:
+        if exploration_monitor is not None:
+            exploration_monitor.turn_streak = 0
         # Prefer safe verified detour if turning candidate is feasible and low arbitrated risk
         safe_turns = []
         for turn_act in ("left", "right"):
@@ -474,21 +520,39 @@ def select_protected_action_p5(
                 r_turn = compute_arbitrated_risk(m4_preds[turn_act]["contact_prob"], m8_preds[turn_act]["contact_prob"], cfg.kappa_disagree)
             if r_turn <= cfg.risk_limit_eps:
                 u_turn = float(m8_preds[turn_act].get("recover_prob", 0.5)) if m8_preds else 0.5
-                # Prefer continuing previous turn direction to suppress oscillation
                 if turn_act == prev_action:
                     u_turn += 0.25
                 safe_turns.append((u_turn - r_turn, turn_act))
         if safe_turns:
             safe_turns.sort(reverse=True)
-            return safe_turns[0][1], f"p5_2:{threat_rsn}->verified_detour_{safe_turns[0][1]}"
+            chosen_turn = safe_turns[0][1]
+            if exploration_monitor is not None:
+                exploration_monitor.detour_hold_dir = chosen_turn
+                exploration_monitor.detour_hold_steps = 2
+            return chosen_turn, f"p5_2:{threat_rsn}->verified_detour_{chosen_turn}"
         return "brake", f"p5_2:{threat_rsn}->protected_brake"
+
+    # Continue a short verified detour if still clearing obstacle laterally (prevents chopping back into pedestrian)
+    if exploration_monitor is not None and exploration_monitor.detour_hold_steps > 0 and exploration_monitor.detour_hold_dir in ("left", "right"):
+        d_act = exploration_monitor.detour_hold_dir
+        exploration_monitor.detour_hold_steps -= 1
+        if feas_map[d_act][0]:
+            r_d = 0.0
+            if use_risk_arbitration and m4_preds and m8_preds:
+                r_d = compute_arbitrated_risk(m4_preds[d_act]["contact_prob"], m8_preds[d_act]["contact_prob"], cfg.kappa_disagree)
+            if r_d <= cfg.risk_limit_eps:
+                return d_act, f"p6_9:detour_followthrough_{d_act}"
 
     # Non-healthy persistent camera check without visual threat
     if not any(feas_map[a][0] for a in ("forward", "slow", "left", "right")):
+        if exploration_monitor is not None:
+            exploration_monitor.turn_streak = 0
         return "brake", f"p5_3:abstain_all_infeasible({integrity.camera_status})"
 
     # P5.4 + P5.5: Score physically feasible actions using risk arbitration + Neuro-COVER-L utility
     if m4_preds is None or m8_preds is None:
+        if exploration_monitor is not None:
+            exploration_monitor.turn_streak = 0
         if feas_map["forward"][0]:
             return "forward", "p5_5:open_forward_no_learned_models"
         if feas_map["slow"][0]:
@@ -496,9 +560,18 @@ def select_protected_action_p5(
         return "brake", "p5_3:abstain_unverified"
 
     u_task = float(belief_snap.get("task_uncertainty", 0.0))
+    # P6.9.3 Bounded active observation gating: force fresh re-observation pause after micro-turn streak
+    if exploration_monitor is not None and exploration_monitor.cooldown > 0:
+        exploration_monitor.cooldown -= 1
+        explore_turns_gated = True
+    else:
+        explore_turns_gated = False
+
     scored = []
     for act in cands:
         if not feas_map[act][0]:
+            continue
+        if explore_turns_gated and act in ("left", "right"):
             continue
         r4 = float(m4_preds[act]["contact_prob"])
         r8 = float(m8_preds[act]["contact_prob"])
@@ -506,8 +579,9 @@ def select_protected_action_p5(
         if act != "brake" and r_arb > cfg.risk_limit_eps:
             continue  # Rejected by calibrated conservative arbitration limit
         prog = float(m8_preds[act].get("progress", 0.0))
-        # Map signed predicted utility/recoverability around 0.5 neutral baseline if continuous gain head absent
-        du_pred = float(m8_preds[act].get("delta_u", m8_preds[act].get("recover_prob", 0.0) - 0.35))
+        du_hat = float(m8_preds[act].get("delta_u", m8_preds[act].get("recover_prob", 0.0) - 0.35))
+        du_std = float(m8_preds[act].get("delta_u_std", 0.0))
+        du_pred = du_hat - cfg.gamma_info_unc * max(0.0, du_std)
         if use_revised_utility:
             j = score_action_utility(act, prev_action, prog, du_pred, r_arb, u_task, cfg)
         else:
@@ -515,10 +589,18 @@ def select_protected_action_p5(
         scored.append((j, act, r_arb))
 
     if not scored:
+        if exploration_monitor is not None:
+            exploration_monitor.turn_streak = 0
         return "brake", "p5_4:abstain_risk_limit_exceeded"
 
-    # Special disagreement protection: if single model flagged forward >= risk_limit_eps (caught above since r_arb >= max(r4,r8)),
-    # forward was already filtered out, so best safe feasible ("slow", "left", "right", or "brake") wins cleanly.
     scored.sort(reverse=True)
     best_j, best_act, best_r = scored[0]
+    if exploration_monitor is not None:
+        if best_act in ("left", "right"):
+            exploration_monitor.turn_streak += 1
+            if exploration_monitor.turn_streak >= cfg.max_explore_turn_streak:
+                exploration_monitor.turn_streak = 0
+                exploration_monitor.cooldown = cfg.explore_cooldown_steps
+        else:
+            exploration_monitor.turn_streak = 0
     return best_act, f"p5_5:utility_opt(a={best_act},J={best_j:.3f},R_arb={best_r:.3f})"

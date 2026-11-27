@@ -150,56 +150,70 @@ def rollout_multi_horizon_branches(sim, actions: List[str], initial_belief: Fact
         u_brake_ref = prot_u_end.get("brake", float(initial_belief.task_uncertainty(t0)))
 
         # 2. Uninterrupted continuation rollouts -> cumulative 5-horizon survival labels
-        for act in actions:
-            restore()
-            obs = init_obs
-            hit = bool(init_eval["body_contact"])
-            w_hit = bool(obs["whisker_left"] or obs["whisker_right"])
-            ttc: Optional[float] = 0.0 if hit else None
-            min_clear = _true_min_clearance_m(sim)
-            for step_i in range(1, max_steps + 1):
-                obs = sim.step(act)
-                ev = sim.evaluator()
-                min_clear = min(min_clear, _true_min_clearance_m(sim))
-                if ev["body_contact"] and ttc is None:
-                    hit = True
-                    ttc = float(step_i * DT_CTRL_S)
-                if obs["whisker_left"] or obs["whisker_right"]:
-                    w_hit = True
-            end_ev = sim.evaluator()
+        # Camera rendering is never read by continuation contact/progress evaluation; skip render for speed
+        orig_upd = getattr(sim, "update_camera", None)
+        orig_priv_upd = getattr(sim, "_update_camera", None)
+        try:
+            if orig_upd is not None:
+                sim.update_camera = lambda: None
+            if orig_priv_upd is not None:
+                sim._update_camera = lambda: None
+            for act in actions:
+                restore()
+                obs = init_obs
+                hit = bool(init_eval["body_contact"])
+                w_hit = bool(obs["whisker_left"] or obs["whisker_right"])
+                ttc: Optional[float] = 0.0 if hit else None
+                min_clear = _true_min_clearance_m(sim)
+                for step_i in range(1, max_steps + 1):
+                    obs = sim.step(act)
+                    ev = sim.evaluator()
+                    if step_i <= 12 or step_i % 2 == 0 or ev["body_contact"]:
+                        min_clear = min(min_clear, _true_min_clearance_m(sim))
+                    if ev["body_contact"] and ttc is None:
+                        hit = True
+                        ttc = float(step_i * DT_CTRL_S)
+                    if obs["whisker_left"] or obs["whisker_right"]:
+                        w_hit = True
+                end_ev = sim.evaluator()
 
-            risk_bins = [1.0 if (ttc is not None and ttc <= h + 1e-9) else 0.0 for h in HORIZONS_S]
-            # Discrete survival interval: first horizon index 0..4 where ttc <= H_k, else 5 (right-censored)
-            hazard_bin = len(HORIZONS_S)
-            if ttc is not None:
-                for k_idx, h_val in enumerate(HORIZONS_S):
-                    if ttc <= h_val + 1e-9:
-                        hazard_bin = k_idx
-                        break
+                risk_bins = [1.0 if (ttc is not None and ttc <= h + 1e-9) else 0.0 for h in HORIZONS_S]
+                # Discrete survival interval: first horizon index 0..4 where ttc <= H_k, else 5 (right-censored)
+                hazard_bin = len(HORIZONS_S)
+                if ttc is not None:
+                    for k_idx, h_val in enumerate(HORIZONS_S):
+                        if ttc <= h_val + 1e-9:
+                            hazard_bin = k_idx
+                            break
 
-            pr = prot_records[act]
-            signed_du = 0.0 if (act == "brake" or not pr["cam_healthy_end"]) else float(u_brake_ref - pr["u_end"])
-            out[act] = {
-                "action": act,
-                "action_duration_s": float(PROTECTED_EXEC_STEPS * DT_CTRL_S),
-                "continue_risk_bins": risk_bins,
-                "continue_hazard_bin": int(hazard_bin),
-                "continue_time_to_contact_s": ttc,
-                "continue_censored": ttc is None,
-                "continue_body_contact": bool(hit),
-                "continue_whisker_contact": bool(w_hit),
-                "continue_min_clearance_m": float(min_clear),
-                "continue_progress_m": float(end_ev["x_m"] - init_eval["x_m"]),
-                "protected_body_contact": pr["body_contact"],
-                "protected_whisker_contact": pr["whisker_contact"],
-                "protected_time_to_contact_s": pr["time_to_contact_s"],
-                "protected_censored": pr["collision_censored"],
-                "protected_min_clearance_m": pr["minimum_clearance_m"],
-                "protected_progress_m": pr["goal_progress_m"],
-                "camera_healthy_end": pr["cam_healthy_end"],
-                "signed_info_gain": signed_du,
-                "safe_recover": bool((not pr["body_contact"]) and pr["cam_healthy_end"] and signed_du >= 0.04),
-            }
+                pr = prot_records[act]
+                signed_du = 0.0 if (act == "brake" or not pr["cam_healthy_end"]) else float(u_brake_ref - pr["u_end"])
+                out[act] = {
+                    "action": act,
+                    "action_duration_s": float(PROTECTED_EXEC_STEPS * DT_CTRL_S),
+                    "continue_risk_bins": risk_bins,
+                    "continue_hazard_bin": int(hazard_bin),
+                    "continue_time_to_contact_s": ttc,
+                    "continue_censored": ttc is None,
+                    "continue_body_contact": bool(hit),
+                    "continue_whisker_contact": bool(w_hit),
+                    "continue_min_clearance_m": float(min_clear),
+                    "continue_progress_m": float(end_ev["x_m"] - init_eval["x_m"]),
+                    "protected_body_contact": pr["body_contact"],
+                    "protected_whisker_contact": pr["whisker_contact"],
+                    "protected_time_to_contact_s": pr["time_to_contact_s"],
+                    "protected_censored": pr["collision_censored"],
+                    "protected_min_clearance_m": pr["minimum_clearance_m"],
+                    "protected_progress_m": pr["goal_progress_m"],
+                    "camera_healthy_end": pr["cam_healthy_end"],
+                    "signed_info_gain": signed_du,
+                    "safe_recover": bool((not pr["body_contact"]) and pr["cam_healthy_end"] and signed_du >= 0.04),
+                }
+        finally:
+            if orig_upd is not None:
+                sim.update_camera = orig_upd
+            if orig_priv_upd is not None:
+                sim._update_camera = orig_priv_upd
     finally:
         try:
             restore()

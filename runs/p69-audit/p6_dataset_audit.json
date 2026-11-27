@@ -1,0 +1,4794 @@
+{
+  "data_dir": "runs\\pilot-v3-p6",
+  "schema_version": "p6_pilot_v3",
+  "feature_provenance_24dim": [
+    {
+      "slot": "0:frame_valid",
+      "source": "obs['frame_valid']",
+      "kind": "camera_packet_metadata"
+    },
+    {
+      "slot": "1:frame_age_s",
+      "source": "obs['frame_age_s']",
+      "kind": "camera_packet_metadata"
+    },
+    {
+      "slot": "2:brightness",
+      "source": "obs['brightness']",
+      "kind": "rgb_mean_luma"
+    },
+    {
+      "slot": "3:contrast",
+      "source": "obs['contrast']",
+      "kind": "rgb_std_luma"
+    },
+    {
+      "slot": "4:obstacle_center",
+      "source": "obs['obstacle_center']",
+      "kind": "center_crop_red_fraction"
+    },
+    {
+      "slot": "5:looming_center",
+      "source": "obs['looming_center']",
+      "kind": "frame_to_frame_red_diff"
+    },
+    {
+      "slot": "6:whisker_left",
+      "source": "obs['whisker_left']",
+      "kind": "left_tactile_raycast"
+    },
+    {
+      "slot": "7:whisker_right",
+      "source": "obs['whisker_right']",
+      "kind": "right_tactile_raycast"
+    },
+    {
+      "slot": "8:lplc2_v1",
+      "source": "visual_looming(obs['rgb'])",
+      "kind": "t4_t5_looming_v1"
+    },
+    {
+      "slot": "9:lc4_v1",
+      "source": "visual_looming(obs['rgb'])",
+      "kind": "t4_t5_translation_v1"
+    },
+    {
+      "slot": "10:cam_healthy",
+      "source": "snap_v1['camera_healthy']",
+      "kind": "egocentric_belief"
+    },
+    {
+      "slot": "11:free_fraction",
+      "source": "snap_v1['free_fraction']",
+      "kind": "egocentric_belief"
+    },
+    {
+      "slot": "12:unknown_stale_frac",
+      "source": "snap_v1['unknown_or_stale_fraction']",
+      "kind": "egocentric_belief"
+    },
+    {
+      "slot": "13:occupied_frac",
+      "source": "sum(occupied)/N",
+      "kind": "egocentric_belief"
+    },
+    {
+      "slot": "14:time_s",
+      "source": "obs['time_s']",
+      "kind": "rover_clock"
+    },
+    {
+      "slot": "15:dt",
+      "source": "obs['time_s'] - prev_t",
+      "kind": "rover_clock_delta"
+    },
+    {
+      "slot": "16:raw_lplc2",
+      "source": "vis_out['raw_lplc2']",
+      "kind": "dual_pathway_t4_t5"
+    },
+    {
+      "slot": "17:residual_lplc2",
+      "source": "vis_out['residual_lplc2']",
+      "kind": "imu_compensated_t4_t5"
+    },
+    {
+      "slot": "18:residual_lc4",
+      "source": "vis_out['residual_lc4']",
+      "kind": "imu_compensated_t4_t5"
+    },
+    {
+      "slot": "19:imu_gyro_z",
+      "source": "obs.get('imu_gyro_z', 0.0)",
+      "kind": "imu_gyro_z"
+    },
+    {
+      "slot": "20:imu_gyro_y",
+      "source": "obs.get('imu_gyro_y', 0.0)",
+      "kind": "imu_gyro_y"
+    },
+    {
+      "slot": "21:encoder_speed",
+      "source": "obs.get('encoder_speed_m_s', 0.0)",
+      "kind": "wheel_odometry"
+    },
+    {
+      "slot": "22:ipm_clearance_m",
+      "source": "estimate_ground_contact_clearance(rgb)",
+      "kind": "monocular_ground_ipm"
+    },
+    {
+      "slot": "23:task_uncertainty",
+      "source": "snap_v2['task_uncertainty']",
+      "kind": "world_belief_entropy_bits"
+    }
+  ],
+  "oracle_keys_in_inputs": 0,
+  "world_split_leakage": 0,
+  "splits": {
+    "train": {
+      "branches": 165,
+      "continue_horizons": {
+        "0.10s": {
+          "pos": 0,
+          "neg": 165,
+          "rate": 0.0
+        },
+        "0.30s": {
+          "pos": 0,
+          "neg": 165,
+          "rate": 0.0
+        },
+        "0.60s": {
+          "pos": 1,
+          "neg": 164,
+          "rate": 0.006060606060606061
+        },
+        "1.20s": {
+          "pos": 6,
+          "neg": 159,
+          "rate": 0.03636363636363636
+        },
+        "2.40s": {
+          "pos": 19,
+          "neg": 146,
+          "rate": 0.11515151515151516
+        }
+      },
+      "protected_0_30s": {
+        "pos": 1,
+        "neg": 164,
+        "rate": 0.006060606060606061
+      },
+      "safe_recover": {
+        "pos": 75,
+        "neg": 90,
+        "rate": 0.45454545454545453
+      },
+      "censored_count": 146,
+      "signed_delta_u": {
+        "mean": 0.07723315060138702,
+        "std": 0.13270895183086395,
+        "neg_count": 2,
+        "zero_count": 82,
+        "pos_count": 81
+      },
+      "action_duration_0_30s_verified": true,
+      "censoring_consistent": true,
+      "by_family": {
+        "post_sweep": {
+          "branches": 45,
+          "prot_pos": 1,
+          "cont_24s_pos": 8,
+          "censored": 37,
+          "safe_recov_pos": 20
+        },
+        "corridor": {
+          "branches": 30,
+          "prot_pos": 0,
+          "cont_24s_pos": 3,
+          "censored": 27,
+          "safe_recov_pos": 12
+        },
+        "shelf_clear": {
+          "branches": 15,
+          "prot_pos": 0,
+          "cont_24s_pos": 0,
+          "censored": 15,
+          "safe_recov_pos": 6
+        },
+        "shelf_hazard": {
+          "branches": 15,
+          "prot_pos": 0,
+          "cont_24s_pos": 0,
+          "censored": 15,
+          "safe_recov_pos": 6
+        },
+        "corridor_pedestrian": {
+          "branches": 15,
+          "prot_pos": 0,
+          "cont_24s_pos": 4,
+          "censored": 11,
+          "safe_recov_pos": 8
+        },
+        "warehouse_forklift_cross": {
+          "branches": 15,
+          "prot_pos": 0,
+          "cont_24s_pos": 0,
+          "censored": 15,
+          "safe_recov_pos": 6
+        },
+        "ramp_descent": {
+          "branches": 15,
+          "prot_pos": 0,
+          "cont_24s_pos": 3,
+          "censored": 12,
+          "safe_recov_pos": 9
+        },
+        "night_mode": {
+          "branches": 15,
+          "prot_pos": 0,
+          "cont_24s_pos": 1,
+          "censored": 14,
+          "safe_recov_pos": 8
+        }
+      }
+    },
+    "val": {
+      "branches": 60,
+      "continue_horizons": {
+        "0.10s": {
+          "pos": 0,
+          "neg": 60,
+          "rate": 0.0
+        },
+        "0.30s": {
+          "pos": 0,
+          "neg": 60,
+          "rate": 0.0
+        },
+        "0.60s": {
+          "pos": 0,
+          "neg": 60,
+          "rate": 0.0
+        },
+        "1.20s": {
+          "pos": 2,
+          "neg": 58,
+          "rate": 0.03333333333333333
+        },
+        "2.40s": {
+          "pos": 8,
+          "neg": 52,
+          "rate": 0.13333333333333333
+        }
+      },
+      "protected_0_30s": {
+        "pos": 0,
+        "neg": 60,
+        "rate": 0.0
+      },
+      "safe_recover": {
+        "pos": 19,
+        "neg": 41,
+        "rate": 0.31666666666666665
+      },
+      "censored_count": 52,
+      "signed_delta_u": {
+        "mean": 0.030149608850479126,
+        "std": 0.12693215906620026,
+        "neg_count": 11,
+        "zero_count": 28,
+        "pos_count": 21
+      },
+      "action_duration_0_30s_verified": true,
+      "censoring_consistent": true,
+      "by_family": {
+        "post_sweep": {
+          "branches": 15,
+          "prot_pos": 0,
+          "cont_24s_pos": 4,
+          "censored": 11,
+          "safe_recov_pos": 6
+        },
+        "shelf_clear": {
+          "branches": 15,
+          "prot_pos": 0,
+          "cont_24s_pos": 0,
+          "censored": 15,
+          "safe_recov_pos": 6
+        },
+        "corridor_pedestrian": {
+          "branches": 15,
+          "prot_pos": 0,
+          "cont_24s_pos": 4,
+          "censored": 11,
+          "safe_recov_pos": 2
+        },
+        "ramp_descent": {
+          "branches": 15,
+          "prot_pos": 0,
+          "cont_24s_pos": 0,
+          "censored": 15,
+          "safe_recov_pos": 5
+        }
+      }
+    },
+    "test": {
+      "branches": 60,
+      "continue_horizons": {
+        "0.10s": {
+          "pos": 0,
+          "neg": 60,
+          "rate": 0.0
+        },
+        "0.30s": {
+          "pos": 0,
+          "neg": 60,
+          "rate": 0.0
+        },
+        "0.60s": {
+          "pos": 0,
+          "neg": 60,
+          "rate": 0.0
+        },
+        "1.20s": {
+          "pos": 1,
+          "neg": 59,
+          "rate": 0.016666666666666666
+        },
+        "2.40s": {
+          "pos": 3,
+          "neg": 57,
+          "rate": 0.05
+        }
+      },
+      "protected_0_30s": {
+        "pos": 0,
+        "neg": 60,
+        "rate": 0.0
+      },
+      "safe_recover": {
+        "pos": 18,
+        "neg": 42,
+        "rate": 0.3
+      },
+      "censored_count": 57,
+      "signed_delta_u": {
+        "mean": 0.032129690051078796,
+        "std": 0.05907386913895607,
+        "neg_count": 3,
+        "zero_count": 32,
+        "pos_count": 25
+      },
+      "action_duration_0_30s_verified": true,
+      "censoring_consistent": true,
+      "by_family": {
+        "corridor": {
+          "branches": 15,
+          "prot_pos": 0,
+          "cont_24s_pos": 3,
+          "censored": 12,
+          "safe_recov_pos": 6
+        },
+        "shelf_hazard": {
+          "branches": 15,
+          "prot_pos": 0,
+          "cont_24s_pos": 0,
+          "censored": 15,
+          "safe_recov_pos": 6
+        },
+        "warehouse_forklift_cross": {
+          "branches": 15,
+          "prot_pos": 0,
+          "cont_24s_pos": 0,
+          "censored": 15,
+          "safe_recov_pos": 4
+        },
+        "outdoor_pothole": {
+          "branches": 15,
+          "prot_pos": 0,
+          "cont_24s_pos": 0,
+          "censored": 15,
+          "safe_recov_pos": 2
+        }
+      }
+    }
+  },
+  "models": {
+    "Single24s_Bio": {
+      "val": {
+        "head_2_40s": {
+          "n": 60,
+          "positives": 8,
+          "negatives": 52,
+          "prevalence": 0.13333333333333333,
+          "brier": 0.07703174767031341,
+          "brier_const_baseline": 0.11588613406795228,
+          "brier_always_zero_baseline": 0.13333330666667667,
+          "brier_skill_score": 0.33528071939008497,
+          "nll": 0.36740415513705293,
+          "nll_const_baseline": 0.3942278711978301,
+          "pr_auc": 0.7061965811965812,
+          "recall_at_0_50": 0.375,
+          "recall_at_0_20": 0.375,
+          "dangerous_fn_lt_0_20": 5,
+          "ece": 0.07862498764000825,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 56,
+              "mean_pred": 0.016616722469734762,
+              "emp_freq": 0.08928571428571429
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 1,
+              "mean_pred": 0.2063452838850293,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 2,
+              "mean_pred": 0.7870752751771461,
+              "emp_freq": 1.0
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 1,
+              "mean_pred": 0.984159016825095,
+              "emp_freq": 1.0
+            }
+          ]
+        },
+        "cross_0_30s_prot": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 0.039593870898936685,
+          "brier_const_baseline": 3.6730945821854914e-05,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": -1076.9431352235513,
+          "nll": 0.14118446768466017,
+          "nll_const_baseline": 0.006079046076382225,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.061586521822826056,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 56,
+              "mean_pred": 0.016616722469734762,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 1,
+              "mean_pred": 0.2063452838850293,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 2,
+              "mean_pred": 0.7870752751771461,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 1,
+              "mean_pred": 0.984159016825095,
+              "emp_freq": 0.0
+            }
+          ]
+        }
+      },
+      "test": {
+        "head_2_40s": {
+          "n": 60,
+          "positives": 3,
+          "negatives": 57,
+          "prevalence": 0.05,
+          "brier": 0.11840163418329061,
+          "brier_const_baseline": 0.0517447199265381,
+          "brier_always_zero_baseline": 0.04999999000001002,
+          "brier_skill_score": -1.288187748457915,
+          "nll": 0.7470585722940215,
+          "nll_const_baseline": 0.22429723431933893,
+          "pr_auc": 0.15252525252525254,
+          "recall_at_0_50": 0.0,
+          "recall_at_0_20": 0.0,
+          "dangerous_fn_lt_0_20": 3,
+          "ece": 0.11929325702647975,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 55,
+              "mean_pred": 0.003942842561483576,
+              "emp_freq": 0.05454545454545454
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 1,
+              "mean_pred": 0.39564773057744057,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 4,
+              "mean_pred": 0.9947010079732352,
+              "emp_freq": 0.0
+            }
+          ]
+        },
+        "cross_0_30s_prot": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 0.06875017281882292,
+          "brier_const_baseline": 3.6730945821854914e-05,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": -1870.723454992454,
+          "nll": 0.42529782767354285,
+          "nll_const_baseline": 0.006079046076382225,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.07652180172253298,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 55,
+              "mean_pred": 0.003942842561483576,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 1,
+              "mean_pred": 0.39564773057744057,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 4,
+              "mean_pred": 0.9947010079732352,
+              "emp_freq": 0.0
+            }
+          ]
+        }
+      }
+    },
+    "Short03s_Bio": {
+      "val": {
+        "head_protected_0_30s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 0.0011727467607290658,
+          "brier_const_baseline": 3.6730945821854914e-05,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": -30.928030560848814,
+          "nll": 0.006724547082229881,
+          "nll_const_baseline": 0.006079046076382225,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.006019585724150321,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 59,
+              "mean_pred": 0.0017666186291020129,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 1,
+              "mean_pred": 0.25694464433200054,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cross_2_40s": {
+          "n": 60,
+          "positives": 8,
+          "negatives": 52,
+          "prevalence": 0.13333333333333333,
+          "brier": 0.1341305315644808,
+          "brier_const_baseline": 0.11588613406795228,
+          "brier_always_zero_baseline": 0.13333330666667667,
+          "brier_skill_score": -0.15743382625768265,
+          "nll": 1.4638805322077828,
+          "nll_const_baseline": 0.3942278711978301,
+          "pr_auc": 0.23000631313131314,
+          "recall_at_0_50": 0.0,
+          "recall_at_0_20": 0.0,
+          "dangerous_fn_lt_0_20": 8,
+          "ece": 0.13587856908691634,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 59,
+              "mean_pred": 0.0017666186291020129,
+              "emp_freq": 0.13559322033898305
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 1,
+              "mean_pred": 0.25694464433200054,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        }
+      },
+      "test": {
+        "head_protected_0_30s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 6.99231868254053e-05,
+          "brier_const_baseline": 3.6730945821854914e-05,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": -0.9036587613216591,
+          "nll": 0.0013992307105821545,
+          "nll_const_baseline": 0.006079046076382225,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.0013628110167639143,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.0013628110167639143,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cross_2_40s": {
+          "n": 60,
+          "positives": 3,
+          "negatives": 57,
+          "prevalence": 0.05,
+          "brier": 0.05003765339297499,
+          "brier_const_baseline": 0.0517447199265381,
+          "brier_always_zero_baseline": 0.04999999000001002,
+          "brier_skill_score": 0.032990158918371426,
+          "nll": 0.5497558546553453,
+          "nll_const_baseline": 0.22429723431933893,
+          "pr_auc": 0.18452380952380953,
+          "recall_at_0_50": 0.0,
+          "recall_at_0_20": 0.0,
+          "dangerous_fn_lt_0_20": 3,
+          "ece": 0.04863718898323609,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.0013628110167639143,
+              "emp_freq": 0.05
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        }
+      }
+    },
+    "MultiHorizon_Bio": {
+      "val": {
+        "cum_0.10s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 1.0634391875574103e-05,
+          "brier_const_baseline": 9.999999999999994e-15,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.0,
+          "nll": 0.0005188986037372212,
+          "nll_const_baseline": 1.0000000494736471e-07,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.0005134914279361704,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.0005134914279361704,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_0.30s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 0.0002804385466509374,
+          "brier_const_baseline": 9.999999999999994e-15,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.0,
+          "nll": 0.0027112546960828816,
+          "nll_const_baseline": 1.0000000494736471e-07,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.002557820387638137,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.002557820387638137,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_0.60s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 0.00030780453163848623,
+          "brier_const_baseline": 3.6730945821854914e-05,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": -7.379978373857787,
+          "nll": 0.0033344387510081544,
+          "nll_const_baseline": 0.006079046076382225,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.0031666528171235913,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.0031666528171235913,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_1.20s": {
+          "n": 60,
+          "positives": 2,
+          "negatives": 58,
+          "prevalence": 0.03333333333333333,
+          "brier": 0.02351099693401306,
+          "brier_const_baseline": 0.0322314049586777,
+          "brier_always_zero_baseline": 0.03333332666667667,
+          "brier_skill_score": 0.27055624897036423,
+          "nll": 0.176924948815208,
+          "nll_const_baseline": 0.14627942944675504,
+          "pr_auc": 0.5588235294117647,
+          "recall_at_0_50": 0.5,
+          "recall_at_0_20": 0.5,
+          "dangerous_fn_lt_0_20": 1,
+          "ece": 0.033709922927990806,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 57,
+              "mean_pred": 0.0014885570007756436,
+              "emp_freq": 0.017543859649122806
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 2,
+              "mean_pred": 0.3650662608311592,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 1,
+              "mean_pred": 0.6226893969386582,
+              "emp_freq": 1.0
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_2.40s": {
+          "n": 60,
+          "positives": 8,
+          "negatives": 52,
+          "prevalence": 0.13333333333333333,
+          "brier": 0.08339928847735455,
+          "brier_const_baseline": 0.11588613406795228,
+          "brier_always_zero_baseline": 0.13333330666667667,
+          "brier_skill_score": 0.2803341905559503,
+          "nll": 0.36619111158857914,
+          "nll_const_baseline": 0.3942278711978301,
+          "pr_auc": 0.7024260461760462,
+          "recall_at_0_50": 0.375,
+          "recall_at_0_20": 0.375,
+          "dangerous_fn_lt_0_20": 5,
+          "ece": 0.09661499722366922,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 54,
+              "mean_pred": 0.008771594233081536,
+              "emp_freq": 0.09259259259259259
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 2,
+              "mean_pred": 0.24334972646338776,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 1,
+              "mean_pred": 0.6554485900659686,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 3,
+              "mean_pred": 0.9571940403287297,
+              "emp_freq": 1.0
+            }
+          ]
+        },
+        "head_protected_0_30s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 0.7766264645377811,
+          "brier_const_baseline": 3.6730945821854914e-05,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": -21142.655497041087,
+          "nll": 2.648645650937892,
+          "nll_const_baseline": 0.006079046076382225,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.8596788554571335,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 1,
+              "mean_pred": 0.12182234909666524,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 4,
+              "mean_pred": 0.3769219861659796,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 3,
+              "mean_pred": 0.5268832697507286,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 2,
+              "mean_pred": 0.7271650108982852,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 50,
+              "mean_pred": 0.9383248240523734,
+              "emp_freq": 0.0
+            }
+          ]
+        }
+      },
+      "test": {
+        "cum_0.10s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 1.6355758737382981e-10,
+          "brier_const_baseline": 9.999999999999994e-15,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.0,
+          "nll": 4.028436766034526e-06,
+          "nll_const_baseline": 1.0000000494736471e-07,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 4.028354984125328e-06,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 4.028354984125328e-06,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_0.30s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 3.148517298407751e-09,
+          "brier_const_baseline": 9.999999999999994e-15,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.0,
+          "nll": 1.7347725461953458e-05,
+          "nll_const_baseline": 1.0000000494736471e-07,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 1.734615091795715e-05,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 1.734615091795715e-05,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_0.60s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 1.0459296089973144e-06,
+          "brier_const_baseline": 3.6730945821854914e-05,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.9715245663950481,
+          "nll": 0.00016885941100211685,
+          "nll_const_baseline": 0.006079046076382225,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.00016833375177027939,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.00016833375177027939,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_1.20s": {
+          "n": 60,
+          "positives": 1,
+          "negatives": 59,
+          "prevalence": 0.016666666666666666,
+          "brier": 0.01464080031819598,
+          "brier_const_baseline": 0.016776859504132238,
+          "brier_always_zero_baseline": 0.016666663333343334,
+          "brier_skill_score": 0.1273217544326537,
+          "nll": 0.04695253650924926,
+          "nll_const_baseline": 0.09166035056355204,
+          "pr_auc": 1.0,
+          "recall_at_0_50": 0.0,
+          "recall_at_0_20": 0.0,
+          "dangerous_fn_lt_0_20": 1,
+          "ece": 0.014705733542373095,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.0019609331242935717,
+              "emp_freq": 0.016666666666666666
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_2.40s": {
+          "n": 60,
+          "positives": 3,
+          "negatives": 57,
+          "prevalence": 0.05,
+          "brier": 0.11231601692343236,
+          "brier_const_baseline": 0.0517447199265381,
+          "brier_always_zero_baseline": 0.04999999000001002,
+          "brier_skill_score": -1.170579280028711,
+          "nll": 0.7172487039609544,
+          "nll_const_baseline": 0.22429723431933893,
+          "pr_auc": 0.17866161616161613,
+          "recall_at_0_50": 0.0,
+          "recall_at_0_20": 0.0,
+          "dangerous_fn_lt_0_20": 3,
+          "ece": 0.1093503660041887,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 56,
+              "mean_pred": 0.007162532963828448,
+              "emp_freq": 0.05357142857142857
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 4,
+              "mean_pred": 0.9905309515564287,
+              "emp_freq": 0.0
+            }
+          ]
+        },
+        "head_protected_0_30s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 0.8103012525892427,
+          "brier_const_baseline": 3.6730945821854914e-05,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": -22059.45160174213,
+          "nll": 2.8296541234675234,
+          "nll_const_baseline": 0.006079046076382225,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.8848711553252508,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 1,
+              "mean_pred": 0.12146036226452624,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 2,
+              "mean_pred": 0.38024839465597216,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 6,
+              "mean_pred": 0.6745779851797927,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 51,
+              "mean_pred": 0.9443694952325457,
+              "emp_freq": 0.0
+            }
+          ]
+        }
+      }
+    },
+    "MultiHorizonProt_Bio": {
+      "val": {
+        "cum_0.10s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 9.832047004678309e-06,
+          "brier_const_baseline": 9.999999999999994e-15,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.0,
+          "nll": 0.0005316832481532777,
+          "nll_const_baseline": 1.0000000494736471e-07,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.0005266904392667289,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.0005266904392667289,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_0.30s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 0.0004375060571503578,
+          "brier_const_baseline": 9.999999999999994e-15,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.0,
+          "nll": 0.0036563954589486406,
+          "nll_const_baseline": 1.0000000494736471e-07,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.003411556822367609,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.003411556822367609,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_0.60s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 0.00415687607857835,
+          "brier_const_baseline": 3.6730945821854914e-05,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": -112.17095123929558,
+          "nll": 0.014914575844737484,
+          "nll_const_baseline": 0.006079046076382225,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.011899275610955662,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 59,
+              "mean_pred": 0.004132742842075481,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 1,
+              "mean_pred": 0.47012470897488623,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_1.20s": {
+          "n": 60,
+          "positives": 2,
+          "negatives": 58,
+          "prevalence": 0.03333333333333333,
+          "brier": 0.030622062382790846,
+          "brier_const_baseline": 0.0322314049586777,
+          "brier_always_zero_baseline": 0.03333332666667667,
+          "brier_skill_score": 0.04993088504674592,
+          "nll": 0.16010110758837495,
+          "nll_const_baseline": 0.14627942944675504,
+          "pr_auc": 0.3125,
+          "recall_at_0_50": 0.0,
+          "recall_at_0_20": 0.5,
+          "dangerous_fn_lt_0_20": 1,
+          "ece": 0.039504300591736596,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 57,
+              "mean_pred": 0.0031337928091929026,
+              "emp_freq": 0.017543859649122806
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 1,
+              "mean_pred": 0.37081433450371526,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 1,
+              "mean_pred": 0.43039249952855074,
+              "emp_freq": 1.0
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 1,
+              "mean_pred": 0.6084623906530271,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_2.40s": {
+          "n": 60,
+          "positives": 8,
+          "negatives": 52,
+          "prevalence": 0.13333333333333333,
+          "brier": 0.08255596599478468,
+          "brier_const_baseline": 0.11588613406795228,
+          "brier_always_zero_baseline": 0.13333330666667667,
+          "brier_skill_score": 0.28761135524310233,
+          "nll": 0.42524158539003126,
+          "nll_const_baseline": 0.3942278711978301,
+          "pr_auc": 0.6832997311827957,
+          "recall_at_0_50": 0.375,
+          "recall_at_0_20": 0.5,
+          "dangerous_fn_lt_0_20": 4,
+          "ece": 0.0725086719594871,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 53,
+              "mean_pred": 0.005264924635729051,
+              "emp_freq": 0.07547169811320754
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 3,
+              "mean_pred": 0.2743606842685599,
+              "emp_freq": 0.3333333333333333
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 2,
+              "mean_pred": 0.6228017239878373,
+              "emp_freq": 0.5
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 2,
+              "mean_pred": 0.8964800359535641,
+              "emp_freq": 1.0
+            }
+          ]
+        },
+        "head_protected_0_30s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 8.469241773811607e-05,
+          "brier_const_baseline": 3.6730945821854914e-05,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": -1.3057510729202098,
+          "nll": 0.001726581058698635,
+          "nll_const_baseline": 0.006079046076382225,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.0016822427396744938,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.0016822427396744938,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        }
+      },
+      "test": {
+        "cum_0.10s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 3.9302033385209266e-10,
+          "brier_const_baseline": 9.999999999999994e-15,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.0,
+          "nll": 5.243799521213922e-06,
+          "nll_const_baseline": 1.0000000494736471e-07,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 5.243602996187897e-06,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 5.243602996187897e-06,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_0.30s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 1.910128773021554e-08,
+          "brier_const_baseline": 9.999999999999994e-15,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.0,
+          "nll": 3.413724516653094e-05,
+          "nll_const_baseline": 1.0000000494736471e-07,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 3.412768954497227e-05,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 3.412768954497227e-05,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_0.60s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 8.39086960928884e-06,
+          "brier_const_baseline": 3.6730945821854914e-05,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.7715585748871113,
+          "nll": 0.0006433219830768906,
+          "nll_const_baseline": 0.006079046076382225,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.0006390826108474172,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.0006390826108474172,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_1.20s": {
+          "n": 60,
+          "positives": 1,
+          "negatives": 59,
+          "prevalence": 0.016666666666666666,
+          "brier": 0.015904846490112676,
+          "brier_const_baseline": 0.016776859504132238,
+          "brier_always_zero_baseline": 0.016666663333343334,
+          "brier_skill_score": 0.0519771303922989,
+          "nll": 0.06323134365372957,
+          "nll_const_baseline": 0.09166035056355204,
+          "pr_auc": 0.5,
+          "recall_at_0_50": 0.0,
+          "recall_at_0_20": 0.0,
+          "dangerous_fn_lt_0_20": 1,
+          "ece": 0.014757760405704718,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.0019089062609619475,
+              "emp_freq": 0.016666666666666666
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_2.40s": {
+          "n": 60,
+          "positives": 3,
+          "negatives": 57,
+          "prevalence": 0.05,
+          "brier": 0.1106310725608253,
+          "brier_const_baseline": 0.0517447199265381,
+          "brier_always_zero_baseline": 0.04999999000001002,
+          "brier_skill_score": -1.1380166462952754,
+          "nll": 0.5599949104432914,
+          "nll_const_baseline": 0.22429723431933893,
+          "pr_auc": 0.20238095238095236,
+          "recall_at_0_50": 0.0,
+          "recall_at_0_20": 0.0,
+          "dangerous_fn_lt_0_20": 3,
+          "ece": 0.10987807070685407,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 56,
+              "mean_pred": 0.005141354537613483,
+              "emp_freq": 0.05357142857142857
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 4,
+              "mean_pred": 0.9701500241293998,
+              "emp_freq": 0.0
+            }
+          ]
+        },
+        "head_protected_0_30s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 6.784867327225496e-07,
+          "brier_const_baseline": 3.6730945821854914e-05,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.9815281987016286,
+          "nll": 0.00018898431461057634,
+          "nll_const_baseline": 0.006079046076382225,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.00018864402629840369,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.00018864402629840369,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        }
+      }
+    },
+    "FullV3_NeuroCOVER_Bio": {
+      "val": {
+        "cum_0.10s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 1.87602869441092e-05,
+          "brier_const_baseline": 9.999999999999994e-15,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.0,
+          "nll": 0.0008050580966468781,
+          "nll_const_baseline": 1.0000000494736471e-07,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.0007954836418095215,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.0007954836418095215,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_0.30s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 0.00040853553472665257,
+          "brier_const_baseline": 9.999999999999994e-15,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.0,
+          "nll": 0.0038502414429270803,
+          "nll_const_baseline": 1.0000000494736471e-07,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.003623371738863714,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.003623371738863714,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_0.60s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 0.0029030181245400916,
+          "brier_const_baseline": 3.6730945821854914e-05,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": -78.034668440604,
+          "nll": 0.01256458328208431,
+          "nll_const_baseline": 0.006079046076382225,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.010641964687808283,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 59,
+              "mean_pred": 0.004316324956147922,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 1,
+              "mean_pred": 0.38385470885576967,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_1.20s": {
+          "n": 60,
+          "positives": 2,
+          "negatives": 58,
+          "prevalence": 0.03333333333333333,
+          "brier": 0.029912475227083034,
+          "brier_const_baseline": 0.0322314049586777,
+          "brier_always_zero_baseline": 0.03333332666667667,
+          "brier_skill_score": 0.07194628141614212,
+          "nll": 0.14472448601409796,
+          "nll_const_baseline": 0.14627942944675504,
+          "pr_auc": 0.3269230769230769,
+          "recall_at_0_50": 0.5,
+          "recall_at_0_20": 0.5,
+          "dangerous_fn_lt_0_20": 1,
+          "ece": 0.0380076123118193,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 57,
+              "mean_pred": 0.003389545481694121,
+              "emp_freq": 0.017543859649122806
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 1,
+              "mean_pred": 0.3387685202132307,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 1,
+              "mean_pred": 0.5595030991689165,
+              "emp_freq": 1.0
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 1,
+              "mean_pred": 0.6943954101214092,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_2.40s": {
+          "n": 60,
+          "positives": 8,
+          "negatives": 52,
+          "prevalence": 0.13333333333333333,
+          "brier": 0.09432967318644134,
+          "brier_const_baseline": 0.11588613406795228,
+          "brier_always_zero_baseline": 0.13333330666667667,
+          "brier_skill_score": 0.1860141513467941,
+          "nll": 0.4178825118762371,
+          "nll_const_baseline": 0.3942278711978301,
+          "pr_auc": 0.6234317765567765,
+          "recall_at_0_50": 0.375,
+          "recall_at_0_20": 0.5,
+          "dangerous_fn_lt_0_20": 4,
+          "ece": 0.07828238023041388,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 53,
+              "mean_pred": 0.005121375052525726,
+              "emp_freq": 0.07547169811320754
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 2,
+              "mean_pred": 0.30999054924598013,
+              "emp_freq": 0.5
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 4,
+              "mean_pred": 0.6449920286871261,
+              "emp_freq": 0.5
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 1,
+              "mean_pred": 0.991611324647847,
+              "emp_freq": 1.0
+            }
+          ]
+        },
+        "head_protected_0_30s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 0.00036568122471777143,
+          "brier_const_baseline": 3.6730945821854914e-05,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": -8.955671342941327,
+          "nll": 0.003723156116856853,
+          "nll_const_baseline": 0.006079046076382225,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.003521572044396689,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.003521572044396689,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        }
+      },
+      "test": {
+        "cum_0.10s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 3.569537204516342e-09,
+          "brier_const_baseline": 9.999999999999994e-15,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.0,
+          "nll": 2.021941627155539e-05,
+          "nll_const_baseline": 1.0000000494736471e-07,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 2.0217631197742107e-05,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 2.0217631197742107e-05,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_0.30s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 5.7789642771972535e-08,
+          "brier_const_baseline": 9.999999999999994e-15,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.0,
+          "nll": 7.689499651953884e-05,
+          "nll_const_baseline": 1.0000000494736471e-07,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 7.686608321506878e-05,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 7.686608321506878e-05,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_0.60s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 1.0244320257896099e-05,
+          "brier_const_baseline": 3.6730945821854914e-05,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.7210983809787788,
+          "nll": 0.0006658715210941367,
+          "nll_const_baseline": 0.006079046076382225,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.0006606757498690952,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.0006606757498690952,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_1.20s": {
+          "n": 60,
+          "positives": 1,
+          "negatives": 59,
+          "prevalence": 0.016666666666666666,
+          "brier": 0.01441574017501992,
+          "brier_const_baseline": 0.016776859504132238,
+          "brier_always_zero_baseline": 0.016666663333343334,
+          "brier_skill_score": 0.14073666937073415,
+          "nll": 0.04563282761252595,
+          "nll_const_baseline": 0.09166035056355204,
+          "pr_auc": 1.0,
+          "recall_at_0_50": 0.0,
+          "recall_at_0_20": 0.0,
+          "dangerous_fn_lt_0_20": 1,
+          "ece": 0.013763810638747197,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.00290285602791947,
+              "emp_freq": 0.016666666666666666
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_2.40s": {
+          "n": 60,
+          "positives": 3,
+          "negatives": 57,
+          "prevalence": 0.05,
+          "brier": 0.10980666592093895,
+          "brier_const_baseline": 0.0517447199265381,
+          "brier_always_zero_baseline": 0.04999999000001002,
+          "brier_skill_score": -1.1220844576380218,
+          "nll": 0.5641736290336475,
+          "nll_const_baseline": 0.22429723431933893,
+          "pr_auc": 0.21581196581196582,
+          "recall_at_0_50": 0.0,
+          "recall_at_0_20": 0.0,
+          "dangerous_fn_lt_0_20": 3,
+          "ece": 0.10751418432246462,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 56,
+              "mean_pred": 0.0077391557512078765,
+              "emp_freq": 0.05357142857142857
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 4,
+              "mean_pred": 0.9710609453538797,
+              "emp_freq": 0.0
+            }
+          ]
+        },
+        "head_protected_0_30s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 4.540231728105491e-06,
+          "brier_const_baseline": 3.6730945821854914e-05,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.876392191202328,
+          "nll": 0.0005455116220083343,
+          "nll_const_baseline": 0.006079046076382225,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.0005432265259938777,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.0005432265259938777,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        }
+      }
+    },
+    "FullV3_NeuroCOVER_Rewired7": {
+      "val": {
+        "cum_0.10s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 5.5067509613255925e-06,
+          "brier_const_baseline": 9.999999999999994e-15,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.0,
+          "nll": 0.0004030689927736279,
+          "nll_const_baseline": 1.0000000494736471e-07,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.00040028304710027954,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.00040028304710027954,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_0.30s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 1.9809779704033854e-05,
+          "brier_const_baseline": 9.999999999999994e-15,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.0,
+          "nll": 0.0009053263940145823,
+          "nll_const_baseline": 1.0000000494736471e-07,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.0008952317377133919,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.0008952317377133919,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_0.60s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 0.0006125063276135167,
+          "brier_const_baseline": 3.6730945821854914e-05,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": -15.67548476927799,
+          "nll": 0.0052830250823429235,
+          "nll_const_baseline": 0.006079046076382225,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.004940225802329614,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.004940225802329614,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_1.20s": {
+          "n": 60,
+          "positives": 2,
+          "negatives": 58,
+          "prevalence": 0.03333333333333333,
+          "brier": 0.01870207872203827,
+          "brier_const_baseline": 0.0322314049586777,
+          "brier_always_zero_baseline": 0.03333332666667667,
+          "brier_skill_score": 0.41975601913676164,
+          "nll": 0.08985952425320025,
+          "nll_const_baseline": 0.14627942944675504,
+          "pr_auc": 0.6111111111111112,
+          "recall_at_0_50": 0.5,
+          "recall_at_0_20": 0.5,
+          "dangerous_fn_lt_0_20": 1,
+          "ece": 0.022044454740202054,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 58,
+              "mean_pred": 0.0029146864087647604,
+              "emp_freq": 0.017241379310344827
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 1,
+              "mean_pred": 0.3358282085705684,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 1,
+              "mean_pred": 0.844109112450089,
+              "emp_freq": 1.0
+            }
+          ]
+        },
+        "cum_2.40s": {
+          "n": 60,
+          "positives": 8,
+          "negatives": 52,
+          "prevalence": 0.13333333333333333,
+          "brier": 0.11388216872384861,
+          "brier_const_baseline": 0.11588613406795228,
+          "brier_always_zero_baseline": 0.13333330666667667,
+          "brier_skill_score": 0.017292537715759893,
+          "nll": 0.4193829497887221,
+          "nll_const_baseline": 0.3942278711978301,
+          "pr_auc": 0.5958771008403361,
+          "recall_at_0_50": 0.25,
+          "recall_at_0_20": 0.625,
+          "dangerous_fn_lt_0_20": 3,
+          "ece": 0.11898180148469722,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 52,
+              "mean_pred": 0.008571026026313334,
+              "emp_freq": 0.057692307692307696
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 3,
+              "mean_pred": 0.22895928030382173,
+              "emp_freq": 1.0
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 2,
+              "mean_pred": 0.7079250860808421,
+              "emp_freq": 0.5
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 3,
+              "mean_pred": 0.9518763703999692,
+              "emp_freq": 0.3333333333333333
+            }
+          ]
+        },
+        "head_protected_0_30s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 0.00019163474413728132,
+          "brier_const_baseline": 3.6730945821854914e-05,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": -4.217255909137484,
+          "nll": 0.002759590410879376,
+          "nll_const_baseline": 0.006079046076382225,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.0026581711187294763,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.0026581711187294763,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        }
+      },
+      "test": {
+        "cum_0.10s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 2.9331626440017867e-08,
+          "brier_const_baseline": 9.999999999999994e-15,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.0,
+          "nll": 4.237192241934022e-05,
+          "nll_const_baseline": 1.0000000494736471e-07,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 4.235724820789663e-05,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 4.235724820789663e-05,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_0.30s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 5.602140942825154e-08,
+          "brier_const_baseline": 9.999999999999994e-15,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.0,
+          "nll": 6.881081398797681e-05,
+          "nll_const_baseline": 1.0000000494736471e-07,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 6.878278367002383e-05,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 6.878278367002383e-05,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_0.60s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 5.703598738879218e-06,
+          "brier_const_baseline": 3.6730945821854914e-05,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.8447195243340133,
+          "nll": 0.0005706975758766077,
+          "nll_const_baseline": 0.006079046076382225,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.0005678200092952807,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.0005678200092952807,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_1.20s": {
+          "n": 60,
+          "positives": 1,
+          "negatives": 59,
+          "prevalence": 0.016666666666666666,
+          "brier": 0.004038921034487843,
+          "brier_const_baseline": 0.016776859504132238,
+          "brier_always_zero_baseline": 0.016666663333343334,
+          "brier_skill_score": 0.7592564309492469,
+          "nll": 0.012567735998029284,
+          "nll_const_baseline": 0.09166035056355204,
+          "pr_auc": 1.0,
+          "recall_at_0_50": 1.0,
+          "recall_at_0_20": 1.0,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.009489694641435066,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 59,
+              "mean_pred": 0.001338206532949676,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 1,
+              "mean_pred": 0.5095725069579269,
+              "emp_freq": 1.0
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_2.40s": {
+          "n": 60,
+          "positives": 3,
+          "negatives": 57,
+          "prevalence": 0.05,
+          "brier": 0.1009344756639267,
+          "brier_const_baseline": 0.0517447199265381,
+          "brier_always_zero_baseline": 0.04999999000001002,
+          "brier_skill_score": -0.9506236734341829,
+          "nll": 0.6443128817458753,
+          "nll_const_baseline": 0.22429723431933893,
+          "pr_auc": 0.21766381766381768,
+          "recall_at_0_50": 0.3333333333333333,
+          "recall_at_0_20": 0.3333333333333333,
+          "dangerous_fn_lt_0_20": 2,
+          "ece": 0.10085470343239186,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 55,
+              "mean_pred": 0.0057227549545382905,
+              "emp_freq": 0.03636363636363636
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 1,
+              "mean_pred": 0.6051302680316767,
+              "emp_freq": 1.0
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 4,
+              "mean_pred": 0.9927909991186988,
+              "emp_freq": 0.0
+            }
+          ]
+        },
+        "head_protected_0_30s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 1.0726644721089973e-06,
+          "brier_const_baseline": 3.6730945821854914e-05,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.9707967097468325,
+          "nll": 0.00025999281637442717,
+          "nll_const_baseline": 0.006079046076382225,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.00025945473138521227,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.00025945473138521227,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        }
+      }
+    },
+    "FullV3_NeuroCOVER_GRU": {
+      "val": {
+        "cum_0.10s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 4.3582585657006165e-07,
+          "brier_const_baseline": 9.999999999999994e-15,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.0,
+          "nll": 0.00013355826686535475,
+          "nll_const_baseline": 1.0000000494736471e-07,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.00013333963467871782,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.00013333963467871782,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_0.30s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 1.6321664595199167e-06,
+          "brier_const_baseline": 9.999999999999994e-15,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.0,
+          "nll": 0.0002664839756575657,
+          "nll_const_baseline": 1.0000000494736471e-07,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.00026566274315649544,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.00026566274315649544,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_0.60s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 9.1843430587893e-06,
+          "brier_const_baseline": 3.6730945821854914e-05,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.7499562602244614,
+          "nll": 0.0005492065721179766,
+          "nll_const_baseline": 0.006079046076382225,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.0005445439713062439,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.0005445439713062439,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_1.20s": {
+          "n": 60,
+          "positives": 2,
+          "negatives": 58,
+          "prevalence": 0.03333333333333333,
+          "brier": 0.03443839618635451,
+          "brier_const_baseline": 0.0322314049586777,
+          "brier_always_zero_baseline": 0.03333332666667667,
+          "brier_skill_score": -0.06847331757663966,
+          "nll": 0.23222312967856953,
+          "nll_const_baseline": 0.14627942944675504,
+          "pr_auc": 0.3333333333333333,
+          "recall_at_0_50": 0.0,
+          "recall_at_0_20": 0.0,
+          "dangerous_fn_lt_0_20": 2,
+          "ece": 0.0377044452967526,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 59,
+              "mean_pred": 0.0002575908880168894,
+              "emp_freq": 0.03389830508474576
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 1,
+              "mean_pred": 0.27746458019815246,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_2.40s": {
+          "n": 60,
+          "positives": 8,
+          "negatives": 52,
+          "prevalence": 0.13333333333333333,
+          "brier": 0.13735218136592964,
+          "brier_const_baseline": 0.11588613406795228,
+          "brier_always_zero_baseline": 0.13333330666667667,
+          "brier_skill_score": -0.18523395806257792,
+          "nll": 0.7127847108605606,
+          "nll_const_baseline": 0.3942278711978301,
+          "pr_auc": 0.44037126068376065,
+          "recall_at_0_50": 0.25,
+          "recall_at_0_20": 0.25,
+          "dangerous_fn_lt_0_20": 6,
+          "ece": 0.1367999897344062,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 55,
+              "mean_pred": 0.003770643029112622,
+              "emp_freq": 0.10909090909090909
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 1,
+              "mean_pred": 0.7897403088530568,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 4,
+              "mean_pred": 0.9064111104531274,
+              "emp_freq": 0.5
+            }
+          ]
+        },
+        "head_protected_0_30s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 6.160822925337243e-07,
+          "brier_const_baseline": 3.6730945821854914e-05,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.9832271595857693,
+          "nll": 0.00018667836945725276,
+          "nll_const_baseline": 0.006079046076382225,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.00018636954428707762,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.00018636954428707762,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        }
+      },
+      "test": {
+        "cum_0.10s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 9.330054928802048e-08,
+          "brier_const_baseline": 9.999999999999994e-15,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.0,
+          "nll": 8.575215583754022e-05,
+          "nll_const_baseline": 1.0000000494736471e-07,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 8.570544292354487e-05,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 8.570544292354487e-05,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_0.30s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 5.027475611784191e-07,
+          "brier_const_baseline": 9.999999999999994e-15,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.0,
+          "nll": 0.0001914019611687095,
+          "nll_const_baseline": 1.0000000494736471e-07,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.00019114981926702246,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.00019114981926702246,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_0.60s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 5.95024982133e-06,
+          "brier_const_baseline": 3.6730945821854914e-05,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.8380044486142908,
+          "nll": 0.00047567469941923833,
+          "nll_const_baseline": 0.006079046076382225,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.0004726641913708603,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.0004726641913708603,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_1.20s": {
+          "n": 60,
+          "positives": 1,
+          "negatives": 59,
+          "prevalence": 0.016666666666666666,
+          "brier": 0.016661216931660134,
+          "brier_const_baseline": 0.016776859504132238,
+          "brier_always_zero_baseline": 0.016666663333343334,
+          "brier_skill_score": 0.0068929809207509685,
+          "nll": 0.13293846532740589,
+          "nll_const_baseline": 0.09166035056355204,
+          "pr_auc": 0.1,
+          "recall_at_0_50": 0.0,
+          "recall_at_0_20": 0.0,
+          "dangerous_fn_lt_0_20": 1,
+          "ece": 0.016122674697553834,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.0005439919691128318,
+              "emp_freq": 0.016666666666666666
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        },
+        "cum_2.40s": {
+          "n": 60,
+          "positives": 3,
+          "negatives": 57,
+          "prevalence": 0.05,
+          "brier": 0.09930323058974454,
+          "brier_const_baseline": 0.0517447199265381,
+          "brier_always_zero_baseline": 0.04999999000001002,
+          "brier_skill_score": -0.9190988129943536,
+          "nll": 0.5818279449297965,
+          "nll_const_baseline": 0.22429723431933893,
+          "pr_auc": 0.15646662705486233,
+          "recall_at_0_50": 0.0,
+          "recall_at_0_20": 0.0,
+          "dangerous_fn_lt_0_20": 3,
+          "ece": 0.09655459187281432,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 57,
+              "mean_pred": 0.0034004421170187667,
+              "emp_freq": 0.05263157894736842
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 3,
+              "mean_pred": 0.995700237679643,
+              "emp_freq": 0.0
+            }
+          ]
+        },
+        "head_protected_0_30s": {
+          "n": 60,
+          "positives": 0,
+          "negatives": 60,
+          "prevalence": 0.0,
+          "brier": 2.134828073037035e-05,
+          "brier_const_baseline": 3.6730945821854914e-05,
+          "brier_always_zero_baseline": 9.999999999999994e-15,
+          "brier_skill_score": 0.4187930571156673,
+          "nll": 0.0007343826080627487,
+          "nll_const_baseline": 0.006079046076382225,
+          "pr_auc": null,
+          "recall_at_0_50": null,
+          "recall_at_0_20": null,
+          "dangerous_fn_lt_0_20": 0,
+          "ece": 0.0007234542560173331,
+          "reliability_bins": [
+            {
+              "bin": [
+                0.0,
+                0.2
+              ],
+              "count": 60,
+              "mean_pred": 0.0007234542560173331,
+              "emp_freq": 0.0
+            },
+            {
+              "bin": [
+                0.2,
+                0.4
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.4,
+                0.6000000000000001
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.6000000000000001,
+                0.8
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            },
+            {
+              "bin": [
+                0.8,
+                1.0
+              ],
+              "count": 0,
+              "mean_pred": null,
+              "emp_freq": null
+            }
+          ]
+        }
+      }
+    }
+  }
+}

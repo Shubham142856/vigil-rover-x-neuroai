@@ -46,8 +46,9 @@ def estimate_ground_contact_clearance(
     r, g, b = arr.transpose(2, 0, 1)
     gray = 0.299 * r + 0.587 * g + 0.114 * b
 
-    # Central horizontal corridor strip corresponding to rover width footprint ahead
-    x_lo, x_hi = 46, 82
+    # Central horizontal corridor strip matching calibrated rover chassis footprint at ~0.35 m
+    # atan(0.10m / 0.35m) * 73.91px ≈ 20.8px -> cx(63.5) +- 21.5 -> [42, 86]
+    x_lo, x_hi = 42, 86
     gray_c = gray[:, x_lo:x_hi]
     r_c, g_c, b_c = r[:, x_lo:x_hi], g[:, x_lo:x_hi], b[:, x_lo:x_hi]
 
@@ -61,7 +62,6 @@ def estimate_ground_contact_clearance(
     red_row_frac = red_mask.mean(axis=1)
 
     # 2. Achromatic / dark silhouette distinct from both sky and uniform floor:
-    # Check columns where upper horizon band [18:40] has vertical obstacle presence first
     horizon_dark_cols = (gray_c[18:40, :] < 0.72 * max(sky_ref, 40.0)).mean(axis=0) > 0.22
     has_horiz_obstacle = bool(np.any(horizon_dark_cols) or np.any(red_row_frac[12:55] > 0.12))
 
@@ -75,15 +75,13 @@ def estimate_ground_contact_clearance(
             "ipm_reliable": True,
         }
 
-    # Find lowest image row of obstacle before meeting floor
-    # Combine red mask rows or vertical object column boundary against floor brightness
-    dark_obj = (gray_c < 0.80 * max(floor_ref, 35.0)) & (np.abs(gray_c - floor_ref) > 12.0)
-    # Only consider contiguous downward from upper band (row >= 18) to avoid foreground floor cracks
-    occ_row = (red_row_frac > 0.10) | (dark_obj.mean(axis=1) > 0.18)
+    # Trace lowest CONTIGUOUS obstacle row descending from upper horizon band [16..52].
+    # Prevents isolated dark floor tile cracks/shadows near bottom rows from causing false 0.21m flickers.
+    dark_obj = (gray_c < 0.78 * max(floor_ref, 35.0)) & (np.abs(gray_c - floor_ref) > 14.0)
+    occ_row = (red_row_frac > 0.10) | (dark_obj.mean(axis=1) > 0.20)
 
-    # Start scanning from bottom (h - 2) up to horizon (row 20), require obstacle presence above row 48
-    obs_rows = np.where(occ_row[16 : h - 1])[0] + 16
-    if len(obs_rows) == 0:
+    upper_seeds = np.where(occ_row[16:54])[0] + 16
+    if len(upper_seeds) == 0:
         return {
             "obstacle_detected": False,
             "v_bot_px": 0.0,
@@ -93,8 +91,25 @@ def estimate_ground_contact_clearance(
             "ipm_reliable": False,
         }
 
-    # Use 95th-percentile lowest obstacle row anchored to continuous object body
-    v_bot = float(np.percentile(obs_rows, 95))
+    row_cur = int(upper_seeds[0])
+    v_bot_cont = row_cur
+    gap = 0
+    for r_idx in range(row_cur, h - 1):
+        if occ_row[r_idx]:
+            v_bot_cont = r_idx
+            gap = 0
+        else:
+            gap += 1
+            if gap > 2:
+                # Check if a later horizon-connected obstacle starts inside [16:54] before terminating
+                if r_idx < 54 and np.any(occ_row[r_idx + 1 : 54]):
+                    next_seed = r_idx + 1 + int(np.argmax(occ_row[r_idx + 1 : 54]))
+                    v_bot_cont = next_seed
+                    gap = 0
+                    continue
+                break
+
+    v_bot = float(v_bot_cont)
     # Angular depression below camera principal ray
     alpha_ray = math.atan2(v_bot - cy, fy)
     alpha_eff = cam_tilt + float(pitch_rad) + alpha_ray
