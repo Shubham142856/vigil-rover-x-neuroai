@@ -492,6 +492,7 @@ def run_p69_episode(
                 "obstacle_detected": False, "estimated_clearance_m": 4.0, "ipm_reliable": False
             }
             feat_v3, lstate = extract_features_v3(obs, snap_v1, snap_v2, vis_out_latest, ipm_out, lstate, dt)
+            feat_v3[14] = 0.0  # Time-shift invariant features matching P6.9.4 dataset
             hist.append(feat_v3)
 
             m4_preds = m8_preds = None

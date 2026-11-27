@@ -319,11 +319,11 @@ def compute_loss(out: torch.Tensor, batch: dict, variant: str, pos_wt_prot: floa
 
 def train_torch_model(model: nn.Module, tr: dict, variant: str, epochs: int = 80, lr: float = 5e-3, seed: int = 7, batch_size: int = 64):
     opt = torch.optim.Adam([p for p in model.parameters() if p.requires_grad], lr=lr)
-    rng = np.random.default_rng(seed)
+    gen = torch.Generator(device=tr["X_norm"].device).manual_seed(seed)
     n = len(tr["X_norm"])
     model.train()
     for _ in range(epochs):
-        perm = rng.permutation(n)
+        perm = torch.randperm(n, generator=gen, device=tr["X_norm"].device)
         for st in range(0, n, batch_size):
             idx = perm[st : st + batch_size]
             sub = {k: v[idx] for k, v in tr.items()}

@@ -37,7 +37,7 @@ FEATURE_PROVENANCE_24 = [
     ("11:free_fraction", "snap_v1['free_fraction']", "egocentric_belief"),
     ("12:unknown_stale_frac", "snap_v1['unknown_or_stale_fraction']", "egocentric_belief"),
     ("13:occupied_frac", "sum(occupied)/N", "egocentric_belief"),
-    ("14:time_s", "obs['time_s']", "rover_clock"),
+    ("14:time_masked_zero", "0.0 (time-invariant mask)", "markov_state_mask"),
     ("15:dt", "obs['time_s'] - prev_t", "rover_clock_delta"),
     ("16:raw_lplc2", "vis_out['raw_lplc2']", "dual_pathway_t4_t5"),
     ("17:residual_lplc2", "vis_out['residual_lplc2']", "imu_compensated_t4_t5"),

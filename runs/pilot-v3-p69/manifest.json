@@ -74,7 +74,7 @@
         "open_real": 3,
         "shelf_clear": 4
       },
-      "sha256": "d4ba4b61700af447356fb32794e38cf3cd48c58b4d597846cc9d224e8c68be4f"
+      "sha256": "0e44b3ff66d9ba5004a7770805a6354f5436d8e9eae9032ce933d13c09c80d90"
     },
     "val": {
       "independent_worlds": 17,
@@ -119,7 +119,7 @@
         "open_rover": 1,
         "open_real": 1
       },
-      "sha256": "f9f72d7b8bce253010c19344052391aa45adee248f6ea9e03e98692c26147c47"
+      "sha256": "70e1c1135eb28043ec2a7afff496f7df359992c9a1939d24ed2e3652e50eb348"
     },
     "test": {
       "independent_worlds": 17,
@@ -158,7 +158,8 @@
         "pedestrian_close_cross": 1,
         "open_rover": 1
       },
-      "sha256": "3d733024962f3970d424f257c7fc4c5e08fe91f514c63bc105d2c69527333ac9"
+      "sha256": "17b755d9371d8316a441d97d4ed6e8106f8bea3c14afe315d2a631f3803b34fc"
     }
-  }
+  },
+  "time_feature_masked": true
 }

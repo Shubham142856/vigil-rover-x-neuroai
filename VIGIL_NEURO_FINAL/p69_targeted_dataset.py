@@ -264,6 +264,7 @@ def _rollout_one_world_task(task: Tuple[str, int, str, str, int]) -> dict:
                 visual_motion_stable=vis_stable,
             )
             feat, lstate = extract_features_v3(obs, s1, s2, vo, ipm, lstate, dt)
+            feat[14] = 0.0  # Strip non-Markovian wall-clock time_s so closed-loop policy is time-shift invariant past 2.4s
             hist.append(feat)
 
             if step in branch_steps and not sim.evaluator()["body_contact"]:
